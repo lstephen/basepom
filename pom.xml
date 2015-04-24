@@ -48,6 +48,20 @@
     </repository>
   </distributionManagement>
 
+  <properties>
+    <plugin.jgitflow.version>1.0-m4.3</plugin.jgitflow.version>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>external.atlassian.jgitflow</groupId>
+        <artifactId>jgitflow-maven-plugin</artifactId>
+        <version>${plugin.jgitflow.version}</version>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
 
 
