@@ -10,7 +10,7 @@ release_commit=`git rev-parse HEAD`
 echo "Releasing commit ${release_commit}..."
 
 # Remove -SNAPSHOT from version
-master_version=`mvn -B help:evaluated -Dexpression=project.version | grep "^[^\s]*-SNAPSHOT$" | sed 's/\(.*\)-SNAPSHOT/\1/'`
+master_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s]*-SNAPSHOT$" | sed 's/\(.*\)-SNAPSHOT/\1/'`
 
 echo "Release version is ${master_version}"
 mvn -B versions:set -DnewVersion=$master_version
@@ -24,7 +24,7 @@ echo "Updating development version..."
 git checkout $release_commit
 mvn -B release:update-version
 
-develop_version=`mvn -B help:evaluated -Dexpression=project.version | grep "^[^\s]*-SNAPSHOT$"`
+develop_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s]*-SNAPSHOT$"`
 
 echo "New development version is $develop_version"
 
