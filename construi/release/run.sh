@@ -16,14 +16,14 @@ master_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s]
 
 echo "Release version is ${master_version}"
 
-release_branch=release/$master_version
+release_branch=prepare_release
 git checkout -b $release_branch
 
 mvn -B versions:set -DnewVersion=$master_version -DgenerateBackupPoms=false
 
 echo "Pushing to master..."
 git add pom.xml
-git commit -m "Update master version to $master_version"
+git commit -m "Pushing $master_version to master"
 git push origin $release_branch:master
 echo "Push to master done."
 
@@ -32,7 +32,7 @@ git checkout $release_commit
 
 develop_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s]*-SNAPSHOT$"`
 
-develop_branch=develop/$develop_version
+develop_branch=update_develop_version
 git checkout -b $develop_branch
 
 mvn -B release:update-versions
