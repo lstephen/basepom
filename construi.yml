@@ -4,7 +4,8 @@ environment:
   - GPG_PASSPHRASE
   - GITHUB_OAUTH_TOKEN
   - NEXUS_PASSWORD
-  - GIT_COMMIT
+  - GIT_AUTHOR_NAME
+  - GIT_AUTHOR_EMAIL
 
 files:
   - etc/settings.xml:/root/.m2/settings.xml
