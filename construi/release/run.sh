@@ -13,9 +13,10 @@ echo "Releasing commit ${release_commit}..."
 master_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s]*-SNAPSHOT$" | sed 's/\(.*\)-SNAPSHOT/\1/'`
 
 echo "Release version is ${master_version}"
-mvn -B versions:set -DnewVersion=$master_version
+mvn -B versions:set -DnewVersion=$master_version -DgenerateBackupPoms=false
 
 echo "Pushing to master..."
+git add pom.xml
 git commit -m "Update master version to $master_version"
 git push origin master
 echo "Push to master done."
@@ -29,6 +30,7 @@ develop_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s
 echo "New development version is $develop_version"
 
 echo "Pushing to develop..."
+git add pom.xml
 git commit -m "Update develop version to $develop_version"
 git push origin develop
 echo "Push to develop done."
