@@ -36,7 +36,7 @@ echo "New development version is $develop_version"
 
 echo "Pushing to develop..."
 git add pom.xml
-git commit -m "Update develop to $mew_develop_version"
+git commit -m "Update develop to $develop_version"
 git push origin `git rev-parse HEAD`:develop
 echo "Push to develop done."
 
