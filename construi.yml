@@ -25,7 +25,5 @@ targets:
   release:
     files:
       - $GIT_SSH_KEY:/root/.ssh/id_rsa:0600
-      - $GPG_PUBLIC_KEY:/root/.gnupg/public.key
-      - $GPG_PRIVATE_KEY:/root/.gnupg/private.key
     run: /bin/bash construi/release/run.sh
 
