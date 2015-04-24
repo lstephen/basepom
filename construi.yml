@@ -28,5 +28,5 @@ targets:
       - gpg --import /root/.gnupg/public.key
       - gpg --import --allow-secret-key-import /root/.gnupg/private.key
       - git status
-      - mvn -B -DpushReleases=ture jgitflow:release-start jgitflow:release-finish
+      - mvn -B -X -DpushReleases=ture jgitflow:release-start jgitflow:release-finish
 
