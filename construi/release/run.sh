@@ -16,35 +16,28 @@ master_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s]
 
 echo "Release version is ${master_version}"
 
-release_branch=prepare_release
-git checkout -b $release_branch
-
 mvn -B versions:set -DnewVersion=$master_version -DgenerateBackupPoms=false
 
 echo "Pushing to master..."
 git add pom.xml
 git commit -m "Pushing $master_version to master"
-git push origin $release_branch:master
+git push origin `git rev-parse HEAD`:master
+
 echo "Push to master done."
 
 echo "Updating development version..."
 git checkout $release_commit
 
-develop_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s]*-SNAPSHOT$"`
-
-develop_branch=update_develop_version
-git checkout -b $develop_branch
-
 mvn -B release:update-versions
 
-new_develop_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s]*-SNAPSHOT$"`
+develop_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s]*-SNAPSHOT$"`
 
-echo "New development version is $new_develop_version"
+echo "New development version is $develop_version"
 
 echo "Pushing to develop..."
 git add pom.xml
-git commit -m "Update develop version from $develop_version to $mew_develop_version"
-git push origin $develop_branch:develop
+git commit -m "Update develop to $mew_develop_version"
+git push origin `git rev-parse HEAD`:develop
 echo "Push to develop done."
 
 echo "Release done."
