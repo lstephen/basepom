@@ -6,7 +6,7 @@
 printf "Host github.com\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config 
 
 commit=`git rev-parse HEAD`
-version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[\d\.]*$"`
+version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[0-9\.]*$"`
 tag=v$version
 
 echo "Tagging $commit as $tag"
