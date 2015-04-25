@@ -44,18 +44,28 @@
   </distributionManagement>
 
   <properties>
-    <plugin.jgitflow.version>1.0-m4.3</plugin.jgitflow.version>
+    <plugin.gpg.version>1.5</plugin.gpg.version>
   </properties>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>external.atlassian.jgitflow</groupId>
-        <artifactId>jgitflow-maven-plugin</artifactId>
-        <version>${plugin.jgitflow.version}</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.5</version>
         <configuration>
-          <allowUntracked>true</allowUntracked>
+          <useAgent>false</useAgent>
+          <passphrase>${env.GPG_PASSPHRASE}</passphrase>
         </configuration>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
