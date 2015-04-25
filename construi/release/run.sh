@@ -27,6 +27,7 @@ echo "Push to master done."
 
 echo "Updating development version..."
 git checkout $release_commit
+git pull origin master
 
 mvn -B release:update-versions
 
