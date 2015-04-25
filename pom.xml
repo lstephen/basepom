@@ -52,7 +52,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
-        <version>1.5</version>
+        <version>${plugin.gpg.version}</version>
         <configuration>
           <useAgent>false</useAgent>
           <passphrase>${env.GPG_PASSPHRASE}</passphrase>
