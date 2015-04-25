@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Given a pom with a version of X.Y-SNAPSHOT the result after this script is run should be
+#   * master is a copy of the current commit with the version X.Y
+#   * develop has the version X.(Y+1)-SNAPSHOT
+
 set -e
 
 [[ -n "$GIT_AUTHOR_NAME" ]] && git config user.name $GIT_AUTHOR_NAME
@@ -21,13 +25,12 @@ mvn -B versions:set -DnewVersion=$master_version -DgenerateBackupPoms=false
 echo "Pushing to master..."
 git add pom.xml
 git commit -m "Pushing $master_version to master"
-git push origin `git rev-parse HEAD`:master
+git push -f origin `git rev-parse HEAD`:master
 
 echo "Push to master done."
 
 echo "Updating development version..."
 git checkout $release_commit
-git pull origin master
 
 mvn -B release:update-versions
 
