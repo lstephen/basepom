@@ -4,7 +4,7 @@
 
   <groupId>com.github.lstephen</groupId>
   <artifactId>basepom</artifactId>
-  <version>1.5-SNAPSHOT</version>
+  <version>1.6-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>basepom</name>
@@ -221,8 +221,8 @@
           <fail>true</fail>
           <failFast>false</failFast>
           <rules>
-            <dependencyConvergence/>
-            <requireReleaseDeps/>
+            <dependencyConvergence />
+            <requireReleaseDeps />
           </rules>
         </configuration>
         <executions>
