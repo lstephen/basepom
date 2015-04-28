@@ -211,6 +211,20 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${plugin.enforcer.version}</version>
+        <configuration>
+          <fail>true</fail>
+          <failFast>false</failFast>
+          <rules>
+            <dependencyConvergence/>
+            <requireReleaseDeps/>
+          </rules>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
