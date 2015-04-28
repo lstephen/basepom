@@ -13,6 +13,8 @@ files:
 targets:
   build: mvn -B verify -Dgpg.skip=true
 
+  update-versions: mvn -B versions:update-properties -DgenerateBackupPoms=false
+
   snapshot:
     files:
       - $GPG_PUBLIC_KEY:/root/.gnupg/public.key
