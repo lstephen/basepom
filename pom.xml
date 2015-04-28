@@ -44,8 +44,10 @@
   </distributionManagement>
 
   <properties>
-    <java.version>8</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.scm.id>github</project.scm.id>
 
+    <java.version>8</java.version>
     <java.source.version>${java.version}</java.source.version>
     <java.target.version>${java.version}</java.target.version>
 
