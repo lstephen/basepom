@@ -140,6 +140,8 @@
         <version>${plugin.site.version}</version>
         <configuration>
           <message>Creating site for ${project.version}</message>
+          <repositoryName>${github.repository.name}</repositoryName>
+          <repositoryOwner>${github.repository.owner}</repositoryOwner>
           <oauth2Token>${env.GITHUB_OAUTH_TOKEN}</oauth2Token>
         </configuration>
         <executions>
