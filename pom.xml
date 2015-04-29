@@ -68,8 +68,6 @@
     <plugin.site.version>0.11</plugin.site.version>
     <plugin.source.version>2.4</plugin.source.version>
     <plugin.surefire.version>2.18.1</plugin.surefire.version>
-
-    <plugin.dependency.used />
   </properties>
 
   <build>
@@ -186,7 +184,6 @@
         <configuration>
           <failOnWarning>true</failOnWarning>
           <ignoreNonCompile>true</ignoreNonCompile>
-          <usedDependencies>${plugin.dependency.used}</usedDependencies>
         </configuration>
         <executions>
           <execution>
