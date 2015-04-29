@@ -291,7 +291,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>${plugins.pmd.version}</version>
+        <version>${plugin.pmd.version}</version>
       </plugin>
     </plugins>
   </reporting>
