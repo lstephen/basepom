@@ -27,9 +27,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:lstpehen/ai-search.git</connection>
-    <developerConnection>scm:git:git@github.com:lstephen/ai-search.git</developerConnection>
-    <url>git@github.com:lestephen/ai-search.git</url>
+    <connection>scm:git:git@github.com:lstpehen/basepom.git</connection>
+    <developerConnection>scm:git:git@github.com:lstephen/basepom.git</developerConnection>
+    <url>https://github.com/lestephen/basepom</url>
   </scm>
 
   <distributionManagement>
