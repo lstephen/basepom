@@ -9,7 +9,7 @@
 
   <name>basepom</name>
   <description>A base POM for Java projects from https://github.com/lstephen</description>
-  <url>https://github.com/lstephen/basepom</url>
+  <url>${github.site}</url>
 
   <licenses>
     <license>
@@ -29,8 +29,13 @@
   <scm>
     <connection>scm:git:git@github.com:lstpehen/basepom.git</connection>
     <developerConnection>scm:git:git@github.com:lstephen/basepom.git</developerConnection>
-    <url>https://github.com/lestephen/basepom</url>
+    <url>${github.url}</url>
   </scm>
+
+  <issueManagement>
+    <url>${github.url}/issues</url>
+    <system>GitHub Issues</system>
+  </issueManagement>
 
   <distributionManagement>
     <snapshotRepository>
@@ -44,6 +49,9 @@
   </distributionManagement>
 
   <properties>
+    <github.url>https://github.com/lstephen/${project.artifactId}</github.url>
+    <github.site>https://lstephen.github.io/${project.artifactId}</github.site>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.scm.id>github</project.scm.id>
 
@@ -269,6 +277,18 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
         <version>${plugin.project-info.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>summary</report>
+              <report>license</report>
+              <report>scm</report>
+              <report>issue-tracking</report>
+              <report>dependencies</report>
+              <report>plugins</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
 
       <plugin>
