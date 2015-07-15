@@ -48,7 +48,6 @@
     </repository>
   </distributionManagement>
 
-
   <properties>
     <github.url>https://github.com/lstephen/${project.artifactId}</github.url>
     <github.site>https://lstephen.github.io/${project.artifactId}</github.site>
