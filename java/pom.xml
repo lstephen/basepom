@@ -1,0 +1,371 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.github.lstephen</groupId>
+    <artifactId>basepom</artifactId>
+    <version>1.12-SNAPSHOT</version>
+  </parent>
+
+  <groupId>com.github.lstephen</groupId>
+  <artifactId>basepom-java</artifactId>
+  <packaging>pom</packaging>
+
+  <name>basepom-java</name>
+  <description>A base POM for Java projects from https://github.com/lstephen</description>
+  <url>${github.site}</url>
+
+  <issueManagement>
+    <url>${github.url}/issues</url>
+    <system>GitHub Issues</system>
+  </issueManagement>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
+  <properties>
+    <github.url>https://github.com/lstephen/basepom</github.url>
+    <github.site>https://lstephen.github.io/basepom</github.site>
+
+    <java.version>8</java.version>
+    <java.source.version>${java.version}</java.source.version>
+    <java.target.version>${java.version}</java.target.version>
+
+    <lib.checkstyle.version>6.8</lib.checkstyle.version>
+    <lib.reflow-velocity-tools.version>1.1.1</lib.reflow-velocity-tools.version>
+    <lib.velocity.version>1.7</lib.velocity.version>
+
+    <plugin.checkstyle.version>2.15</plugin.checkstyle.version>
+    <plugin.clean.version>2.6.1</plugin.clean.version>
+    <plugin.compiler.version>3.3</plugin.compiler.version>
+    <plugin.dependency.version>2.10</plugin.dependency.version>
+    <plugin.deploy.version>2.8.2</plugin.deploy.version>
+    <plugin.duplicate-finder.version>1.2.0</plugin.duplicate-finder.version>
+    <plugin.enforcer.version>1.4</plugin.enforcer.version>
+    <plugin.findbugs.version>3.0.1</plugin.findbugs.version>
+    <plugin.gpg.version>1.6</plugin.gpg.version>
+    <plugin.install.version>2.5.2</plugin.install.version>
+    <plugin.jacoco.version>0.7.5.201505241946</plugin.jacoco.version>
+    <plugin.jar.version>2.6</plugin.jar.version>
+    <plugin.javadoc.version>2.10.3</plugin.javadoc.version>
+    <plugin.jxr.version>2.5</plugin.jxr.version>
+    <plugin.pmd.version>3.4</plugin.pmd.version>
+    <plugin.project-info.version>2.8</plugin.project-info.version>
+    <plugin.resources.version>2.7</plugin.resources.version>
+    <plugin.site.version>3.4</plugin.site.version>
+    <plugin.site.github.version>0.12</plugin.site.github.version>
+    <plugin.source.version>2.4</plugin.source.version>
+    <plugin.surefire.version>2.18.1</plugin.surefire.version>
+    <plugin.surefire-report.version>2.18.1</plugin.surefire-report.version>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${plugin.checkstyle.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${lib.checkstyle.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${plugin.clean.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${plugin.compiler.version}</version>
+        <configuration>
+          <source>${java.source.version}</source>
+          <target>${java.target.version}</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${plugin.dependency.version}</version>
+        <configuration>
+          <failOnWarning>true</failOnWarning>
+          <ignoreNonCompile>true</ignoreNonCompile>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>analyze-only</goal>
+              <goal>analyze-duplicate</goal>
+              <goal>analyze-dep-mgt</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${plugin.deploy.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${plugin.enforcer.version}</version>
+        <configuration>
+          <fail>true</fail>
+          <failFast>false</failFast>
+          <rules>
+            <dependencyConvergence />
+            <requireReleaseDeps>
+              <onlyWhenRelease>true</onlyWhenRelease>
+            </requireReleaseDeps>
+            <requirePluginVersions />
+          </rules>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>${plugin.gpg.version}</version>
+        <configuration>
+          <useAgent>false</useAgent>
+          <passphrase>${env.GPG_PASSPHRASE}</passphrase>
+        </configuration>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>${plugin.install.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${plugin.jar.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${plugin.javadoc.version}</version>
+        <configuration>
+          <detectLinks />
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${plugin.resources.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${plugin.source.version}</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>${plugin.site.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>lt.velykis.maven.skins</groupId>
+            <artifactId>reflow-velocity-tools</artifactId>
+            <version>${lib.reflow-velocity-tools.version}</version>
+          </dependency>
+
+          <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>${lib.velocity.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${plugin.surefire.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.basepom.maven</groupId>
+        <artifactId>duplicate-finder-maven-plugin</artifactId>
+        <version>${plugin.duplicate-finder.version}</version>
+        <configuration>
+          <failBuildInCaseOfConflict>true</failBuildInCaseOfConflict>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${plugin.jacoco.version}</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.github</groupId>
+        <artifactId>site-maven-plugin</artifactId>
+        <version>${plugin.site.github.version}</version>
+        <configuration>
+          <message>Creating site for ${project.version}</message>
+          <oauth2Token>${env.GITHUB_OAUTH_TOKEN}</oauth2Token>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>site</goal>
+            </goals>
+            <phase>site</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>${plugin.project-info.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>summary</report>
+              <report>license</report>
+              <report>scm</report>
+              <report>issue-tracking</report>
+              <report>dependencies</report>
+              <report>plugins</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>${plugin.jxr.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>${plugin.surefire-report.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>${plugin.findbugs.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${plugin.pmd.version}</version>
+        <configuration>
+          <rulesets>
+            <ruleset>https://raw.githubusercontent.com/lstephen/java-static-analysis-config/master/pmd.xml</ruleset>
+          </rulesets>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>https://raw.githubusercontent.com/lstephen/java-static-analysis-config/master/checkstyle.xml</configLocation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+
+</project>
+
+
