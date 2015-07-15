@@ -16,22 +16,6 @@
   <description>A base POM for Java projects from https://github.com/lstephen</description>
   <url>${github.site}</url>
 
-  <issueManagement>
-    <url>${github.url}/issues</url>
-    <system>GitHub Issues</system>
-  </issueManagement>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
-
   <properties>
     <github.url>https://github.com/lstephen/basepom</github.url>
     <github.site>https://lstephen.github.io/basepom</github.site>
