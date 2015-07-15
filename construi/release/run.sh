@@ -23,7 +23,7 @@ echo "Release version is ${master_version}"
 mvn -B versions:set -DnewVersion=$master_version -DgenerateBackupPoms=false
 
 echo "Pushing to master..."
-git add pom.xml
+git add --all
 git commit -m "Pushing $master_version to master"
 git push -f origin `git rev-parse HEAD`:master
 
@@ -38,10 +38,8 @@ develop_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s
 
 echo "New development version is $develop_version"
 
-mvn -B versions:set -DnewVersion=$develop_version -DgenerateBackupPoms=false
-
 echo "Pushing to develop..."
-git add pom.xml
+git add --all
 git commit -m "Update develop to $develop_version"
 git push origin `git rev-parse HEAD`:develop
 echo "Push to develop done."
