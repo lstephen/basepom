@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>PlayerList.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.ootp5.site</a> &gt; <span class="el_source">PlayerList.java</span></div><h1>PlayerList.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.ootp5.site;
+
+import com.google.common.collect.Sets;
+import com.ljs.ootp.extract.html.Page;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.PlayerId;
+import com.ljs.ootp.ai.site.Site;
+import java.util.Set;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class PlayerList {
+
+    private final Site site;
+
+    private final Page page;
+
+<span class="nc" id="L23">    private PlayerList(Site site, Page page) {</span>
+<span class="nc" id="L24">        this.site = site;</span>
+<span class="nc" id="L25">        this.page = page;</span>
+<span class="nc" id="L26">    }</span>
+
+    private PlayerList(Site site, String url) {
+<span class="nc" id="L29">        this(site, site.getPage(url));</span>
+<span class="nc" id="L30">    }</span>
+
+    public Iterable&lt;Player&gt; extract() {
+<span class="nc" id="L33">        return site.getPlayers(extractIds());</span>
+    }
+
+    public Iterable&lt;PlayerId&gt; extractIds() {
+<span class="nc" id="L37">        Document doc = page.load();</span>
+
+<span class="nc" id="L39">        Elements els = doc.select(&quot;tr td a&quot;);</span>
+
+<span class="nc" id="L41">        Set&lt;PlayerId&gt; ids = Sets.newHashSet();</span>
+
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        for (Element el : els) {</span>
+<span class="nc" id="L44">            ids.add(new PlayerId(el.attr(&quot;href&quot;).replaceAll(&quot;.html&quot;, &quot;&quot;)));</span>
+<span class="nc" id="L45">        }</span>
+
+<span class="nc" id="L47">        return ids;</span>
+    }
+
+    public static PlayerList freeAgents(Site site) {
+<span class="nc" id="L51">        return new PlayerList(site, &quot;agents.html&quot;);</span>
+    }
+
+    public static PlayerList futureFreeAgents(Site site) {
+<span class="nc" id="L55">        return new PlayerList(site, &quot;pagents.html&quot;);</span>
+    }
+
+    public static PlayerList waiverWire(Site site) {
+<span class="nc" id="L59">        return new PlayerList(site, &quot;waiver.html&quot;);</span>
+    }
+
+    public static PlayerList draft(Site site) {
+<span class="nc" id="L63">        return new PlayerList(site, &quot;rookies.html&quot;);</span>
+    }
+
+    public static PlayerList ruleFiveDraft(Site site) {
+<span class="nc" id="L67">        return new PlayerList(site, &quot;rule5.html&quot;);</span>
+    }
+
+    public static PlayerList from(Site site, Page page) {
+<span class="nc" id="L71">        return new PlayerList(site, page);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

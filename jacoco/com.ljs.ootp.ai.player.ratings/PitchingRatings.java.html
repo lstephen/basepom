@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>PitchingRatings.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.player.ratings</a> &gt; <span class="el_source">PitchingRatings.java</span></div><h1>PitchingRatings.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.player.ratings;
+
+import com.ljs.ootp.ai.site.Site;
+
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+
+import com.ljs.ootp.extract.html.ootp6.rating.OneToTen;
+import com.ljs.ootp.extract.html.rating.Rating;
+import com.ljs.ootp.extract.html.rating.Scale;
+
+/**
+ *
+ * @author lstephen
+ */
+public class PitchingRatings&lt;T&gt; {
+
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+    private final Scale&lt;T&gt; scale;
+
+    private final Rating&lt;T, ?&gt; hits;
+
+    private final Rating&lt;T, ?&gt; gap;
+
+    private final Rating&lt;T, ?&gt; stuff;
+
+    private final Rating&lt;T, ?&gt; control;
+
+    private final Rating&lt;T, ?&gt; movement;
+
+    private final Rating&lt;Integer, ? super OneToTen&gt; endurance;
+
+<span class="nc" id="L38">    private PitchingRatings(Builder&lt;T&gt; builder) {</span>
+<span class="nc" id="L39">        Preconditions.checkNotNull(builder.scale);</span>
+<span class="nc" id="L40">        Preconditions.checkNotNull(builder.hits);</span>
+<span class="nc" id="L41">        Preconditions.checkNotNull(builder.gap);</span>
+<span class="nc" id="L42">        Preconditions.checkNotNull(builder.stuff);</span>
+<span class="nc" id="L43">        Preconditions.checkNotNull(builder.control);</span>
+<span class="nc" id="L44">        Preconditions.checkNotNull(builder.movement);</span>
+<span class="nc" id="L45">        Preconditions.checkNotNull(builder.endurance);</span>
+
+<span class="nc" id="L47">        this.scale = builder.scale;</span>
+<span class="nc" id="L48">        this.hits = builder.hits;</span>
+<span class="nc" id="L49">        this.gap = builder.gap;</span>
+<span class="nc" id="L50">        this.stuff = builder.stuff;</span>
+<span class="nc" id="L51">        this.control = builder.control;</span>
+<span class="nc" id="L52">        this.movement = builder.movement;</span>
+<span class="nc" id="L53">        this.endurance = builder.endurance;</span>
+<span class="nc" id="L54">    }</span>
+
+<span class="nc" id="L56">    public Integer getHits() { return hits.normalize().get(); }</span>
+
+<span class="nc" id="L58">    public Integer getGap() { return gap.normalize().get(); }</span>
+
+<span class="nc" id="L60">    public Integer getStuff() { return stuff.normalize().get(); }</span>
+
+<span class="nc" id="L62">    public Integer getControl() { return control.normalize().get(); }</span>
+
+<span class="nc" id="L64">    public Integer getMovement() { return movement.normalize().get(); }</span>
+
+<span class="nc" id="L66">    public Integer getEndurance() { return endurance.get(); }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L70">        return Objects.toStringHelper(this)</span>
+<span class="nc" id="L71">            .add(&quot;stuff&quot;, stuff)</span>
+<span class="nc" id="L72">            .add(&quot;control&quot;, control)</span>
+<span class="nc" id="L73">            .add(&quot;movement&quot;, movement)</span>
+<span class="nc" id="L74">            .add(&quot;hits&quot;, hits)</span>
+<span class="nc" id="L75">            .add(&quot;gap&quot;, gap)</span>
+<span class="nc" id="L76">            .toString();</span>
+    }
+
+    public static &lt;T&gt; Builder&lt;T&gt; builder(Scale&lt;T&gt; scale) {
+<span class="nc" id="L80">        return Builder.create(scale);</span>
+    }
+
+    @JsonCreator
+    private static &lt;T&gt; PitchingRatings&lt;T&gt; build(Builder&lt;T&gt; builder) {
+<span class="nc" id="L85">        return new PitchingRatings&lt;T&gt;(builder);</span>
+    }
+
+    public static final class Builder&lt;T&gt; {
+
+        private final Scale&lt;T&gt; scale;
+
+        private Rating&lt;T, ? extends Scale&lt;T&gt;&gt; hits;
+
+        private Rating&lt;T, ? extends Scale&lt;T&gt;&gt; gap;
+
+        private Rating&lt;T, ? extends Scale&lt;T&gt;&gt; stuff;
+
+        private Rating&lt;T, ? extends Scale&lt;T&gt;&gt; control;
+
+        private Rating&lt;T, ? extends Scale&lt;T&gt;&gt; movement;
+
+        private Rating&lt;Integer, ? super OneToTen&gt; endurance;
+
+<span class="nc" id="L104">        private Builder(Scale&lt;T&gt; scale) {</span>
+<span class="nc" id="L105">            this.scale = scale;</span>
+<span class="nc" id="L106">        }</span>
+
+        @JsonCreator
+        private Builder(
+<span class="nc" id="L110">            @JsonProperty(&quot;scale&quot;) Scale&lt;T&gt; scale, @JacksonInject Site site) {</span>
+
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            this.scale = scale == null</span>
+<span class="nc" id="L113">                ? (Scale&lt;T&gt;) site.getAbilityRatingScale()</span>
+                : scale;
+<span class="nc" id="L115">        }</span>
+
+        public Builder&lt;T&gt; hits(Rating&lt;T, ? extends Scale&lt;T&gt;&gt; hits) {
+<span class="nc" id="L118">            this.hits = hits;</span>
+<span class="nc" id="L119">            return this;</span>
+        }
+
+        @JsonProperty(&quot;hits&quot;)
+        public Builder&lt;T&gt; hits(String s) {
+<span class="nc" id="L124">            return hits(scale.parse(s));</span>
+        }
+
+        public Builder&lt;T&gt; hits(T value) {
+<span class="nc" id="L128">            return hits(Rating.create(value, scale));</span>
+        }
+
+        public Builder&lt;T&gt; gap(Rating&lt;T, ?&gt; gap) {
+<span class="nc" id="L132">            this.gap = gap;</span>
+<span class="nc" id="L133">            return this;</span>
+        }
+
+        @JsonProperty(&quot;gap&quot;)
+        public Builder&lt;T&gt; gap(String s) {
+<span class="nc" id="L138">            return gap(scale.parse(s));</span>
+        }
+
+        public Builder&lt;T&gt; gap(T value) {
+<span class="nc" id="L142">            return gap(Rating.create(value, scale));</span>
+        }
+
+        public Builder&lt;T&gt; stuff(Rating&lt;T, ?&gt; stuff) {
+<span class="nc" id="L146">            this.stuff = stuff;</span>
+<span class="nc" id="L147">            return this;</span>
+        }
+
+        @JsonProperty(&quot;stuff&quot;)
+        public Builder&lt;T&gt; stuff(String s) {
+<span class="nc" id="L152">            return stuff(scale.parse(s));</span>
+        }
+
+        public Builder&lt;T&gt; stuff(T value) {
+<span class="nc" id="L156">            return stuff(Rating.create(value, scale));</span>
+        }
+
+        public Builder&lt;T&gt; control(Rating&lt;T, ?&gt; control) {
+<span class="nc" id="L160">            this.control = control;</span>
+<span class="nc" id="L161">            return this;</span>
+        }
+
+        @JsonProperty(&quot;control&quot;)
+        public Builder&lt;T&gt; control(String s) {
+<span class="nc" id="L166">            return control(scale.parse(s));</span>
+        }
+
+        public Builder&lt;T&gt; control(T value) {
+<span class="nc" id="L170">            return control(Rating.create(value, scale));</span>
+        }
+
+        public Builder&lt;T&gt; movement(Rating&lt;T, ?&gt; movement) {
+<span class="nc" id="L174">            this.movement = movement;</span>
+<span class="nc" id="L175">            return this;</span>
+        }
+
+        @JsonProperty(&quot;movement&quot;)
+        public Builder&lt;T&gt; movement(String s) {
+<span class="nc" id="L180">            return movement(scale.parse(s));</span>
+        }
+
+        public Builder&lt;T&gt; movement(T value) {
+<span class="nc" id="L184">            return movement(Rating.create(value, scale));</span>
+        }
+
+        public Builder&lt;T&gt; endurance(Rating&lt;Integer, ? super OneToTen&gt; endurance) {
+<span class="nc" id="L188">            this.endurance = endurance;</span>
+<span class="nc" id="L189">            return this;</span>
+        }
+
+        @JsonProperty(&quot;endurance&quot;)
+        public Builder&lt;T&gt; endurance(String s) {
+<span class="nc" id="L194">            return endurance(OneToTen.scale().parse(s));</span>
+        }
+
+        public Builder&lt;T&gt; endurance(Integer value) {
+<span class="nc" id="L198">            return endurance(Rating.create(value, OneToTen.scale()));</span>
+        }
+
+
+        public PitchingRatings&lt;T&gt; build() {
+<span class="nc" id="L203">            return PitchingRatings.build(this);</span>
+        }
+
+        private static &lt;T&gt; Builder&lt;T&gt; create(Scale&lt;T&gt; scale) {
+<span class="nc" id="L207">            return new PitchingRatings.Builder&lt;T&gt;(scale);</span>
+        }
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>ReplacementValue.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.value</a> &gt; <span class="el_source">ReplacementValue.java</span></div><h1>ReplacementValue.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.value;
+
+import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.Slot;
+import com.ljs.ootp.ai.regression.Predictions;
+import com.ljs.ootp.ai.selection.HitterSelectionFactory;
+import com.ljs.ootp.ai.selection.Mode;
+import com.ljs.ootp.ai.selection.PitcherSelectionFactory;
+import com.ljs.ootp.ai.selection.Selection;
+import com.ljs.ootp.ai.selection.Selections;
+import java.io.PrintWriter;
+import java.util.List;
+
+/**
+ *
+ * @author lstephen
+ */
+public class ReplacementValue {
+
+    private final Function&lt;Player, Integer&gt; value;
+
+    private final ImmutableMultimap&lt;Slot, Player&gt; hitterSlotSelections;
+
+    private final ImmutableMultimap&lt;Slot, Player&gt; pitcherSlotSelections;
+
+<span class="nc" id="L31">    public ReplacementValue(Predictions ps, Function&lt;Player, Integer&gt; value, Function&lt;Player, Integer&gt; selectionValue) {</span>
+<span class="nc" id="L32">        this.value = value;</span>
+
+<span class="nc" id="L34">        Selection hitterSelection = HitterSelectionFactory</span>
+<span class="nc" id="L35">            .using(ps.getAllBatting(), selectionValue)</span>
+<span class="nc" id="L36">            .slot(Mode.REGULAR_SEASON);</span>
+
+<span class="nc" id="L38">        Selection pitcherSelection = PitcherSelectionFactory</span>
+<span class="nc" id="L39">            .using(selectionValue)</span>
+<span class="nc" id="L40">            .slot(Mode.REGULAR_SEASON);</span>
+
+<span class="nc" id="L42">        hitterSlotSelections = Selections</span>
+<span class="nc" id="L43">            .select(</span>
+                hitterSelection,
+<span class="nc" id="L45">                Selections.onlyHitters(ps.getAllPlayers()));</span>
+
+<span class="nc" id="L47">        pitcherSlotSelections = Selections</span>
+<span class="nc" id="L48">            .select(</span>
+                pitcherSelection,
+<span class="nc" id="L50">                Selections.onlyPitchers(ps.getAllPlayers()));</span>
+
+<span class="nc" id="L52">    }</span>
+
+    public Integer getValueVsReplacement(Player p) {
+<span class="nc" id="L55">        List&lt;Integer&gt; values = Lists.newArrayList();</span>
+
+<span class="nc bnc" id="L57" title="All 2 branches missed.">        for (Slot s : p.getSlots()) {</span>
+<span class="nc bnc" id="L58" title="All 4 branches missed.">            if (Slot.getPrimarySlot(p) == Slot.MR &amp;&amp; s == Slot.P) {</span>
+<span class="nc" id="L59">                values.add((int) (value.apply(p) / PlayerValue.MR_CONSTANT - getReplacementLevel(s)));</span>
+            } else {
+<span class="nc" id="L61">                values.add(value.apply(p) - getReplacementLevel(s));</span>
+            }
+<span class="nc" id="L63">        }</span>
+
+<span class="nc" id="L65">        return Ordering.natural().max(values);</span>
+    }
+
+    public void print(PrintWriter w) {
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        for (Slot s : Slot.values()) {</span>
+<span class="nc" id="L70">            w.print(String.format(&quot; %s:%3d &quot;, s, getReplacementLevel(s)));</span>
+        }
+<span class="nc" id="L72">        w.println();</span>
+<span class="nc" id="L73">    }</span>
+
+    private Integer getReplacementLevel(final Slot s) {
+        Iterable&lt;Player&gt; slotSelections;
+
+<span class="nc bnc" id="L78" title="All 3 branches missed.">        switch (s) {</span>
+            case C:
+            case SS:
+            case CF:
+            case IF:
+            case OF:
+            case H:
+<span class="nc" id="L85">                slotSelections = hitterSlotSelections.get(s);</span>
+<span class="nc" id="L86">                break;</span>
+            case SP:
+            case MR:
+            case P:
+<span class="nc" id="L90">                slotSelections = pitcherSlotSelections.get(s);</span>
+<span class="nc" id="L91">                break;</span>
+            default:
+<span class="nc" id="L93">                throw new IllegalStateException();</span>
+        }
+
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        if (Iterables.isEmpty(slotSelections)) {</span>
+<span class="nc" id="L97">            return 0;</span>
+        }
+
+        return Ordering
+<span class="nc" id="L101">            .natural()</span>
+<span class="nc" id="L102">            .min(Iterables.transform(</span>
+                slotSelections,
+<span class="nc" id="L104">                new Function&lt;Player, Integer&gt;() {</span>
+                    @Override
+                    public Integer apply(Player p) {
+<span class="nc bnc" id="L107" title="All 4 branches missed.">                        if (s == Slot.MR &amp;&amp; Slot.getPrimarySlot(p) == Slot.SP) {</span>
+<span class="nc" id="L108">                            return (int) (PlayerValue.MR_CONSTANT * value.apply(p));</span>
+<span class="nc bnc" id="L109" title="All 4 branches missed.">                        } else if (s == Slot.P &amp;&amp; Slot.getPrimarySlot(p) == Slot.MR) {</span>
+<span class="nc" id="L110">                            return (int) (value.apply(p) / PlayerValue.MR_CONSTANT);</span>
+                        }
+<span class="nc" id="L112">                        return value.apply(p);</span>
+                    }
+                }));
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

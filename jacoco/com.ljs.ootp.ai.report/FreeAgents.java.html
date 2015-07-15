@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>FreeAgents.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.report</a> &gt; <span class="el_source">FreeAgents.java</span></div><h1>FreeAgents.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.report;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.Slot;
+import com.ljs.ootp.ai.roster.Changes;
+import com.ljs.ootp.ai.selection.Mode;
+import com.ljs.ootp.ai.site.Site;
+import com.ljs.ootp.ai.site.Version;
+import com.ljs.ootp.ai.value.TradeValue;
+import java.util.List;
+import java.util.Set;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class FreeAgents {
+
+    private final Site site;
+
+<span class="nc" id="L26">    private final Set&lt;Player&gt; skipped = Sets.newHashSet();</span>
+
+    private final ImmutableSet&lt;Player&gt; fas;
+
+    private final Function&lt;Player, Integer&gt; value;
+
+    private TradeValue tv;
+
+<span class="nc" id="L34">    private FreeAgents(Site site, Iterable&lt;Player&gt; fas, Function&lt;Player, Integer&gt; value, TradeValue tv) {</span>
+<span class="nc" id="L35">        this.site = site;</span>
+<span class="nc" id="L36">        this.fas = ImmutableSet.copyOf(fas);</span>
+<span class="nc" id="L37">        this.value = value;</span>
+<span class="nc" id="L38">        this.tv = tv;</span>
+<span class="nc" id="L39">    }</span>
+
+    public Iterable&lt;Player&gt; all() {
+<span class="nc" id="L42">        return fas;</span>
+    }
+
+    public void skip(Player p) {
+<span class="nc" id="L46">        skipped.add(p);</span>
+<span class="nc" id="L47">    }</span>
+
+    public void skip(Iterable&lt;Player&gt; ps) {
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        for (Player p : ps) {</span>
+<span class="nc" id="L51">            skip(p);</span>
+<span class="nc" id="L52">        }</span>
+<span class="nc" id="L53">    }</span>
+
+    public Optional&lt;Player&gt; getPlayerToRelease(Iterable&lt;Player&gt; roster) {
+
+<span class="nc" id="L57">        Set&lt;Slot&gt; needed = RosterReport.create(site, roster).getNeededSlots();</span>
+
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        for (Player r : byValue(value).sortedCopy(roster)) {</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">            if (!Sets.intersection(ImmutableSet.copyOf(r.getSlots()), needed).isEmpty()) {</span>
+<span class="nc" id="L61">                continue;</span>
+            }
+
+<span class="nc" id="L64">            return Optional.of(r);</span>
+        }
+
+<span class="nc" id="L67">        return Optional.absent();</span>
+    }
+
+    public Iterable&lt;Player&gt; getTopTargets(Mode mode) {
+<span class="nc" id="L71">        Set&lt;Player&gt; targets = Sets.newHashSet();</span>
+
+<span class="nc" id="L73">        List&lt;Player&gt; ps = byValue(value).reverse().sortedCopy(fas);</span>
+<span class="nc" id="L74">        Set&lt;Slot&gt; remaining = Sets.newHashSet(Slot.values());</span>
+
+<span class="nc bnc" id="L76" title="All 4 branches missed.">        while (!remaining.isEmpty() &amp;&amp; !ps.isEmpty()) {</span>
+<span class="nc" id="L77">            Player p = ps.get(0);</span>
+
+<span class="nc" id="L79">            ps.remove(p);</span>
+
+<span class="nc bnc" id="L81" title="All 2 branches missed.">            if (skipPlayer(p)) {</span>
+<span class="nc" id="L82">                continue;</span>
+            }
+
+<span class="nc bnc" id="L85" title="All 4 branches missed.">            if (mode == Mode.PRESEASON &amp;&amp; tv.getCurrentValueVsReplacement(p) &lt; 0) {</span>
+<span class="nc" id="L86">                continue;</span>
+            }
+
+<span class="nc bnc" id="L89" title="All 2 branches missed.">            for (Slot s : p.getSlots()) {</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">                if (remaining.contains(s)) {</span>
+<span class="nc" id="L91">                    targets.add(p);</span>
+<span class="nc" id="L92">                    remaining.remove(s);</span>
+<span class="nc" id="L93">                    break;</span>
+                }
+<span class="nc" id="L95">            }</span>
+<span class="nc" id="L96">        }</span>
+
+<span class="nc" id="L98">        return targets;</span>
+    }
+
+    private static Ordering&lt;Player&gt; byValue(Function&lt;Player, Integer&gt; value) {
+        return Ordering
+<span class="nc" id="L103">            .natural()</span>
+<span class="nc" id="L104">            .onResultOf(value)</span>
+<span class="nc" id="L105">            .compound(Player.byTieBreak());</span>
+    }
+
+    public Boolean skipPlayer(Player fa) {
+<span class="nc bnc" id="L109" title="All 2 branches missed.">        if (skipped.contains(fa)) {</span>
+<span class="nc" id="L110">            return true;</span>
+        }
+<span class="nc bnc" id="L112" title="All 4 branches missed.">        if (fa.getShortName().contains(&quot;fake &quot;) || fa.getShortName().contains(&quot;Draft Pik&quot;)) {</span>
+<span class="nc" id="L113">            return true;</span>
+        }
+<span class="nc bnc" id="L115" title="All 4 branches missed.">        if (fa.getTeam() != null &amp;&amp; fa.getTeam().contains(&quot;*CEI*&quot;)) {</span>
+<span class="nc" id="L116">            return true;</span>
+        }
+<span class="nc" id="L118">        return false;</span>
+    }
+
+    public static FreeAgents create(Site site, Changes changes, Function&lt;Player, Integer&gt; value, TradeValue tv) {
+<span class="nc" id="L122">        FreeAgents fas = create(site, site.getFreeAgents(), value, tv);</span>
+
+<span class="nc" id="L124">        fas.skip(changes.get(Changes.ChangeType.DONT_ACQUIRE));</span>
+
+<span class="nc" id="L126">        return fas;</span>
+    }
+
+    public static FreeAgents create(Site site, Iterable&lt;Player&gt; fas, Function&lt;Player, Integer&gt; value, TradeValue tv) {
+<span class="nc" id="L130">        return new FreeAgents(site, fas, value, tv);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

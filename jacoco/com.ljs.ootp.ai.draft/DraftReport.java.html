@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DraftReport.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.draft</a> &gt; <span class="el_source">DraftReport.java</span></div><h1>DraftReport.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.draft;
+
+import com.google.common.base.Throwables;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+import com.ljs.ootp.ai.config.Config;
+import com.ljs.ootp.ai.io.Printable;
+import com.ljs.ootp.ai.io.Printables;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.site.Site;
+import com.ljs.ootp.ai.value.TradeValue;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.Set;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class DraftReport implements Printable {
+
+  private final Site site;
+
+  private final TradeValue value;
+
+  private DraftClass current;
+
+<span class="nc" id="L32">  private final Set&lt;DraftClass&gt; historical = Sets.newHashSet();</span>
+
+<span class="nc" id="L34">  private DraftReport(Site site, TradeValue value) {</span>
+<span class="nc" id="L35">    this.site = site;</span>
+<span class="nc" id="L36">    this.value = value;</span>
+<span class="nc" id="L37">  }</span>
+
+  private void loadDraftClasses() {
+<span class="nc" id="L40">    current = DraftClass.load(</span>
+<span class="nc" id="L41">        getDraftClassFile(site.getDate().getYear()), site.getDefinition());</span>
+
+<span class="nc" id="L43">    site.getDraft().forEach(current::addIfNotPresent);</span>
+
+<span class="nc" id="L45">    current.save(site, getDraftClassFile(site.getDate().getYear()));</span>
+
+<span class="nc bnc" id="L47" title="All 2 branches missed.">    for (int i = 1; i &lt; 5; i++) {</span>
+<span class="nc" id="L48">      File dcFile = getDraftClassFile(site.getDate().getYear() - i);</span>
+
+<span class="nc bnc" id="L50" title="All 2 branches missed.">      if (dcFile.exists()) {</span>
+<span class="nc" id="L51">        historical.add(DraftClass.load(dcFile, site.getDefinition()));</span>
+      }
+    }
+<span class="nc" id="L54">  }</span>
+
+  private File getDraftClassFile(int year) {
+    try {
+<span class="nc" id="L58">      String historyDirectory = Config.createDefault().getValue(&quot;history.dir&quot;).or(&quot;c:/ootp/history&quot;);</span>
+<span class="nc" id="L59">      return new File(historyDirectory + &quot;/&quot; + site.getName() + year + &quot;.draft.json&quot;);</span>
+<span class="nc" id="L60">    } catch (IOException e) {</span>
+<span class="nc" id="L61">      throw Throwables.propagate(e);</span>
+    }
+  }
+
+  private RoundValue getRoundValue(int round) {
+<span class="nc" id="L66">    Integer not = Iterables.size(site.getTeamIds());</span>
+
+<span class="nc" id="L68">    return getValueOfPicks((round - 1) * not, not);</span>
+  }
+
+  private RoundValue getValueOfPicks(int n) {
+<span class="nc" id="L72">    return getValueOfPicks(0, n);</span>
+  }
+
+  private RoundValue getValueOfPicks(int start, int n) {
+<span class="nc" id="L76">    RoundValue rv = RoundValue.create(value);</span>
+
+<span class="nc" id="L78">    Iterable&lt;Player&gt; players = FluentIterable</span>
+<span class="nc" id="L79">      .from(byOverall().sortedCopy(current.getPlayers()))</span>
+<span class="nc" id="L80">      .skip(start)</span>
+<span class="nc" id="L81">      .limit(n);</span>
+
+<span class="nc" id="L83">    rv.add(players);</span>
+
+<span class="nc" id="L85">    historical</span>
+<span class="nc" id="L86">      .stream()</span>
+<span class="nc" id="L87">      .forEach(dc -&gt; {</span>
+<span class="nc" id="L88">        Iterable&lt;Player&gt; ps = FluentIterable</span>
+<span class="nc" id="L89">          .from(byOverall().sortedCopy(dc.getPlayers()))</span>
+<span class="nc" id="L90">          .skip(start)</span>
+<span class="nc" id="L91">          .limit(n);</span>
+
+<span class="nc" id="L93">        rv.addHistorical(ps);</span>
+<span class="nc" id="L94">      });</span>
+
+<span class="nc" id="L96">    return rv;</span>
+  }
+
+  private Ordering&lt;Player&gt; byOverall() {
+    return Ordering
+<span class="nc" id="L101">      .natural()</span>
+<span class="nc" id="L102">      .reverse()</span>
+<span class="nc" id="L103">      .onResultOf(value.getOverall());</span>
+  }
+
+  public void print(OutputStream out) {
+<span class="nc" id="L107">    Printables.print(this).to(out);</span>
+<span class="nc" id="L108">  }</span>
+
+  @Override
+  public void print(PrintWriter w) {
+<span class="nc" id="L112">    w.println();</span>
+
+<span class="nc" id="L114">    Integer not = Iterables.size(site.getTeamIds());</span>
+
+<span class="nc" id="L116">    int n = not / 3;</span>
+
+<span class="nc" id="L118">    RoundValue rv = getValueOfPicks(n);</span>
+<span class="nc bnc" id="L119" title="All 4 branches missed.">    if (rv == null || rv.isEmpty()) {</span>
+<span class="nc" id="L120">      return;</span>
+    }
+
+<span class="nc" id="L123">    int idx = 0;</span>
+
+<span class="nc" id="L125">    rv.print(w, &quot;1E&quot;);</span>
+
+<span class="nc" id="L127">    idx += n;</span>
+
+<span class="nc" id="L129">    rv = getValueOfPicks(idx, n);</span>
+<span class="nc" id="L130">    rv.print(w, &quot;1M&quot;);</span>
+
+<span class="nc" id="L132">    idx += n;</span>
+<span class="nc" id="L133">    n = not - idx;</span>
+
+<span class="nc" id="L135">    rv = getValueOfPicks(idx, n);</span>
+<span class="nc" id="L136">    rv.print(w, &quot;1L&quot;);</span>
+
+<span class="nc" id="L138">    idx = not;</span>
+<span class="nc" id="L139">    n = not / 2;</span>
+
+<span class="nc" id="L141">    rv = getValueOfPicks(idx, n);</span>
+<span class="nc" id="L142">    rv.print(w, &quot;2E&quot;);</span>
+
+<span class="nc" id="L144">    idx += n;</span>
+<span class="nc" id="L145">    n = not * 2 - idx;</span>
+
+<span class="nc" id="L147">    rv = getValueOfPicks(idx, n);</span>
+<span class="nc" id="L148">    rv.print(w, &quot;2L&quot;);</span>
+
+<span class="nc" id="L150">    w.println();</span>
+
+<span class="nc" id="L152">    int round = 1;</span>
+<span class="nc" id="L153">    rv = getRoundValue(round);</span>
+
+<span class="nc bnc" id="L155" title="All 2 branches missed.">    while (!rv.isEmpty()) {</span>
+<span class="nc" id="L156">      rv.print(w, String.format(&quot;%2d&quot;, round));</span>
+
+<span class="nc" id="L158">      round++;</span>
+<span class="nc" id="L159">      rv = getRoundValue(round);</span>
+    }
+<span class="nc" id="L161">  }</span>
+
+  public static DraftReport create(Site site, TradeValue value) {
+<span class="nc" id="L164">    DraftReport report = new DraftReport(site, value);</span>
+<span class="nc" id="L165">    report.loadDraftClasses();</span>
+<span class="nc" id="L166">    return report;</span>
+  }
+
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SingleTeamStats.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.ootp5.site</a> &gt; <span class="el_source">SingleTeamStats.java</span></div><h1>SingleTeamStats.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.ootp5.site;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.PlayerId;
+import com.ljs.ootp.ai.roster.Team;
+import com.ljs.ootp.ai.stats.SplitStats;
+import com.ljs.ootp.ai.stats.Stats;
+import com.ljs.ootp.ai.stats.TeamStats;
+import com.ljs.ootp.extract.html.Page;
+import java.util.Map;
+import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+/**
+ *
+ * @author lstephen
+ */
+public abstract class SingleTeamStats&lt;S extends Stats&lt;S&gt;&gt; {
+
+    private final Team team;
+
+    private final Page page;
+
+<span class="nc" id="L32">    protected SingleTeamStats(Team team, Page page) {</span>
+<span class="nc" id="L33">        this.team = team;</span>
+<span class="nc" id="L34">        this.page = page;</span>
+<span class="nc" id="L35">    }</span>
+
+    public Integer getYear() {
+<span class="nc" id="L38">        return extractDate().getYear();</span>
+    }
+
+    public LocalDate extractDate() {
+<span class="nc" id="L42">        Document doc = page.load();</span>
+
+<span class="nc" id="L44">        return LocalDate.parse(</span>
+<span class="nc" id="L45">            StringUtils.substringAfterLast(doc.select(&quot;td.title&quot;).text(), &quot;,&quot;).trim(),</span>
+<span class="nc" id="L46">            DateTimeFormat.forPattern(&quot;MM/dd/YYYY&quot;));</span>
+    }
+
+    public TeamStats&lt;S&gt; extract() {
+<span class="nc" id="L50">        Document doc = page.load();</span>
+
+<span class="nc" id="L52">        ImmutableMap&lt;Player, S&gt; vLhp = extractStatsVsLeft(doc);</span>
+<span class="nc" id="L53">        ImmutableMap&lt;Player, S&gt; vRhp = extractStatsVsRight(doc);</span>
+
+<span class="nc" id="L55">        return combineSplits(vLhp, vRhp);</span>
+    }
+
+    protected ImmutableMap&lt;Player, S&gt; extractStats(Elements els) {
+        ImmutableMap.Builder&lt;Player, S&gt; stats =
+<span class="nc" id="L60">            ImmutableMap.builder();</span>
+
+<span class="nc" id="L62">        Elements statsLines = els.select(&quot;tbody tr:has(a)&quot;);</span>
+
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        for (Element row : statsLines) {</span>
+<span class="nc" id="L65">            PlayerId id =</span>
+                new PlayerId(row
+<span class="nc" id="L67">                        .select(&quot;a[href]&quot;)</span>
+<span class="nc" id="L68">                        .get(0)</span>
+<span class="nc" id="L69">                        .attr(&quot;href&quot;)</span>
+<span class="nc" id="L70">                        .replaceAll(&quot;.html&quot;, &quot;&quot;));</span>
+
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">            if (team.containsPlayer(id)) {</span>
+<span class="nc" id="L74">                stats.put(team.get(id), extractStatsRow(row.children()));</span>
+            }
+<span class="nc" id="L76">        }</span>
+
+<span class="nc" id="L78">        return stats.build();</span>
+    }
+
+    protected abstract S extractStatsRow(Elements els);
+
+    protected abstract ImmutableMap&lt;Player, S&gt;
+        extractStatsVsLeft(Document doc);
+
+    protected abstract ImmutableMap&lt;Player, S&gt;
+        extractStatsVsRight(Document doc);
+
+    protected abstract S zero();
+
+    protected TeamStats&lt;S&gt; combineSplits(
+        ImmutableMap&lt;Player, S&gt; vLhp,
+        ImmutableMap&lt;Player, S&gt; vRhp) {
+
+<span class="nc" id="L95">        Map&lt;Player, SplitStats&lt;S&gt;&gt; splits = Maps.newHashMap();</span>
+
+<span class="nc" id="L97">        Set&lt;Player&gt; ps = Sets.union(vLhp.keySet(), vRhp.keySet());</span>
+
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        for (Player p : ps) {</span>
+<span class="nc" id="L100">            S vsLeft =</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">                vLhp.containsKey(p) ? vLhp.get(p) : zero();</span>
+
+<span class="nc" id="L103">            S vsRight =</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">                vRhp.containsKey(p) ? vRhp.get(p) : zero();</span>
+
+<span class="nc" id="L106">            splits.put(p, SplitStats.create(vsLeft, vsRight));</span>
+<span class="nc" id="L107">        }</span>
+
+<span class="nc" id="L109">        return TeamStats.create(splits);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

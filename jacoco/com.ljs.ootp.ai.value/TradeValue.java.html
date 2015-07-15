@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TradeValue.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.value</a> &gt; <span class="el_source">TradeValue.java</span></div><h1>TradeValue.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.value;
+
+import com.google.common.base.Function;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.regression.BattingRegression;
+import com.ljs.ootp.ai.regression.PitchingRegression;
+import com.ljs.ootp.ai.regression.Predictions;
+import com.ljs.ootp.ai.site.Site;
+
+/**
+ *
+ * @author lstephen
+ */
+public class TradeValue {
+
+    private final PlayerValue playerValue;
+
+    private final ReplacementValue replacementValue;
+
+    private final ReplacementValue futureReplacementValue;
+
+<span class="nc" id="L22">    public TradeValue(Iterable&lt;Player&gt; team, Predictions predictions, BattingRegression batting, PitchingRegression pitching) {</span>
+<span class="nc" id="L23">        this.playerValue = new PlayerValue(predictions, batting, pitching);</span>
+<span class="nc" id="L24">        this.replacementValue = new ReplacementValue(</span>
+            predictions,
+<span class="nc" id="L26">            new Function&lt;Player, Integer&gt;() {</span>
+                public Integer apply(Player p) {
+<span class="nc" id="L28">                    return playerValue.getNowValue(p);</span>
+                }},
+<span class="nc" id="L30">            new Function&lt;Player, Integer&gt;() {</span>
+                public Integer apply(Player p) {
+<span class="nc" id="L32">                    return playerValue.getNowAbility(p);</span>
+                }}
+            );
+
+<span class="nc" id="L36">        Predictions future =</span>
+            Predictions
+<span class="nc" id="L38">                    .predictFuture(team)</span>
+<span class="nc" id="L39">                    .using(batting, pitching, predictions.getPitcherOverall());</span>
+
+<span class="nc" id="L41">        this.futureReplacementValue =</span>
+            new ReplacementValue(
+                future,
+<span class="nc" id="L44">                new Function&lt;Player, Integer&gt;() {</span>
+                    public Integer apply(Player p) {
+<span class="nc" id="L46">                        return playerValue.getFutureValue(p);</span>
+                    }
+                },
+<span class="nc" id="L49">                new Function&lt;Player, Integer&gt;() {</span>
+                    public Integer apply(Player p) {
+<span class="nc" id="L51">                        return playerValue.getFutureAbility(p);</span>
+                    }
+                });
+<span class="nc" id="L54">    }</span>
+
+    public Integer getTradeTargetValue(Player p) {
+<span class="nc" id="L57">        return getTradeTargetValue().apply(p);</span>
+    }
+
+    public Function&lt;Player, Integer&gt; getTradeTargetValue() {
+<span class="nc" id="L61">        return new Function&lt;Player, Integer&gt;() {</span>
+            @Override
+            public Integer apply(Player p) {
+<span class="nc bnc" id="L64" title="All 2 branches missed.">                int nowRepl = p.getAge() &lt; 27</span>
+<span class="nc" id="L65">                    ? Math.max(0, replacementValue.getValueVsReplacement(p))</span>
+<span class="nc" id="L66">                    : replacementValue.getValueVsReplacement(p);</span>
+
+<span class="nc" id="L68">                int now = playerValue.getNowValue(p) + nowRepl;</span>
+
+<span class="nc bnc" id="L70" title="All 2 branches missed.">                int futureRepl = p.getAge() &lt; 27</span>
+<span class="nc" id="L71">                    ? Math.max(0, futureReplacementValue.getValueVsReplacement(p))</span>
+<span class="nc" id="L72">                    : futureReplacementValue.getValueVsReplacement(p);</span>
+
+<span class="nc" id="L74">                int future = playerValue.getFutureValue(p) + futureRepl;</span>
+
+<span class="nc" id="L76">                int intangibles = 0;</span>
+
+<span class="nc bnc" id="L78" title="All 2 branches missed.">                if (p.getClutch().isPresent()) {</span>
+<span class="nc bnc" id="L79" title="All 3 branches missed.">                  switch (p.getClutch().get()) {</span>
+                    case GREAT:
+<span class="nc" id="L81">                      intangibles += 1;</span>
+<span class="nc" id="L82">                      break;</span>
+                    case SUFFERS:
+<span class="nc" id="L84">                      intangibles += -1;</span>
+<span class="nc" id="L85">                      break;</span>
+                    default:
+                      // do nothing
+                  }
+                }
+
+<span class="nc bnc" id="L91" title="All 2 branches missed.">                if (p.getConsistency().isPresent()) {</span>
+<span class="nc bnc" id="L92" title="All 3 branches missed.">                  switch (p.getConsistency().get()) {</span>
+                    case VERY_INCONSISTENT:
+<span class="nc" id="L94">                      intangibles -= 1;</span>
+<span class="nc" id="L95">                      break;</span>
+                    case GOOD:
+<span class="nc" id="L97">                      intangibles += 1;</span>
+<span class="nc" id="L98">                      break;</span>
+                    default:
+                      // do nothing
+                  }
+                }
+
+<span class="nc" id="L104">                return Math.max(now, future) - getAgingFactor(p) + intangibles;</span>
+            }
+        };
+    }
+
+    private int getAgingFactor(Player p) {
+<span class="nc" id="L110">        int factor = 0;</span>
+        
+<span class="nc" id="L112">        int age = p.getAge();</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        if (age &gt; 33) {</span>
+<span class="nc" id="L114">            factor = (int) Math.pow(age - 33, 2);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        } else if (age &lt; 25) {</span>
+<span class="nc" id="L116">            factor = age - 25;</span>
+        } else {
+<span class="nc" id="L118">            factor = 0;</span>
+        }
+
+<span class="nc" id="L121">        factor -= Math.max(Math.min(33 - age, 6), 0);</span>
+
+<span class="nc" id="L123">        return factor;</span>
+    }
+
+    public Function&lt;Player, Integer&gt; getTradeBaitValue(
+        final Site site, final SalaryPredictor salary) {
+
+<span class="nc" id="L129">        return new Function&lt;Player, Integer&gt;() {</span>
+            @Override
+            public Integer apply(Player p) {
+<span class="nc" id="L132">                return getTradeBaitValue(p, site, salary);</span>
+            }
+        };
+    }
+
+    private Integer getTradeBaitValue(Player p, Site site, SalaryPredictor salary) {
+<span class="nc" id="L138">        int salaryFactor = (site.getCurrentSalary(p) - salary.predict(p)) / 750000;</span>
+
+<span class="nc" id="L140">        return salaryFactor</span>
+<span class="nc" id="L141">            + Math.min(</span>
+<span class="nc" id="L142">              playerValue.getFutureValue(p)</span>
+<span class="nc" id="L143">                - 2 * Math.max(0, futureReplacementValue.getValueVsReplacement(p))</span>
+<span class="nc" id="L144">                + 2 * getAgingFactor(p),</span>
+<span class="nc" id="L145">              playerValue.getNowValue(p)</span>
+<span class="nc" id="L146">                - 2 * Math.max(0, replacementValue.getValueVsReplacement(p))</span>
+<span class="nc" id="L147">                + getAgingFactor(p));</span>
+    }
+
+    public Integer getRequiredValue(Player p) {
+<span class="nc" id="L151">        return getTradeTargetValue(p);</span>
+    }
+
+    public Integer getOverall(Player p) {
+<span class="nc" id="L155">        return Math.max(</span>
+<span class="nc" id="L156">                playerValue.getNowValue(p),</span>
+<span class="nc" id="L157">                playerValue.getFutureValue(p))</span>
+<span class="nc" id="L158">            - getAgingFactor(p);</span>
+    }
+
+    public Integer getOverallWithoutAging(Player p) {
+<span class="nc" id="L162">        return Math.max(</span>
+<span class="nc" id="L163">            playerValue.getNowValue(p),</span>
+<span class="nc" id="L164">            playerValue.getFutureValue(p));</span>
+    }
+
+    public Function&lt;Player, Integer&gt; getOverallWithoutAging() {
+<span class="nc" id="L168">        return new Function&lt;Player, Integer&gt;() {</span>
+            @Override
+            public Integer apply(Player p) {
+<span class="nc" id="L171">                return getOverallWithoutAging(p);</span>
+            }
+        };
+    }
+
+    public Function&lt;Player, Integer&gt; getOverall() {
+<span class="nc" id="L177">        return new Function&lt;Player, Integer&gt;() {</span>
+            @Override
+            public Integer apply(Player input) {
+<span class="nc" id="L180">                return getOverall(input);</span>
+            }
+        };
+    }
+
+    public Integer getOverallNow(Player p) {
+<span class="nc" id="L186">        return playerValue.getNowValue(p) - getAgingFactor(p);</span>
+    }
+
+    public Function&lt;Player, Integer&gt; getOverallNow() {
+<span class="nc" id="L190">        return new Function&lt;Player, Integer&gt;() {</span>
+            public Integer apply(Player p) {
+<span class="nc" id="L192">                return getOverallNow(p);</span>
+            }
+        };
+    }
+
+    public Integer getCurrentValueVsReplacement(Player p) {
+<span class="nc" id="L198">        return replacementValue.getValueVsReplacement(p);</span>
+    }
+
+    public Integer getFutureValueVsReplacement(Player p) {
+<span class="nc" id="L202">        return futureReplacementValue.getValueVsReplacement(p);</span>
+    }
+
+    public Integer getExpectedReturn(Player p) {
+<span class="nc" id="L206">        return getOverall(p);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

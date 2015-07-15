@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>BattingRegression.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.regression</a> &gt; <span class="el_source">BattingRegression.java</span></div><h1>BattingRegression.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.regression;
+
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
+import com.ljs.ootp.ai.io.Printable;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.ratings.BattingRatings;
+import com.ljs.ootp.ai.site.Site;
+import com.ljs.ootp.ai.splits.Splits;
+import com.ljs.ootp.ai.stats.BattingStats;
+import com.ljs.ootp.ai.stats.History;
+import com.ljs.ootp.ai.stats.SplitPercentagesHolder;
+import com.ljs.ootp.ai.stats.SplitStats;
+import com.ljs.ootp.ai.stats.TeamStats;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Nonnull;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class BattingRegression {
+
+<span class="nc" id="L29">    private enum Predicting { HITS, EXTRA_BASE_HITS, HOME_RUNS, WALKS, KS }</span>
+
+<span class="nc" id="L31">    private static final Long DEFAULT_PLATE_APPEARANCES = 700L;</span>
+
+    private final TeamStats&lt;BattingStats&gt; stats;
+
+<span class="nc" id="L35">    private final Map&lt;Predicting, SimpleRegression&gt; regressions = new HashMap&lt;&gt;();</span>
+
+<span class="nc" id="L37">    private final SimpleRegression woba = new SimpleRegression();</span>
+
+    private final BattingStats leagueBatting;
+
+<span class="nc" id="L41">    private Boolean ignoreStatsInPredictions = Boolean.FALSE;</span>
+
+    private BattingRegression(BattingStats leagueBatting, TeamStats&lt;BattingStats&gt; stats) {
+<span class="nc" id="L44">        super();</span>
+<span class="nc" id="L45">        this.leagueBatting = leagueBatting;</span>
+<span class="nc" id="L46">        this.stats = stats;</span>
+<span class="nc" id="L47">    }</span>
+
+    public BattingRegression ignoreStatsInPredictions() {
+<span class="nc" id="L50">        this.ignoreStatsInPredictions = true;</span>
+<span class="nc" id="L51">        return this;</span>
+    }
+
+    private SimpleRegression getRegression(Predicting predicting) {
+<span class="nc" id="L55">      return getRegression(regressions, predicting);</span>
+    }
+
+    private SimpleRegression getRegression(Map&lt;Predicting, SimpleRegression&gt; r, Predicting p) {
+<span class="nc bnc" id="L59" title="All 2 branches missed.">      if (!r.containsKey(p)) {</span>
+<span class="nc" id="L60">        r.put(p, new SimpleRegression());</span>
+      }
+<span class="nc" id="L62">      return r.get(p);</span>
+    }
+
+    public Boolean isEmpty() {
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        return getRegression(Predicting.HITS).getN() == 0;</span>
+    }
+
+    private void addData(TeamStats&lt;BattingStats&gt; teamStats) {
+<span class="nc bnc" id="L70" title="All 2 branches missed.">       for (Player p : teamStats.getPlayers()) {</span>
+<span class="nc" id="L71">           Splits&lt;BattingStats&gt; stats = teamStats.getSplits(p);</span>
+<span class="nc" id="L72">           Splits&lt;BattingRatings&lt;?&gt;&gt; ratings = p.getBattingRatings();</span>
+
+<span class="nc" id="L74">           addData(regressions, stats.getVsLeft(), ratings.getVsLeft());</span>
+<span class="nc" id="L75">           addData(regressions, stats.getVsRight(), ratings.getVsRight());</span>
+<span class="nc" id="L76">       }</span>
+<span class="nc" id="L77">    }</span>
+
+    private void addData(Map&lt;Predicting, SimpleRegression&gt; r, BattingStats stats, BattingRatings&lt;?&gt; ratings) {
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        for (int i = 0; i &lt; stats.getPlateAppearances(); i++) {</span>
+<span class="nc" id="L81">            getRegression(r, Predicting.HITS).addData(</span>
+<span class="nc" id="L82">                ratings.getContact(), stats.getHitsPerPlateAppearance());</span>
+<span class="nc" id="L83">            getRegression(r, Predicting.EXTRA_BASE_HITS).addData(</span>
+<span class="nc" id="L84">                ratings.getGap(), stats.getExtraBaseHitsPerPlateAppearance());</span>
+
+<span class="nc" id="L86">            getRegression(r, Predicting.HOME_RUNS).addData(</span>
+<span class="nc" id="L87">                ratings.getPower(), stats.getHomeRunsPerPlateAppearance());</span>
+<span class="nc" id="L88">            getRegression(r, Predicting.WALKS).addData(ratings.getEye(), stats.getWalksPerPlateAppearance());</span>
+
+<span class="nc bnc" id="L90" title="All 2 branches missed.">            if (ratings.getK().isPresent()) {</span>
+<span class="nc" id="L91">                getRegression(r, Predicting.KS).addData(ratings.getK().get(), stats.getKsPerPlateAppearance());</span>
+            }
+        }
+<span class="nc" id="L94">    }</span>
+
+    private double predict(Predicting predicting, int rating) {
+<span class="nc" id="L97">        return Math.max(0, getRegression(predicting).predict(rating));</span>
+    }
+
+    public TeamStats&lt;BattingStats&gt; predict(Iterable&lt;Player&gt; ps) {
+<span class="nc" id="L101">        Map&lt;Player, SplitStats&lt;BattingStats&gt;&gt; results = Maps.newHashMap();</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        for (Player p : ps) {</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">            if (p.getBattingRatings() != null) {</span>
+<span class="nc" id="L105">                results.put(p, predict(p));</span>
+            }
+<span class="nc" id="L107">        }</span>
+
+<span class="nc" id="L109">        return TeamStats.create(results);</span>
+    }
+
+    public SplitStats&lt;BattingStats&gt; predict(Player p) {
+<span class="nc" id="L113">        return predict(</span>
+<span class="nc" id="L114">            p.getBattingRatings(),</span>
+<span class="nc bnc" id="L115" title="All 4 branches missed.">            !ignoreStatsInPredictions &amp;&amp; stats.contains(p)</span>
+<span class="nc" id="L116">                ? Optional.of(stats.getSplits(p))</span>
+<span class="nc" id="L117">                : Optional.&lt;SplitStats&lt;BattingStats&gt;&gt;absent());</span>
+    }
+
+    private SplitStats&lt;BattingStats&gt; predict(
+        Splits&lt;? extends BattingRatings&lt;?&gt;&gt; ratings,
+        Optional&lt;SplitStats&lt;BattingStats&gt;&gt; stats) {
+
+<span class="nc" id="L124">        Long paToProject = Math.round(DEFAULT_PLATE_APPEARANCES + DEFAULT_PLATE_APPEARANCES * woba.getRSquare());</span>
+
+<span class="nc" id="L126">        Long vsRightPa = Math.round(paToProject * SplitPercentagesHolder.get().getVsRhpPercentage());</span>
+<span class="nc" id="L127">        Long vsLeftPa = paToProject - vsRightPa;</span>
+
+<span class="nc" id="L129">        BattingStats vsLeft = predict(ratings.getVsLeft(), vsLeftPa * 100);</span>
+<span class="nc" id="L130">        BattingStats vsRight = predict(ratings.getVsRight(), vsRightPa * 100);</span>
+
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (stats.isPresent()) {</span>
+<span class="nc" id="L133">            SplitStats&lt;BattingStats&gt; splits = stats.get();</span>
+
+<span class="nc" id="L135">            vsLeft = vsLeft.add(splits.getVsLeft().multiply(100.0));</span>
+<span class="nc" id="L136">            vsRight = vsRight.add(splits.getVsRight().multiply(100.0));</span>
+        }
+
+<span class="nc" id="L139">        return SplitStats.create(vsLeft, vsRight);</span>
+    }
+
+    public TeamStats&lt;BattingStats&gt; predictFuture(Iterable&lt;Player&gt; ps) {
+<span class="nc" id="L143">        Map&lt;Player, SplitStats&lt;BattingStats&gt;&gt; results = Maps.newHashMap();</span>
+
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        for (Player p : ps) {</span>
+<span class="nc bnc" id="L146" title="All 2 branches missed.">            if (p.getBattingRatings() != null) {</span>
+<span class="nc" id="L147">                SplitStats&lt;BattingStats&gt; prediction =</span>
+<span class="nc" id="L148">                    SplitStats.create(</span>
+<span class="nc" id="L149">                        predict(p.getBattingPotentialRatings().getVsLeft()),</span>
+<span class="nc" id="L150">                        predict(p.getBattingPotentialRatings().getVsRight()));</span>
+
+<span class="nc" id="L152">                results.put(p, prediction);</span>
+            }
+<span class="nc" id="L154">        }</span>
+
+<span class="nc" id="L156">        return TeamStats.create(results);</span>
+    }
+
+    public SplitStats&lt;BattingStats&gt; predict(Splits&lt;? extends BattingRatings&lt;?&gt;&gt; ratings) {
+<span class="nc" id="L160">        Long paToProject = DEFAULT_PLATE_APPEARANCES;</span>
+
+<span class="nc" id="L162">        Long vsRightPa = Math.round(paToProject * SplitPercentagesHolder.get().getVsRhpPercentage());</span>
+<span class="nc" id="L163">        Long vsLeftPa = paToProject - vsRightPa;</span>
+
+<span class="nc" id="L165">        return SplitStats.create(</span>
+<span class="nc" id="L166">            predict(ratings.getVsLeft(), vsLeftPa * 100),</span>
+<span class="nc" id="L167">            predict(ratings.getVsRight(), vsRightPa * 100));</span>
+    }
+
+    public BattingStats predict(BattingRatings&lt;?&gt; ratings) {
+<span class="nc" id="L171">        return predict(ratings, DEFAULT_PLATE_APPEARANCES);</span>
+    }
+
+    public BattingStats predict(
+        BattingRatings&lt;?&gt; ratings, Long plateAppearances) {
+
+<span class="nc" id="L177">        long predictedHits =</span>
+<span class="nc" id="L178">            Math.round(plateAppearances</span>
+<span class="nc" id="L179">                * predict(Predicting.HITS, ratings.getContact()));</span>
+
+<span class="nc" id="L181">        long predictedExtraBaseHits =</span>
+<span class="nc" id="L182">            Math.round(plateAppearances</span>
+<span class="nc" id="L183">                * predict(Predicting.EXTRA_BASE_HITS, ratings.getGap()));</span>
+
+<span class="nc" id="L185">        double triplesPercentage = (double) leagueBatting.getTriples()</span>
+<span class="nc" id="L186">            / (leagueBatting.getDoubles() + leagueBatting.getTriples());</span>
+<span class="nc" id="L187">        long predictedTriples = Math.round(predictedExtraBaseHits * triplesPercentage);</span>
+<span class="nc" id="L188">        long predictedDoubles = predictedExtraBaseHits - predictedTriples;</span>
+
+<span class="nc" id="L190">        long predictedHomeRuns =</span>
+<span class="nc" id="L191">             Math.round(plateAppearances</span>
+<span class="nc" id="L192">                * predict(Predicting.HOME_RUNS, ratings.getPower()));</span>
+
+<span class="nc" id="L194">        long predictedWalks =</span>
+<span class="nc" id="L195">            Math.round(plateAppearances</span>
+<span class="nc" id="L196">                * predict(Predicting.WALKS, ratings.getEye()));</span>
+
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        long predictedKs = ratings.getK().isPresent()</span>
+<span class="nc" id="L199">            ? Math.round(plateAppearances</span>
+<span class="nc" id="L200">                * predict(Predicting.KS, ratings.getK().get()))</span>
+            : 0;
+
+<span class="nc" id="L203">        BattingStats predicted = new BattingStats();</span>
+<span class="nc" id="L204">        predicted.setLeagueBatting(leagueBatting);</span>
+<span class="nc" id="L205">        predicted.setAtBats((int) (plateAppearances - predictedWalks));</span>
+<span class="nc" id="L206">        predicted.setHits(predictedHits);</span>
+<span class="nc" id="L207">        predicted.setDoubles(predictedDoubles);</span>
+<span class="nc" id="L208">        predicted.setTriples(predictedTriples);</span>
+<span class="nc" id="L209">        predicted.setHomeRuns(predictedHomeRuns);</span>
+<span class="nc" id="L210">        predicted.setWalks(predictedWalks);</span>
+<span class="nc" id="L211">        predicted.setKs(predictedKs);</span>
+
+<span class="nc" id="L213">        return predicted;</span>
+    }
+
+    public CorrelationReport correlationReport() {
+<span class="nc" id="L217">        return CorrelationReport.create(this);</span>
+    }
+
+    private void runRegression(Site site) {
+<span class="nc" id="L221">        addData(stats);</span>
+
+<span class="nc" id="L223">        History history = History.create();</span>
+
+<span class="nc" id="L225">        int currentSeason = site.getDate().getYear();</span>
+
+<span class="nc" id="L227">        history.saveBatting(stats, site, currentSeason);</span>
+
+<span class="nc" id="L229">        Iterable&lt;TeamStats&lt;BattingStats&gt;&gt; historical =</span>
+<span class="nc" id="L230">            history.loadBatting(site, currentSeason, 5);</span>
+
+<span class="nc bnc" id="L232" title="All 2 branches missed.">        for (TeamStats&lt;BattingStats&gt; h : historical) {</span>
+<span class="nc" id="L233">            addData(h);</span>
+<span class="nc" id="L234">        }</span>
+
+<span class="nc" id="L236">        Iterable&lt;TeamStats&lt;BattingStats&gt;&gt; all =</span>
+<span class="nc" id="L237">            Iterables.concat(ImmutableList.of(stats), historical);</span>
+
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        for (TeamStats&lt;BattingStats&gt; tss : all) {</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">            for (Player p : tss.getPlayers()) {</span>
+<span class="nc" id="L241">                SplitStats&lt;BattingStats&gt; splits = tss.getSplits(p);</span>
+<span class="nc" id="L242">                SplitStats&lt;BattingStats&gt; predicted = predict(p.getBattingRatings());</span>
+
+<span class="nc bnc" id="L244" title="All 2 branches missed.">                for (int i = 0; i &lt; splits.getVsLeft().getPlateAppearances(); i++) {</span>
+<span class="nc" id="L245">                    woba.addData(splits.getVsLeft().getWoba(), predicted.getVsLeft().getWoba());</span>
+                }
+<span class="nc bnc" id="L247" title="All 2 branches missed.">                for (int i = 0; i &lt; splits.getVsRight().getPlateAppearances(); i++) {</span>
+<span class="nc" id="L248">                    woba.addData(splits.getVsRight().getWoba(), predicted.getVsRight().getWoba());</span>
+                }
+<span class="nc" id="L250">            }</span>
+<span class="nc" id="L251">        }</span>
+<span class="nc" id="L252">    }</span>
+
+    public static BattingRegression run(Site site) {
+<span class="nc" id="L255">        return run(site, site.getTeamBatting());</span>
+    }
+
+
+    private static BattingRegression run(Site site, TeamStats&lt;BattingStats&gt; stats) {
+<span class="nc" id="L260">        BattingRegression regression = new BattingRegression(site.getLeagueBatting(), stats);</span>
+<span class="nc" id="L261">        regression.runRegression(site);</span>
+<span class="nc" id="L262">        return regression;</span>
+    }
+
+    public static final class CorrelationReport implements Printable {
+
+        private final BattingRegression regression;
+
+<span class="nc" id="L269">        private CorrelationReport(@Nonnull BattingRegression regression) {</span>
+<span class="nc" id="L270">            this.regression = regression;</span>
+<span class="nc" id="L271">        }</span>
+
+        @Override
+        public void print(PrintWriter w) {
+<span class="nc" id="L275">            w.println(&quot;  |   H%  |  XB%  |  HR%  |  BB%  |   K%  |  wOBA |&quot;);</span>
+
+<span class="nc" id="L277">            print(w, &quot;R2&quot;, regression.regressions);</span>
+<span class="nc" id="L278">        }</span>
+
+        private void print(PrintWriter w, String label, Map&lt;Predicting, SimpleRegression&gt; r) {
+<span class="nc bnc" id="L281" title="All 2 branches missed.">            if (r.isEmpty()) { return; }</span>
+
+<span class="nc" id="L283">            w.println(</span>
+<span class="nc" id="L284">                String.format(</span>
+                &quot;%2s| %.3f | %.3f | %.3f | %.3f | %.3f | %.3f |&quot;,
+                label,
+<span class="nc" id="L287">                r.get(Predicting.HITS).getRSquare(),</span>
+<span class="nc" id="L288">                r.get(Predicting.EXTRA_BASE_HITS).getRSquare(),</span>
+<span class="nc" id="L289">                r.get(Predicting.HOME_RUNS).getRSquare(),</span>
+<span class="nc" id="L290">                r.get(Predicting.WALKS).getRSquare(),</span>
+<span class="nc" id="L291">                r.get(Predicting.KS).getRSquare(),</span>
+<span class="nc" id="L292">                regression.woba.getRSquare()));</span>
+<span class="nc" id="L293">        }</span>
+
+        public static CorrelationReport create(BattingRegression regression) {
+<span class="nc" id="L296">            return new CorrelationReport(regression);</span>
+        }
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

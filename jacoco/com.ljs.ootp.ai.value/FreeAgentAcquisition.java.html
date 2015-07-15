@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>FreeAgentAcquisition.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.value</a> &gt; <span class="el_source">FreeAgentAcquisition.java</span></div><h1>FreeAgentAcquisition.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.value;
+
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.Slot;
+import com.ljs.ootp.ai.report.RosterReport;
+import com.ljs.ootp.ai.roster.Changes;
+import com.ljs.ootp.ai.roster.Changes.ChangeType;
+import com.ljs.ootp.ai.site.Site;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+
+import com.ljs.ai.search.hillclimbing.Heuristic;
+import com.ljs.ai.search.hillclimbing.Heuristics;
+import com.ljs.ai.search.hillclimbing.HillClimbing;
+import com.ljs.ai.search.hillclimbing.RepeatedHillClimbing;
+import com.ljs.ai.search.hillclimbing.Validators;
+import com.ljs.ai.search.hillclimbing.action.Action;
+import com.ljs.ai.search.hillclimbing.action.ActionGenerator;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class FreeAgentAcquisition {
+
+    private final Player fa;
+
+    private final Player release;
+
+<span class="nc" id="L41">    private FreeAgentAcquisition(Player fa, Player release) {</span>
+<span class="nc" id="L42">        this.fa = fa;</span>
+<span class="nc" id="L43">        this.release = release;</span>
+<span class="nc" id="L44">    }</span>
+
+    private FreeAgentAcquisition withFreeAgent(Player fa) {
+<span class="nc" id="L47">        return new FreeAgentAcquisition(fa, release);</span>
+    }
+
+    private FreeAgentAcquisition withRelease(Player release) {
+<span class="nc" id="L51">        return new FreeAgentAcquisition(fa, release);</span>
+    }
+
+    public Player getFreeAgent() {
+<span class="nc" id="L55">        return fa;</span>
+    }
+
+    public Player getRelease() {
+<span class="nc" id="L59">        return release;</span>
+    }
+
+    public Integer score(RosterReport rr, TradeValue value) {
+<span class="nc" id="L63">        Integer score = 0;</span>
+
+<span class="nc" id="L65">        score += value.getTradeTargetValue(fa);</span>
+<span class="nc" id="L66">        score -= value.getTradeTargetValue(release);</span>
+
+        // Penalize for releasing player in needed slot
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        for (Slot s : release.getSlots()) {</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">            if (s != Slot.P) {</span>
+<span class="nc" id="L71">                score -= Math.max(0, rr.getTargetRatio() - rr.getRatio(s));</span>
+            }
+<span class="nc" id="L73">        }</span>
+
+        // Reward for acquiring player in needed slot
+<span class="nc" id="L76">        score += Math.max(0, rr.getTargetRatio() - rr.getRatio(Slot.getPrimarySlot(fa)));</span>
+
+<span class="nc" id="L78">        return score;</span>
+    }
+
+    public static FreeAgentAcquisition create(Player fa, Player release) {
+<span class="nc" id="L82">        return new FreeAgentAcquisition(fa, release);</span>
+    }
+
+    public static ImmutableSet&lt;FreeAgentAcquisition&gt; select(Site site, Changes changes, Iterable&lt;Player&gt; roster, Iterable&lt;Player&gt; fas, TradeValue value, Integer n) {
+<span class="nc" id="L86">        Set&lt;FreeAgentAcquisition&gt; faas = Sets.newHashSet();</span>
+
+<span class="nc" id="L88">        Set&lt;Player&gt; rroster = Sets.newHashSet(roster);</span>
+<span class="nc" id="L89">        Set&lt;Player&gt; rfas = Sets.newHashSet(fas);</span>
+
+<span class="nc" id="L91">        rfas.removeAll(ImmutableSet.copyOf(changes.get(ChangeType.DONT_ACQUIRE)));</span>
+
+<span class="nc bnc" id="L93" title="All 2 branches missed.">        for (int i = 0; i &lt; n; i++) {</span>
+<span class="nc" id="L94">            Optional&lt;FreeAgentAcquisition&gt; faa = select(site, rroster, rfas, value);</span>
+
+<span class="nc bnc" id="L96" title="All 2 branches missed.">            if (!faa.isPresent()) {</span>
+<span class="nc" id="L97">                break;</span>
+            }
+
+<span class="nc" id="L100">            faas.add(faa.get());</span>
+
+<span class="nc" id="L102">            rroster.remove(faa.get().getRelease());</span>
+<span class="nc" id="L103">            rfas.remove(faa.get().getFreeAgent());</span>
+        }
+
+<span class="nc" id="L106">        return ImmutableSet.copyOf(faas);</span>
+    }
+
+    private static Optional&lt;FreeAgentAcquisition&gt; select(Site site, Iterable&lt;Player&gt; roster, Iterable&lt;Player&gt; fas, TradeValue value) {
+<span class="nc bnc" id="L110" title="All 2 branches missed.">        if (Iterables.isEmpty(fas)) {</span>
+<span class="nc" id="L111">            return Optional.absent();</span>
+        }
+
+<span class="nc" id="L114">        final RosterReport rr = RosterReport.create(site, roster);</span>
+
+        HillClimbing.Builder&lt;FreeAgentAcquisition&gt; builder =
+            HillClimbing
+<span class="nc" id="L118">                .&lt;FreeAgentAcquisition&gt;builder()</span>
+<span class="nc" id="L119">                .validator(Validators.&lt;FreeAgentAcquisition&gt;alwaysTrue())</span>
+<span class="nc" id="L120">                .heuristic(heuristic(rr, value))</span>
+<span class="nc" id="L121">                .actionGenerator(actionGenerator(roster, fas));</span>
+
+<span class="nc" id="L123">        FreeAgentAcquisition faa =</span>
+            new RepeatedHillClimbing&lt;FreeAgentAcquisition&gt;(
+<span class="nc" id="L125">                initialStateGenerator(roster, fas),</span>
+                builder)
+<span class="nc" id="L127">            .search();</span>
+
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (faa.score(rr, value) &gt; 0) {</span>
+<span class="nc" id="L130">            return Optional.of(faa);</span>
+        } else {
+<span class="nc" id="L132">            return Optional.absent();</span>
+        }
+    }
+
+    private static Callable&lt;FreeAgentAcquisition&gt; initialStateGenerator(final Iterable&lt;Player&gt; roster, final Iterable&lt;Player&gt; fas) {
+<span class="nc" id="L137">        return new Callable&lt;FreeAgentAcquisition&gt;() {</span>
+            @Override
+            public FreeAgentAcquisition call() throws Exception {
+<span class="nc" id="L140">                List&lt;Player&gt; rel = Lists.newArrayList(roster);</span>
+<span class="nc" id="L141">                List&lt;Player&gt; acq = Lists.newArrayList(fas);</span>
+
+<span class="nc" id="L143">                Collections.shuffle(rel);</span>
+<span class="nc" id="L144">                Collections.shuffle(acq);</span>
+
+<span class="nc" id="L146">                return new FreeAgentAcquisition(acq.get(0), rel.get(0));</span>
+            }
+        };
+    }
+
+    private static Heuristic&lt;FreeAgentAcquisition&gt; heuristic(final RosterReport rr, final TradeValue value) {
+<span class="nc" id="L152">        return Heuristics.from(</span>
+            Ordering
+<span class="nc" id="L154">                .natural()</span>
+<span class="nc" id="L155">                .onResultOf((faa) -&gt; faa.score(rr, value)));</span>
+    }
+
+    private static ActionGenerator&lt;FreeAgentAcquisition&gt; actionGenerator(final Iterable&lt;Player&gt; roster, final Iterable&lt;Player&gt; fas) {
+<span class="nc" id="L159">        final Set&lt;Action&lt;FreeAgentAcquisition&gt;&gt; actions = Sets.newHashSet();</span>
+
+<span class="nc bnc" id="L161" title="All 2 branches missed.">        for (Player p : roster) {</span>
+<span class="nc" id="L162">            actions.add(new ChangeRelease(p));</span>
+<span class="nc" id="L163">        }</span>
+
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        for (Player p : fas) {</span>
+<span class="nc" id="L166">            actions.add(new ChangeFreeAgent(p));</span>
+<span class="nc" id="L167">        }</span>
+
+<span class="nc" id="L169">        return new ActionGenerator&lt;FreeAgentAcquisition&gt;() {</span>
+            @Override
+            public Iterable&lt;Action&lt;FreeAgentAcquisition&gt;&gt; apply(FreeAgentAcquisition faa) {
+<span class="nc" id="L172">                return actions;</span>
+            }
+        };
+    }
+
+    private static class ChangeFreeAgent implements Action&lt;FreeAgentAcquisition&gt; {
+        private Player fa;
+
+<span class="nc" id="L180">        public ChangeFreeAgent(Player fa) {</span>
+<span class="nc" id="L181">            this.fa = fa;</span>
+<span class="nc" id="L182">        }</span>
+
+        public FreeAgentAcquisition apply(FreeAgentAcquisition faa) {
+<span class="nc" id="L185">            return faa.withFreeAgent(fa);</span>
+        }
+    }
+
+    private static class ChangeRelease implements Action&lt;FreeAgentAcquisition&gt; {
+        private Player release;
+
+<span class="nc" id="L192">        public ChangeRelease(Player release) {</span>
+<span class="nc" id="L193">            this.release = release;</span>
+<span class="nc" id="L194">        }</span>
+
+        public FreeAgentAcquisition apply(FreeAgentAcquisition faa) {
+<span class="nc" id="L197">            return faa.withRelease(release);</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

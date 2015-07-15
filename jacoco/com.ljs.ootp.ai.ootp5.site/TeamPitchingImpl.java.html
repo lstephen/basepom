@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TeamPitchingImpl.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.ootp5.site</a> &gt; <span class="el_source">TeamPitchingImpl.java</span></div><h1>TeamPitchingImpl.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.ootp5.site;
+
+import com.google.common.collect.ImmutableMap;
+import com.ljs.ootp.ai.data.Id;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.roster.Team;
+import com.ljs.ootp.ai.site.Site;
+import com.ljs.ootp.ai.stats.PitchingStats;
+import com.ljs.scratch.util.ElementsUtil;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+/**
+ *
+ * @author lstephen
+ */
+public class TeamPitchingImpl extends SingleTeamStats&lt;PitchingStats&gt; {
+
+    private static final int ATBAT_IDX = 1;
+    private static final int HITS_IDX = 2;
+    private static final int DOUBLES_IDX = 3;
+    private static final int TRIPLES_IDX = 4;
+    private static final int STRIKEOUT_IDX = 8;
+    private static final int WALKS_IDX = 7;
+    private static final int HOMERUN_IDX = 5;
+
+    private PitchingStats leaguePitching;
+
+    public TeamPitchingImpl(Site site, Id&lt;Team&gt; team) {
+<span class="nc" id="L30">        super(site.extractTeam(), site.getPage(&quot;team&quot; + team.get() + &quot;p.html&quot;));</span>
+
+<span class="nc" id="L32">        leaguePitching = site.getLeaguePitching();</span>
+<span class="nc" id="L33">    }</span>
+
+    @Override
+    protected PitchingStats zero() {
+<span class="nc" id="L37">        PitchingStats zero = new PitchingStats();</span>
+<span class="nc" id="L38">        zero.setLeaguePitching(leaguePitching);</span>
+<span class="nc" id="L39">        return zero;</span>
+    }
+
+    @Override
+    protected PitchingStats extractStatsRow(Elements data) {
+<span class="nc" id="L44">        PitchingStats pitching = zero();</span>
+<span class="nc" id="L45">        pitching.setAtBats(ElementsUtil.getInteger(data, ATBAT_IDX));</span>
+<span class="nc" id="L46">        pitching.setHits(ElementsUtil.getInteger(data, HITS_IDX));</span>
+<span class="nc" id="L47">        pitching.setDoubles(ElementsUtil.getInteger(data, DOUBLES_IDX));</span>
+<span class="nc" id="L48">        pitching.setTriples(ElementsUtil.getInteger(data, TRIPLES_IDX));</span>
+<span class="nc" id="L49">        pitching.setStrikeouts(ElementsUtil.getInteger(data, STRIKEOUT_IDX));</span>
+<span class="nc" id="L50">        pitching.setWalks(ElementsUtil.getInteger(data, WALKS_IDX));</span>
+<span class="nc" id="L51">        pitching.setHomeRuns(ElementsUtil.getInteger(data, HOMERUN_IDX));</span>
+<span class="nc" id="L52">        return pitching;</span>
+    }
+
+
+    @Override
+    protected ImmutableMap&lt;Player, PitchingStats&gt; extractStatsVsLeft(
+        Document doc) {
+
+<span class="nc" id="L60">        Elements vLhpStats = doc.select(&quot;tr:has(td:contains(vs. LHB)) + tr&quot;);</span>
+<span class="nc" id="L61">        return extractStats(vLhpStats);</span>
+    }
+
+    @Override
+    protected ImmutableMap&lt;Player, PitchingStats&gt; extractStatsVsRight(
+        Document doc) {
+
+<span class="nc" id="L68">        Elements vRhpStats = doc.select(&quot;tr:has(td:contains(vs. RHB)) + tr&quot;);</span>
+<span class="nc" id="L69">        return extractStats(vRhpStats);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Mode.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.selection</a> &gt; <span class="el_source">Mode.java</span></div><h1>Mode.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.selection;
+
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.ImmutableMultiset;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Multiset;
+import com.ljs.ootp.ai.player.Slot;
+
+<span class="nc" id="L9">public enum Mode {</span>
+<span class="nc" id="L10">    PRESEASON(25) {</span>
+        @Override
+        public ImmutableMultiset&lt;Slot&gt; getHittingSlots() {
+<span class="nc" id="L13">            return REGULAR_SEASON.getHittingSlots();</span>
+        }
+
+        @Override
+        public ImmutableMultiset&lt;Slot&gt; getPitchingSlots() {
+<span class="nc" id="L18">            return REGULAR_SEASON.getPitchingSlots();</span>
+        }
+    },
+<span class="nc" id="L21">    REGULAR_SEASON(25) {</span>
+        @Override
+        public ImmutableMultiset&lt;Slot&gt; getHittingSlots() {
+<span class="nc" id="L24">            return ImmutableMultiset.of(</span>
+                Slot.C, Slot.C,
+                Slot.SS, Slot.IF, Slot.IF, Slot.IF, Slot.IF,
+                Slot.CF, Slot.OF, Slot.OF, Slot.OF,
+                Slot.H, Slot.H, Slot.H);
+        }
+
+        @Override
+        public ImmutableMultiset&lt;Slot&gt; getPitchingSlots() {
+<span class="nc" id="L33">            return ImmutableMultiset.of(</span>
+                Slot.SP, Slot.SP, Slot.SP, Slot.SP, Slot.SP,
+                Slot.MR, Slot.MR, Slot.MR, Slot.MR,
+                Slot.P, Slot.P);
+        }
+    },
+<span class="nc" id="L39">    EXPANDED(40) {</span>
+        @Override
+        public ImmutableMultiset&lt;Slot&gt; getHittingSlots() {
+<span class="nc" id="L42">            Multiset&lt;Slot&gt; expanded =</span>
+<span class="nc" id="L43">                HashMultiset.create(REGULAR_SEASON.getHittingSlots());</span>
+
+<span class="nc" id="L45">            expanded.addAll(</span>
+<span class="nc" id="L46">                ImmutableMultiset.of(</span>
+                    Slot.C,
+                    Slot.SS, Slot.IF,
+                    Slot.CF, Slot.OF,
+                    Slot.H));
+
+<span class="nc" id="L52">            return ImmutableMultiset.copyOf(expanded);</span>
+        }
+
+        @Override
+        public ImmutableMultiset&lt;Slot&gt; getPitchingSlots() {
+<span class="nc" id="L57">            Multiset&lt;Slot&gt; expanded =</span>
+<span class="nc" id="L58">                HashMultiset.create(REGULAR_SEASON.getPitchingSlots());</span>
+
+<span class="nc" id="L60">            expanded.addAll(</span>
+<span class="nc" id="L61">                ImmutableMultiset.of(Slot.SP, Slot.MR, Slot.P));</span>
+
+<span class="nc" id="L63">            return ImmutableMultiset.copyOf(expanded);</span>
+        }
+    },
+<span class="nc" id="L66">    PLAYOFFS(25) {</span>
+        @Override
+        public ImmutableMultiset&lt;Slot&gt; getHittingSlots() {
+<span class="nc" id="L69">            Multiset&lt;Slot&gt; playoffs =</span>
+<span class="nc" id="L70">                HashMultiset.create(REGULAR_SEASON.getHittingSlots());</span>
+
+<span class="nc" id="L72">            playoffs.add(Slot.H);</span>
+
+<span class="nc" id="L74">            return ImmutableMultiset.copyOf(playoffs);</span>
+        }
+
+        @Override
+        public ImmutableMultiset&lt;Slot&gt; getPitchingSlots() {
+<span class="nc" id="L79">            Multiset&lt;Slot&gt; playoffs =</span>
+<span class="nc" id="L80">                HashMultiset.create(REGULAR_SEASON.getPitchingSlots());</span>
+
+<span class="nc" id="L82">            playoffs.remove(Slot.SP);</span>
+
+<span class="nc" id="L84">            return ImmutableMultiset.copyOf(playoffs);</span>
+        }
+    };
+
+    private final Integer rosterSize;
+
+<span class="nc" id="L90">    Mode(Integer rosterSize) {</span>
+<span class="nc" id="L91">        this.rosterSize = rosterSize;</span>
+<span class="nc" id="L92">    }</span>
+
+    public Integer getMajorLeagueRosterLimit() {
+<span class="nc" id="L95">        return rosterSize;</span>
+    }
+
+    public abstract ImmutableMultiset&lt;Slot&gt; getHittingSlots();
+
+    public abstract ImmutableMultiset&lt;Slot&gt; getPitchingSlots();
+
+    public ImmutableMultiset&lt;Slot&gt; getAllSlots() {
+<span class="nc" id="L103">        return ImmutableMultiset.copyOf(</span>
+<span class="nc" id="L104">            Iterables.concat(getHittingSlots(), getPitchingSlots()));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

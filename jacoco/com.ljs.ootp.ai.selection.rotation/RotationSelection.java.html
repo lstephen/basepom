@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RotationSelection.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.selection.rotation</a> &gt; <span class="el_source">RotationSelection.java</span></div><h1>RotationSelection.java</h1><pre class="source lang-java linenums">// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.kpdus.com/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   RotationSelection.java
+package com.ljs.ootp.ai.selection.rotation;
+
+import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.*;
+import com.ljs.ai.search.hillclimbing.HillClimbing;
+import com.ljs.ai.search.hillclimbing.RepeatedHillClimbing;
+import com.ljs.ai.search.hillclimbing.Validator;
+import com.ljs.ai.search.hillclimbing.action.Action;
+import com.ljs.ai.search.hillclimbing.action.ActionGenerator;
+import com.ljs.ootp.ai.io.Printables;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.Slot;
+import com.ljs.ootp.ai.selection.Mode;
+import com.ljs.ootp.ai.selection.Selection;
+import com.ljs.ootp.ai.selection.rotation.Rotation.Role;
+import com.ljs.ootp.ai.stats.PitcherOverall;
+import com.ljs.ootp.ai.stats.PitchingStats;
+import com.ljs.ootp.ai.stats.TeamStats;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+
+// Referenced classes of package com.ljs.scratch.ootp.selection.rotation:
+//            Rotation
+public final class RotationSelection implements Selection {
+
+    private final TeamStats&lt;PitchingStats&gt; predictions;
+
+    private final PitcherOverall method;
+
+    private final RotationDefinition definition;
+
+    private final Multiset&lt;Slot&gt; slots;
+
+    private RotationSelection(
+        TeamStats&lt;PitchingStats&gt; predictions,
+        PitcherOverall method,
+        RotationDefinition definition,
+<span class="nc" id="L45">        Multiset&lt;Slot&gt; slots) {</span>
+
+<span class="nc" id="L47">        this.predictions = predictions;</span>
+<span class="nc" id="L48">        this.method = method;</span>
+<span class="nc" id="L49">        this.definition = definition;</span>
+<span class="nc" id="L50">        this.slots = slots;</span>
+<span class="nc" id="L51">    }</span>
+
+    public ImmutableMultimap&lt;Slot, Player&gt; select(
+        Iterable&lt;Player&gt; forced, Iterable&lt;Player&gt; available) {
+
+<span class="nc" id="L56">        Rotation r = selectRotation(forced, available);</span>
+
+<span class="nc" id="L58">        Multimap&lt;Slot, Player&gt; assigned = HashMultimap.create();</span>
+
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        for (Player p : r.getStarters()) {</span>
+<span class="nc" id="L61">            assigned.put(Slot.SP, p);</span>
+<span class="nc" id="L62">        }</span>
+
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        for (Player p : r.getNonStarters()) {</span>
+<span class="nc" id="L65">            assigned.put(Slot.MR, p);</span>
+<span class="nc" id="L66">        }</span>
+
+<span class="nc" id="L68">        return ImmutableMultimap.copyOf(assigned);</span>
+    }
+
+    public Rotation selectRotation(Iterable&lt;Player&gt; forced, Iterable&lt;Player&gt; available) {
+
+<span class="nc" id="L73">        System.out.println(&quot;Selecting rotation...&quot;);</span>
+<span class="nc" id="L74">        System.out.println(&quot;Forced:&quot; + Iterables.size(forced));</span>
+<span class="nc" id="L75">        System.out.println(&quot;Available:&quot; + Iterables.size(available));</span>
+
+        HillClimbing.Builder&lt;Rotation&gt; builder = HillClimbing
+<span class="nc" id="L78">            .&lt;Rotation&gt;builder()</span>
+<span class="nc" id="L79">            .validator(new Validator&lt;Rotation&gt;() {</span>
+                public Boolean apply(Rotation r) {
+<span class="nc bnc" id="L81" title="All 4 branches missed.">                    return r.isValid() &amp;&amp; r.get(Role.SP).size() == definition.getRotationSize();</span>
+                }
+            })
+<span class="nc" id="L84">            .heuristic(heuristic())</span>
+<span class="nc" id="L85">            .actionGenerator(actionGenerator(forced, available));</span>
+
+<span class="nc" id="L87">        Rotation r = new RepeatedHillClimbing&lt;Rotation&gt;(</span>
+<span class="nc" id="L88">                initialStateGenerator(forced, available),</span>
+                builder)
+<span class="nc" id="L90">            .search();</span>
+
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        for (Player p : Player.byShortName().sortedCopy(r.getAll())) {</span>
+<span class="nc" id="L93">            System.out.print(p.getShortName() + &quot;/&quot;);</span>
+<span class="nc" id="L94">        }</span>
+<span class="nc" id="L95">        System.out.println();</span>
+<span class="nc" id="L96">        return r;</span>
+    }
+
+    private Ordering&lt;Rotation&gt; heuristic() {
+      Ordering&lt;Rotation&gt; byOverall = Ordering
+<span class="nc" id="L101">        .natural()</span>
+<span class="nc" id="L102">        .onResultOf(new Function&lt;Rotation, Double&gt;() {</span>
+          public Double apply(Rotation r) {
+<span class="nc" id="L104">            Double score = 0.0;</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">            for (Player p : r.getAll()) {</span>
+<span class="nc" id="L106">              score += method.getPlus(predictions.getOverall(p));</span>
+<span class="nc" id="L107">            }</span>
+<span class="nc" id="L108">            return score;</span>
+          }});
+
+      return Ordering
+<span class="nc" id="L112">        .natural()</span>
+<span class="nc" id="L113">        .onResultOf(new Function&lt;Rotation, Double&gt;() {</span>
+            public Double apply(Rotation r) {
+<span class="nc" id="L115">                return r.score(predictions, method);</span>
+            }
+        })
+<span class="nc" id="L118">        .compound(byOverall);</span>
+    }
+
+
+    private Callable&lt;Rotation&gt; initialStateGenerator(final Iterable&lt;Player&gt; forced, final Iterable&lt;Player&gt; available) {
+<span class="nc" id="L123">        return new Callable&lt;Rotation&gt;() {</span>
+            @Override
+            public Rotation call() throws Exception {
+<span class="nc" id="L126">                List&lt;Player&gt; ps = Lists.newArrayList(available);</span>
+<span class="nc" id="L127">                Iterables.removeAll(ps, ImmutableSet.copyOf(forced));</span>
+
+<span class="nc" id="L129">                Collections.shuffle(ps);</span>
+
+<span class="nc" id="L131">                List&lt;Player&gt; sps = Lists.newArrayList();</span>
+<span class="nc" id="L132">                List&lt;Player&gt; mrs = Lists.newArrayList();</span>
+<span class="nc" id="L133">                List&lt;Player&gt; rest = Lists.newArrayList();</span>
+
+<span class="nc bnc" id="L135" title="All 2 branches missed.">                for (Player p : forced) {</span>
+<span class="nc bnc" id="L136" title="All 4 branches missed.">                    if (p.getSlots().contains(Slot.SP) &amp;&amp; sps.size() &lt; definition.getRotationSize()) {</span>
+<span class="nc" id="L137">                        sps.add(p);</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">                    } else if (mrs.size() &lt; definition.getRelieversSize()) {</span>
+<span class="nc" id="L139">                        mrs.add(p);</span>
+                    } else {
+<span class="nc" id="L141">                        rest.add(p);</span>
+                    }
+<span class="nc" id="L143">                }</span>
+
+<span class="nc bnc" id="L145" title="All 2 branches missed.">                for (Player p : ps) {</span>
+<span class="nc bnc" id="L146" title="All 4 branches missed.">                    if (p.getSlots().contains(Slot.SP) &amp;&amp; sps.size() &lt; definition.getRotationSize()) {</span>
+<span class="nc" id="L147">                        sps.add(p);</span>
+                    }
+<span class="nc" id="L149">                }</span>
+
+<span class="nc" id="L151">                ps.removeAll(sps);</span>
+
+<span class="nc" id="L153">                sps.addAll(FluentIterable</span>
+<span class="nc" id="L154">                    .from(ps)</span>
+<span class="nc" id="L155">                    .limit(definition.getRotationSize() - sps.size())</span>
+<span class="nc" id="L156">                    .toList());</span>
+
+<span class="nc" id="L158">                ps.removeAll(sps);</span>
+
+<span class="nc" id="L160">                mrs.addAll(FluentIterable</span>
+<span class="nc" id="L161">                    .from(ps)</span>
+<span class="nc" id="L162">                    .limit(definition.getRelieversSize() - mrs.size())</span>
+<span class="nc" id="L163">                    .toList());</span>
+
+<span class="nc" id="L165">                ps.removeAll(mrs);</span>
+
+<span class="nc" id="L167">                rest.addAll(FluentIterable</span>
+<span class="nc" id="L168">                    .from(ps)</span>
+<span class="nc" id="L169">                    .limit(Math.max(0, slots.size() - sps.size() - mrs.size() - rest.size()))</span>
+<span class="nc" id="L170">                    .toList());</span>
+
+<span class="nc" id="L172">                Rotation initial = Rotation.create(sps, mrs, rest);</span>
+
+<span class="nc bnc" id="L174" title="All 2 branches missed.">                if (!initial.isValid()) {</span>
+<span class="nc" id="L175">                    Printables.print(initial).to(System.out);</span>
+                }
+
+<span class="nc" id="L178">                Preconditions.checkState(initial.isValid());</span>
+
+<span class="nc" id="L180">                return initial;</span>
+            }
+        };
+    }
+
+    private ActionGenerator&lt;Rotation&gt; actionGenerator(final Iterable&lt;Player&gt; forced, final Iterable&lt;Player&gt; available) {
+<span class="nc" id="L186">        return new ActionGenerator&lt;Rotation&gt;() {</span>
+            @Override
+            public Iterable&lt;Action&lt;Rotation&gt;&gt; apply(Rotation r) {
+<span class="nc" id="L189">                Iterable&lt;Action&lt;Rotation&gt;&gt; actions =</span>
+<span class="nc" id="L190">                    Iterables.&lt;Action&lt;Rotation&gt;&gt;concat(</span>
+<span class="nc" id="L191">                        swaps(r),</span>
+<span class="nc" id="L192">                        substitutions(r),</span>
+<span class="nc" id="L193">                        moves(r));</span>
+
+
+<span class="nc" id="L196">                return actions;</span>
+            }
+
+            private Set&lt;Move&gt; moves(Rotation rot) {
+<span class="nc" id="L200">              Set&lt;Move&gt; moves = Sets.newHashSet();</span>
+
+<span class="nc bnc" id="L202" title="All 2 branches missed.">              for (Player p : rot.getAll()) {</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">                for (Role r : Rotation.Role.values()) {</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">                  for (int i = 0; i &lt; 5; i++) {</span>
+<span class="nc" id="L205">                    moves.add(new Move(p, r, i));</span>
+                  }
+                }
+<span class="nc" id="L208">              }</span>
+
+<span class="nc" id="L210">              return moves;</span>
+            }
+
+
+            private Set&lt;Swap&gt; swaps(Rotation r) {
+<span class="nc" id="L215">                Set&lt;Swap&gt; swaps = Sets.newHashSet();</span>
+
+<span class="nc" id="L217">                ImmutableList&lt;Player&gt; ps = ImmutableList.copyOf(r.getAll());</span>
+
+<span class="nc bnc" id="L219" title="All 2 branches missed.">                for (int lhs = 0; lhs &lt; ps.size(); lhs++) {</span>
+<span class="nc bnc" id="L220" title="All 2 branches missed.">                    for (int rhs = lhs + 1; rhs &lt; ps.size(); rhs++) {</span>
+<span class="nc" id="L221">                        swaps.add(new Swap(ps.get(lhs), ps.get(rhs)));</span>
+                    }
+                }
+
+<span class="nc" id="L225">                return swaps;</span>
+            }
+
+            private Set&lt;Substitute&gt; substitutions(Rotation r) {
+<span class="nc" id="L229">                Set&lt;Substitute&gt; ss = Sets.newHashSet();</span>
+
+<span class="nc" id="L231">                List&lt;Player&gt; ps = Lists.newArrayList(r.getAll());</span>
+
+<span class="nc" id="L233">                Iterables.removeAll(ps, ImmutableSet.copyOf(forced));</span>
+
+<span class="nc bnc" id="L235" title="All 2 branches missed.">                for (Player in : available) {</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">                    if (!ps.contains(in)) {</span>
+<span class="nc bnc" id="L237" title="All 2 branches missed.">                        for (Player out : ps) {</span>
+<span class="nc" id="L238">                            ss.add(new Substitute(in, out));</span>
+<span class="nc" id="L239">                        }</span>
+                    }
+<span class="nc" id="L241">                }</span>
+
+<span class="nc" id="L243">                return ss;</span>
+            }
+
+
+        };
+    }
+
+    public static RotationSelection regularSeason(
+        TeamStats&lt;PitchingStats&gt; pitching, PitcherOverall method) {
+
+<span class="nc" id="L253">        return new RotationSelection(</span>
+<span class="nc" id="L254">            pitching, method, RotationDefinition.regularSeason(), Mode.REGULAR_SEASON.getPitchingSlots());</span>
+    }
+
+    public static RotationSelection expanded(
+        TeamStats&lt;PitchingStats&gt; pitching, PitcherOverall method) {
+
+<span class="nc" id="L260">        return new RotationSelection(</span>
+<span class="nc" id="L261">            pitching, method, RotationDefinition.regularSeason(), Mode.EXPANDED.getPitchingSlots());</span>
+    }
+
+    public static RotationSelection playoffs(
+        TeamStats&lt;PitchingStats&gt; pitching, PitcherOverall method) {
+
+<span class="nc" id="L267">        return new RotationSelection(</span>
+<span class="nc" id="L268">            pitching, method, RotationDefinition.playoffs(), Mode.PLAYOFFS.getPitchingSlots());</span>
+    }
+
+    public static RotationSelection forMode(
+        Mode mode, TeamStats&lt;PitchingStats&gt; pitching, PitcherOverall method) {
+
+<span class="nc bnc" id="L274" title="All 4 branches missed.">        switch (mode) {</span>
+            case PRESEASON:
+            case REGULAR_SEASON:
+<span class="nc" id="L277">                return regularSeason(pitching, method);</span>
+            case EXPANDED:
+<span class="nc" id="L279">                return expanded(pitching, method);</span>
+            case PLAYOFFS:
+<span class="nc" id="L281">                return playoffs(pitching, method);</span>
+            default:
+<span class="nc" id="L283">                throw new IllegalStateException();</span>
+        }
+    }
+
+    private static final class RotationDefinition {
+
+        public Integer getRotationSize() {
+<span class="nc" id="L290">            return rotation;</span>
+        }
+
+        public Integer getRelieversSize() {
+<span class="nc" id="L294">            return relievers;</span>
+        }
+
+        public static RotationDefinition regularSeason() {
+<span class="nc" id="L298">            return new RotationDefinition(REGULAR_SEASON_ROTATION, RELIEVERS);</span>
+        }
+
+        public static RotationDefinition playoffs() {
+<span class="nc" id="L302">            return new RotationDefinition(PLAYOFFS_ROTATION, RELIEVERS);</span>
+        }
+<span class="nc" id="L304">        private static final Integer REGULAR_SEASON_ROTATION = Integer</span>
+<span class="nc" id="L305">            .valueOf(5);</span>
+
+<span class="nc" id="L307">        private static final Integer PLAYOFFS_ROTATION = Integer.valueOf(4);</span>
+
+<span class="nc" id="L309">        private static final Integer RELIEVERS = Integer.valueOf(4);</span>
+
+        private final Integer rotation;
+
+        private final Integer relievers;
+
+<span class="nc" id="L315">        private RotationDefinition(Integer rotation, Integer relievers) {</span>
+<span class="nc" id="L316">            this.rotation = rotation;</span>
+<span class="nc" id="L317">            this.relievers = relievers;</span>
+<span class="nc" id="L318">        }</span>
+    }
+
+    private static class Swap implements Action&lt;Rotation&gt; {
+
+        private Player lhs;
+        private Player rhs;
+
+<span class="nc" id="L326">        public Swap(Player lhs, Player rhs) {</span>
+<span class="nc" id="L327">            this.lhs = lhs;</span>
+<span class="nc" id="L328">            this.rhs = rhs;</span>
+<span class="nc" id="L329">        }</span>
+
+        public Rotation apply(Rotation r) {
+<span class="nc" id="L332">            return r.swap(lhs, rhs);</span>
+        }
+    }
+
+    private static class Substitute implements Action&lt;Rotation&gt; {
+
+        private Player in;
+        private Player out;
+
+<span class="nc" id="L341">        public Substitute(Player in, Player out) {</span>
+<span class="nc" id="L342">            this.in = in;</span>
+<span class="nc" id="L343">            this.out = out;</span>
+<span class="nc" id="L344">        }</span>
+
+        public Rotation apply(Rotation r) {
+<span class="nc" id="L347">            return r.substitute(in, out);</span>
+        }
+    }
+
+    private static class Move implements Action&lt;Rotation&gt; {
+      private Player p;
+      private Rotation.Role role;
+      private Integer idx;
+
+<span class="nc" id="L356">      public Move(Player p, Rotation.Role role, Integer idx) {</span>
+<span class="nc" id="L357">        this.p = p;</span>
+<span class="nc" id="L358">        this.role = role;</span>
+<span class="nc" id="L359">        this.idx = idx;</span>
+<span class="nc" id="L360">      }</span>
+
+      public Rotation apply(Rotation r) {
+<span class="nc" id="L363">        return r.move(p, role, idx);</span>
+      }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

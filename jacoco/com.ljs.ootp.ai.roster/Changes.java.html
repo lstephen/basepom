@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Changes.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.roster</a> &gt; <span class="el_source">Changes.java</span></div><h1>Changes.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.roster;
+
+import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
+import com.google.common.io.Files;
+import com.ljs.ootp.ai.config.Config;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.PlayerId;
+import com.ljs.ootp.ai.site.Site;
+import java.io.File;
+import java.io.IOException;
+import org.apache.commons.lang3.StringUtils;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class Changes {
+
+<span class="nc" id="L24">    public static enum ChangeType {</span>
+<span class="nc" id="L25">        ACQUISITION('a'), RELEASE('r'), FORCE_ML('m'), FORCE_FORCE_ML('M'), DONT_ACQUIRE('d'), PICKED('p'), FOURTY_MAN('f');</span>
+
+        private final Character code;
+
+<span class="nc" id="L29">        ChangeType(char code) {</span>
+<span class="nc" id="L30">            this.code = code;</span>
+<span class="nc" id="L31">        }</span>
+
+        public static ChangeType valueOf(Character code) {
+<span class="nc bnc" id="L34" title="All 2 branches missed.">            for (ChangeType ct : ChangeType.values()) {</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">                if (ct.code.equals(code)) {</span>
+<span class="nc" id="L36">                    return ct;</span>
+                }
+            }
+
+<span class="nc" id="L40">            throw new IllegalStateException();</span>
+        }
+
+    }
+
+<span class="nc" id="L45">    private final Multimap&lt;ChangeType, Player&gt; changes = HashMultimap.create();</span>
+
+    private final Site site;
+
+<span class="nc" id="L49">    private Changes(Site site) {</span>
+<span class="nc" id="L50">        this.site = site;</span>
+<span class="nc" id="L51">    }</span>
+
+    public ImmutableSet&lt;Player&gt; get(ChangeType type) {
+<span class="nc" id="L54">      return ImmutableSet.copyOf(changes.get(type));</span>
+    }
+
+    private void add(ChangeType type, Player p) {
+<span class="nc" id="L58">        changes.put(type, p);</span>
+<span class="nc" id="L59">    }</span>
+
+    private void add(ChangeType type, String name, Iterable&lt;Player&gt; ps) {
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        for (Player p : ps) {</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">            if (p.getShortName().equals(name.trim())) {</span>
+<span class="nc" id="L64">                add(type, p);</span>
+            }
+<span class="nc" id="L66">        }</span>
+<span class="nc" id="L67">    }</span>
+
+    private static String getChangesDir() throws IOException {
+<span class="nc" id="L70">        Config config = Config.createDefault();</span>
+
+<span class="nc" id="L72">        return config</span>
+<span class="nc" id="L73">            .getValue(&quot;changes.dir&quot;)</span>
+<span class="nc" id="L74">            .or(config.getValue(&quot;output.dir&quot;).or(&quot;c:/ootp&quot;));</span>
+    }
+
+    public static Changes load(Site site) {
+<span class="nc" id="L78">        Changes changes = new Changes(site);</span>
+
+        try {
+<span class="nc" id="L81">            File src = new File(getChangesDir(), site.getName() + &quot;.changes.txt&quot;);</span>
+
+<span class="nc bnc" id="L83" title="All 2 branches missed.">            if (!src.exists()) {</span>
+<span class="nc" id="L84">                return changes;</span>
+            }
+
+<span class="nc" id="L87">            Iterable&lt;Player&gt; draftList = null;</span>
+<span class="nc" id="L88">            Iterable&lt;Player&gt; faList = null;</span>
+<span class="nc" id="L89">            Iterable&lt;Player&gt; team = null;</span>
+
+<span class="nc bnc" id="L91" title="All 2 branches missed.">            for (String line : Files.readLines(src, Charsets.UTF_8)) {</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">                if (Strings.isNullOrEmpty(line)) {</span>
+<span class="nc" id="L93">                    continue;</span>
+                }
+
+<span class="nc bnc" id="L96" title="All 2 branches missed.">                if (line.charAt(0) == '#') {</span>
+<span class="nc" id="L97">                    continue;</span>
+                }
+
+<span class="nc" id="L100">                ChangeType type = ChangeType.valueOf(line.charAt(0));</span>
+
+<span class="nc" id="L102">                String raw = StringUtils.substringAfter(line, &quot;,&quot;);</span>
+
+<span class="nc bnc" id="L104" title="All 2 branches missed.">                if (raw.charAt(0) == 'p') {</span>
+<span class="nc" id="L105">                    PlayerId id = new PlayerId(raw);</span>
+
+<span class="nc" id="L107">                    changes.add(type, site.getPlayer(id));</span>
+<span class="nc" id="L108">                } else {</span>
+<span class="nc bnc" id="L109" title="All 4 branches missed.">                    switch (type) {</span>
+                        case PICKED:
+<span class="nc bnc" id="L111" title="All 2 branches missed.">                            if (draftList == null) {</span>
+<span class="nc" id="L112">                                draftList = site.getDraft();</span>
+                            }
+<span class="nc" id="L114">                            changes.add(type, raw, draftList);</span>
+<span class="nc" id="L115">                            break;</span>
+                        case DONT_ACQUIRE:
+<span class="nc bnc" id="L117" title="All 2 branches missed.">                            if (faList == null) {</span>
+<span class="nc" id="L118">                                faList = site.getFreeAgents();</span>
+                            }
+<span class="nc" id="L120">                            changes.add(type, raw, faList);</span>
+<span class="nc" id="L121">                            break;</span>
+                        case RELEASE:
+                        case FORCE_ML:
+                        case FORCE_FORCE_ML:
+                        case FOURTY_MAN:
+<span class="nc bnc" id="L126" title="All 2 branches missed.">                            if (team == null) {</span>
+<span class="nc" id="L127">                                team = site.getSingleTeam().getRoster().getAllPlayers();</span>
+                            }
+<span class="nc" id="L129">                            changes.add(type, raw, team);</span>
+<span class="nc" id="L130">                            break;</span>
+
+                        default:
+                            // do nothing
+                    }
+                }
+<span class="nc" id="L136">            }</span>
+
+<span class="nc" id="L138">            return changes;</span>
+<span class="nc" id="L139">        } catch (IOException e) {</span>
+<span class="nc" id="L140">            throw Throwables.propagate(e);</span>
+        }
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

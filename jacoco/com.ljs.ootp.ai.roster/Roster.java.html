@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Roster.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.roster</a> &gt; <span class="el_source">Roster.java</span></div><h1>Roster.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.roster;
+
+import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+import com.ljs.ootp.ai.io.Printable;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.PlayerId;
+import com.ljs.ootp.ai.player.PlayerSource;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class Roster implements Printable {
+
+<span class="nc" id="L30">    private static final Integer DEFAULT_TARGET_MAXIMUM = 110;</span>
+
+<span class="nc" id="L32">    private static final Integer DEFAULT_TARGET_MINIMUM = 90;</span>
+
+<span class="nc" id="L34">    public static enum Status { ML, AAA, AA, A, SA, R, DL, UNK }</span>
+
+    private final PlayerSource source;
+
+    private final Set&lt;Player&gt; available;
+
+<span class="nc" id="L40">    private final Multimap&lt;Status, Player&gt; assignments =</span>
+<span class="nc" id="L41">        ArrayListMultimap.create();</span>
+
+<span class="nc" id="L43">    private Integer targetMaximum = DEFAULT_TARGET_MAXIMUM;</span>
+
+<span class="nc" id="L45">    private Integer targetMinimum = DEFAULT_TARGET_MINIMUM;</span>
+
+<span class="nc" id="L47">    private Roster(PlayerSource source, Iterable&lt;Player&gt; available) {</span>
+<span class="nc" id="L48">        Preconditions.checkNotNull(source);</span>
+<span class="nc" id="L49">        Preconditions.checkNotNull(available);</span>
+
+<span class="nc" id="L51">        this.source = source;</span>
+<span class="nc" id="L52">        this.available = Sets.newHashSet(available);</span>
+<span class="nc" id="L53">    }</span>
+
+    public ImmutableSet&lt;Player&gt; getPlayers(Status status) {
+<span class="nc" id="L56">        return ImmutableSet.copyOf(assignments.get(status));</span>
+    }
+
+    public Boolean contains(Player p) {
+<span class="nc" id="L60">        return assignments.containsValue(p);</span>
+    }
+
+    public Integer size() {
+<span class="nc" id="L64">        return assignments.size();</span>
+    }
+
+    public void remove(Player p) {
+<span class="nc" id="L68">        assignments.remove(getStatus(p), p);</span>
+<span class="nc" id="L69">    }</span>
+
+    public void release(Collection&lt;Player&gt; ps) {
+<span class="nc" id="L72">      ps.stream().forEach(this::release);</span>
+<span class="nc" id="L73">    }</span>
+
+    public void release(Player p) {
+<span class="nc" id="L76">        remove(p);</span>
+<span class="nc" id="L77">        available.remove(p);</span>
+<span class="nc" id="L78">    }</span>
+
+    public Collection&lt;Player&gt; getAllPlayers() {
+<span class="nc" id="L81">        return assignments.values();</span>
+    }
+
+    public ImmutableSet&lt;Player&gt; getUnassigned() {
+<span class="nc" id="L85">        return ImmutableSet.copyOf(</span>
+            available
+<span class="nc" id="L87">              .stream()</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">              .filter(p -&gt; !assignments.containsValue(p))</span>
+<span class="nc" id="L89">              .collect(Collectors.toSet()));</span>
+    }
+
+    public Status getStatus(Player p) {
+<span class="nc" id="L93">        return assignments</span>
+<span class="nc" id="L94">          .entries()</span>
+<span class="nc" id="L95">          .stream()</span>
+<span class="nc" id="L96">          .filter(e -&gt; e.getValue().equals(p))</span>
+<span class="nc" id="L97">          .findFirst()</span>
+<span class="nc" id="L98">          .map(Map.Entry::getKey)</span>
+<span class="nc" id="L99">          .orElse(null);</span>
+    }
+
+    public void assign(Status status, PlayerId... ids) {
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        for (PlayerId id : ids) {</span>
+<span class="nc" id="L104">            assign(status, source.get(id));</span>
+        }
+<span class="nc" id="L106">    }</span>
+
+    public void assign(Status status, Player... ps) {
+<span class="nc" id="L109">        assign(status, Arrays.asList(ps));</span>
+<span class="nc" id="L110">    }</span>
+
+    public void assign(Status status, Iterable&lt;Player&gt; ps) {
+<span class="nc bnc" id="L113" title="All 2 branches missed.">        for (Player p : ps) {</span>
+<span class="nc" id="L114">            assign(status, p);</span>
+<span class="nc" id="L115">        }</span>
+<span class="nc" id="L116">    }</span>
+
+    public void assign(Status status, Player p) {
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (!assignments.containsValue(p)) {</span>
+<span class="nc" id="L120">            assignments.put(status, p);</span>
+        }
+<span class="nc" id="L122">    }</span>
+
+    public RosterChanges getChangesFrom(Roster src) {
+<span class="nc" id="L125">        RosterChanges changes = new RosterChanges();</span>
+
+<span class="nc" id="L127">        Set&lt;Player&gt; playersChanged = Sets.newHashSet();</span>
+
+<span class="nc" id="L129">        playersChanged.addAll(</span>
+<span class="nc" id="L130">            Sets.difference(</span>
+<span class="nc" id="L131">                ImmutableSet.copyOf(getAllPlayers()),</span>
+<span class="nc" id="L132">                ImmutableSet.copyOf(src.getAllPlayers())));</span>
+
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        for (Status s : Status.values()) {</span>
+<span class="nc" id="L135">            playersChanged.addAll(</span>
+<span class="nc" id="L136">                Sets.difference(src.getPlayers(s), getPlayers(s)));</span>
+        }
+
+<span class="nc bnc" id="L139" title="All 2 branches missed.">        for (Player p : playersChanged) {</span>
+<span class="nc" id="L140">            changes.addChange(p, src.getStatus(p), getStatus(p));</span>
+<span class="nc" id="L141">        }</span>
+
+<span class="nc" id="L143">        return changes;</span>
+    }
+
+    public void setTargetMinimum(Integer min) {
+<span class="nc" id="L147">        this.targetMinimum = min;</span>
+<span class="nc" id="L148">    }</span>
+    public void setTargetMaximum(Integer max) {
+<span class="nc" id="L150">        this.targetMaximum = max;</span>
+<span class="nc" id="L151">    }</span>
+
+    @Override
+    public void print(PrintWriter w) {
+        Iterable&lt;Status&gt; levels = Ordering
+<span class="nc" id="L156">            .explicit(Arrays.asList(Status.values()))</span>
+<span class="nc" id="L157">            .sortedCopy(</span>
+<span class="nc" id="L158">                ImmutableSet.copyOf(</span>
+<span class="nc" id="L159">                    Iterables.concat(</span>
+<span class="nc" id="L160">                        assignments.keySet(), ImmutableSet.of(Status.DL))));</span>
+
+<span class="nc" id="L162">        w.println();</span>
+<span class="nc bnc" id="L163" title="All 2 branches missed.">        for (Status s : levels) {</span>
+<span class="nc" id="L164">            w.print(String.format(&quot;(%d) %-10s &quot;, assignments.get(s).size(), s));</span>
+<span class="nc" id="L165">        }</span>
+<span class="nc" id="L166">        w.println();</span>
+
+        int maxSize = Ordering
+<span class="nc" id="L169">            .natural()</span>
+<span class="nc" id="L170">            .max(</span>
+<span class="nc" id="L171">                Iterables.transform(</span>
+<span class="nc" id="L172">                    assignments.keySet(),</span>
+<span class="nc" id="L173">                    new Function&lt;Status, Integer&gt;() {</span>
+                        public Integer apply(Status s) {
+<span class="nc" id="L175">                            return assignments.get(s).size();</span>
+                        }
+                    }));
+
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        for (int i = 0; i &lt; maxSize; i++) {</span>
+<span class="nc bnc" id="L180" title="All 2 branches missed.">            for (Status s : levels) {</span>
+                List&lt;Player&gt; ps = Player
+<span class="nc" id="L182">                    .byShortName()</span>
+<span class="nc" id="L183">                    .sortedCopy(assignments.get(s));</span>
+
+<span class="nc bnc" id="L185" title="All 2 branches missed.">                w.print(String.format(&quot;%-15s &quot;, i &lt; ps.size() ? ps.get(i).getShortName() : &quot;&quot;));</span>
+<span class="nc" id="L186">            }</span>
+<span class="nc" id="L187">            w.println();</span>
+        }
+
+<span class="nc" id="L190">        w.println(&quot;Total:&quot; + assignments.size() + &quot; (target &quot; + targetMinimum + &quot;-&quot; + targetMaximum + &quot;)&quot;);</span>
+<span class="nc" id="L191">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L195">        return ToStringBuilder.reflectionToString(this);</span>
+    }
+
+    public static Roster create(
+        PlayerSource source, Iterable&lt;Player&gt; available) {
+<span class="nc" id="L200">        return new Roster(source, available);</span>
+    }
+
+    public static Roster create(Team team) {
+<span class="nc" id="L204">        return create(team, team);</span>
+    }
+
+    public static Roster create(Roster src) {
+<span class="nc" id="L208">        Roster dest = new Roster(src.source, src.available);</span>
+<span class="nc" id="L209">        dest.assignments.putAll(src.assignments);</span>
+<span class="nc" id="L210">        dest.targetMaximum = src.targetMaximum;</span>
+<span class="nc" id="L211">        dest.targetMinimum = src.targetMinimum;</span>
+
+<span class="nc" id="L213">        return dest;</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

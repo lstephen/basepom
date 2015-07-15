@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>BestStartersSelection.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.selection</a> &gt; <span class="el_source">BestStartersSelection.java</span></div><h1>BestStartersSelection.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package com.ljs.ootp.ai.selection;
+
+import com.google.common.base.Function;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.Slot;
+import com.ljs.ootp.ai.player.ratings.Position;
+import com.ljs.ootp.ai.selection.bench.Bench;
+import com.ljs.ootp.ai.selection.lineup.AllLineups;
+import com.ljs.ootp.ai.selection.lineup.Defense;
+import com.ljs.ootp.ai.selection.lineup.Lineup;
+import com.ljs.ootp.ai.selection.lineup.LineupSelection;
+import com.ljs.ootp.ai.selection.lineup.StarterSelection;
+import com.ljs.ootp.ai.stats.BattingStats;
+import com.ljs.ootp.ai.stats.SplitPercentages;
+import com.ljs.ootp.ai.stats.TeamStats;
+import java.util.Set;
+
+/**
+ *
+ * @author levi.stephen
+ */
+public class BestStartersSelection implements Selection {
+
+    private static SplitPercentages pcts;
+
+	private final Multiset&lt;Slot&gt; slots;
+
+	private final TeamStats&lt;BattingStats&gt; predictions;
+
+	private final Function&lt;Player, Integer&gt; value;
+
+<span class="nc" id="L47">	public BestStartersSelection(Iterable&lt;Slot&gt; slots, TeamStats&lt;BattingStats&gt; predictions, Function&lt;Player, Integer&gt; value) {</span>
+<span class="nc" id="L48">		this.slots = HashMultiset.create(slots);</span>
+<span class="nc" id="L49">		this.predictions = predictions;</span>
+<span class="nc" id="L50">		this.value = value;</span>
+<span class="nc" id="L51">	}</span>
+
+    public static void setPercentages(SplitPercentages pcts) {
+<span class="nc" id="L54">        BestStartersSelection.pcts = pcts;</span>
+<span class="nc" id="L55">    }</span>
+
+    private Integer getTargetSize() {
+<span class="nc" id="L58">        return slots.size();</span>
+    }
+
+	@Override
+	public ImmutableMultimap&lt;Slot, Player&gt; select(Iterable&lt;Player&gt; forced, Iterable&lt;Player&gt; available) {
+
+<span class="nc" id="L64">        ImmutableSet&lt;Player&gt; best = ImmutableSet.copyOf(Iterables.concat(selectStarters(available), forced));</span>
+
+<span class="nc" id="L66">        System.out.println(&quot;Best:&quot;);</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        for (Player p : Player.byShortName().sortedCopy(best)) {</span>
+<span class="nc" id="L68">            System.out.print(p.getShortName() + &quot;/&quot;);</span>
+<span class="nc" id="L69">        }</span>
+<span class="nc" id="L70">        System.out.println();</span>
+
+
+<span class="nc" id="L73">        best = optimize(best, forced, available);</span>
+
+<span class="nc" id="L75">        Multimap&lt;Slot, Player&gt; result = HashMultimap.create();</span>
+
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        for (Player p : best) {</span>
+<span class="nc" id="L78">            result.put(Slot.getPrimarySlot(p), p);</span>
+<span class="nc" id="L79">        }</span>
+
+<span class="nc" id="L81">        return ImmutableMultimap.copyOf(result);</span>
+	}
+
+    private ImmutableSet&lt;Player&gt; optimize(Iterable&lt;Player&gt; best, Iterable&lt;Player&gt; forced, Iterable&lt;Player&gt; available) {
+<span class="nc" id="L85">        return optimize(ImmutableSet.copyOf(best), ImmutableSet.copyOf(forced), ImmutableSet.copyOf(available));</span>
+
+    }
+
+    private ImmutableSet&lt;Player&gt; optimize(ImmutableSet&lt;Player&gt; best, ImmutableSet&lt;Player&gt; forced, ImmutableSet&lt;Player&gt; available) {
+
+<span class="nc bnc" id="L91" title="All 2 branches missed.">        if (forced.size() &gt;= getTargetSize()) {</span>
+<span class="nc" id="L92">            return forced;</span>
+        }
+
+<span class="nc bnc" id="L95" title="All 2 branches missed.">        if (best.size() &gt; getTargetSize()) {</span>
+<span class="nc" id="L96">            return optimize(limit(best, forced, getTargetSize()), forced, available);</span>
+        }
+
+<span class="nc" id="L99">        Double bestScore = 0.0;</span>
+<span class="nc" id="L100">        ImmutableSet&lt;Player&gt; bestPlayers = null;</span>
+
+<span class="nc" id="L102">        Integer limit = best.size();</span>
+
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        while (limit &gt;= 9) {</span>
+<span class="nc" id="L105">            ImmutableSet&lt;Player&gt; ps = limit(best, forced, limit);</span>
+
+<span class="nc" id="L107">            ps = fill(ps, available);</span>
+<span class="nc" id="L108">            System.out.print(&quot;Filled: &quot;);</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            for (Player p : Player.byShortName().sortedCopy(ps)) {</span>
+<span class="nc" id="L110">                System.out.print(p.getShortName() + &quot;/&quot;);</span>
+<span class="nc" id="L111">            }</span>
+<span class="nc" id="L112">            System.out.println();</span>
+
+<span class="nc" id="L114">            Double score = SelectedPlayers.create(ps, predictions, pcts).score();</span>
+
+<span class="nc" id="L116">            System.out.println(&quot;limit:&quot; + limit + &quot; score:&quot; + score);</span>
+
+<span class="nc bnc" id="L118" title="All 4 branches missed.">            if (score &lt; bestScore || ps.equals(bestPlayers)) {</span>
+<span class="nc" id="L119">                return bestPlayers;</span>
+            }
+
+<span class="nc" id="L122">            bestScore = score;</span>
+<span class="nc" id="L123">            bestPlayers = ps;</span>
+
+<span class="nc" id="L125">            limit--;</span>
+<span class="nc" id="L126">        }</span>
+
+<span class="nc" id="L128">        return bestPlayers;</span>
+    }
+
+    private ImmutableSet&lt;Player&gt; fill(ImmutableSet&lt;Player&gt; partial, ImmutableSet&lt;Player&gt; available) {
+<span class="nc bnc" id="L132" title="All 2 branches missed.">        if (partial.size() == getTargetSize()) {</span>
+<span class="nc" id="L133">            return partial;</span>
+        }
+
+<span class="nc" id="L136">        AllLineups lineups = new LineupSelection(predictions).dontRequireBackupCatcher().select(partial);</span>
+
+<span class="nc" id="L138">        Bench bench = Bench.select(lineups, partial, predictions, available, getTargetSize());</span>
+
+<span class="nc" id="L140">        return ImmutableSet.copyOf(Iterables.concat(partial, bench.players()));</span>
+    }
+
+    private ImmutableSet&lt;Player&gt; limit(ImmutableSet&lt;Player&gt; best, ImmutableSet&lt;Player&gt; forced, Integer size) {
+
+<span class="nc" id="L145">        Set&lt;Player&gt; selected = Sets.newHashSet(best);</span>
+
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        while (selected.size() &gt; size) {</span>
+<span class="nc" id="L148">            AllLineups lineups = new LineupSelection(predictions).dontRequireBackupCatcher().select(selected);</span>
+<span class="nc" id="L149">            Set&lt;Player&gt; ps = Sets.newHashSet(lineups.getAllPlayers());</span>
+
+<span class="nc" id="L151">            Iterables.removeAll(ps, forced);</span>
+
+<span class="nc bnc" id="L153" title="All 2 branches missed.">            if (ps.isEmpty()) {</span>
+<span class="nc" id="L154">                break;</span>
+            }
+
+<span class="nc" id="L157">            System.out.print(&quot;Selected:&quot;);</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">            for (Player p : byValueProvided(lineups, Iterables.concat(forced, ps)).reverse().sortedCopy(selected)) {</span>
+<span class="nc" id="L159">                System.out.print(p.getShortName() + &quot;-&quot; + Math.round(getValueProvided(p, lineups, Iterables.concat(forced, ps))) + &quot;/&quot;);</span>
+<span class="nc" id="L160">            }</span>
+<span class="nc" id="L161">            System.out.println();</span>
+
+<span class="nc" id="L163">            selected.remove(byValueProvided(lineups, selected).min(ps));</span>
+<span class="nc" id="L164">        }</span>
+
+<span class="nc" id="L166">        AllLineups lineups = new LineupSelection(predictions).dontRequireBackupCatcher().select(selected);</span>
+
+<span class="nc" id="L168">        System.out.print(&quot;Limited:&quot;);</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        for (Player p : byValueProvided(lineups, selected).reverse().sortedCopy(selected)) {</span>
+<span class="nc" id="L170">            System.out.print(p.getShortName() + &quot;-&quot; + Math.round(getValueProvided(p, lineups, selected)) + &quot;/&quot;);</span>
+<span class="nc" id="L171">        }</span>
+<span class="nc" id="L172">        System.out.println();</span>
+
+<span class="nc" id="L174">        return ImmutableSet.copyOf(selected);</span>
+    }
+
+    private ImmutableSet&lt;Player&gt; selectStarters(Iterable&lt;Player&gt; ps) {
+<span class="nc" id="L178">		StarterSelection starters = new StarterSelection(predictions);</span>
+
+<span class="nc" id="L180">        starters.dontRequireBackupCatcher();</span>
+
+<span class="nc" id="L182">        return ImmutableSet.copyOf(</span>
+<span class="nc" id="L183">            Iterables.concat(</span>
+<span class="nc" id="L184">                starters.selectWithDh(Lineup.VsHand.VS_LHP, ps),</span>
+<span class="nc" id="L185">                starters.selectWithDh(Lineup.VsHand.VS_RHP, ps)));</span>
+    }
+
+	private Ordering&lt;Player&gt; byOverall() {
+		return Ordering
+<span class="nc" id="L190">			.natural()</span>
+<span class="nc" id="L191">			.reverse()</span>
+<span class="nc" id="L192">			.onResultOf(value)</span>
+<span class="nc" id="L193">			.compound(Player.byTieBreak());</span>
+	}
+
+    private Ordering&lt;Player&gt; byValueProvided(final AllLineups lineups, final Iterable&lt;Player&gt; selected) {
+        return Ordering
+<span class="nc" id="L198">            .natural()</span>
+<span class="nc" id="L199">            .onResultOf(new Function&lt;Player, Double&gt;() {</span>
+                public Double apply(Player p) {
+<span class="nc" id="L201">                    return getValueProvided(p, lineups, selected);</span>
+                }
+            })
+<span class="nc" id="L204">            .compound(Player.byTieBreak());</span>
+    }
+
+    private Double getValueProvided(Player p, AllLineups lineups, Iterable&lt;Player&gt; selected) {
+<span class="nc" id="L208">        Double score = 0.0;</span>
+
+<span class="nc" id="L210">        score += getValueProvided(p, lineups.getVsLhpPlusDh(), selected, pcts.getVsLhpPercentage(), Lineup.VsHand.VS_LHP);</span>
+<span class="nc" id="L211">        score += getValueProvided(p, lineups.getVsLhp(), selected, pcts.getVsLhpPercentage(), Lineup.VsHand.VS_LHP);</span>
+
+<span class="nc" id="L213">        score += getValueProvided(p, lineups.getVsRhpPlusDh(), selected, pcts.getVsRhpPercentage(), Lineup.VsHand.VS_RHP);</span>
+<span class="nc" id="L214">        score += getValueProvided(p, lineups.getVsRhp(), selected, pcts.getVsRhpPercentage(), Lineup.VsHand.VS_RHP);</span>
+
+<span class="nc" id="L216">        return score;</span>
+    }
+
+    private Double getValueProvided(Player p, Lineup l, Iterable&lt;Player&gt; selected, Double pct, Lineup.VsHand vs) {
+<span class="nc" id="L220">        Double score = 0.0;</span>
+<span class="nc" id="L221">        Integer wobaPlus = vs.getStats(predictions, p).getWobaPlus();</span>
+
+<span class="nc bnc" id="L223" title="All 2 branches missed.">        if (l.contains(p)) {</span>
+<span class="nc" id="L224">            score += wobaPlus;</span>
+
+<span class="nc" id="L226">            Position pos = l.getPosition(p);</span>
+<span class="nc" id="L227">            score += (Defense.getPositionFactor(pos) * p.getDefensiveRatings().getPositionScore(pos));</span>
+
+            /*if (p.canPlay(l.getPosition(p))) {
+                score += wobaPlus;
+            }*/
+        }
+
+<span class="nc" id="L234">        return pct * score;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

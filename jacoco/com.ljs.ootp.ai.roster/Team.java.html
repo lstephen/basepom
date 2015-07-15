@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Team.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.roster</a> &gt; <span class="el_source">Team.java</span></div><h1>Team.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.roster;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.PlayerId;
+import com.ljs.ootp.ai.player.PlayerSource;
+import java.util.Iterator;
+import java.util.Set;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class Team implements Iterable&lt;Player&gt;, PlayerSource {
+
+    private final Set&lt;Player&gt; players;
+
+<span class="nc" id="L19">    private final Set&lt;Player&gt; injured = Sets.newHashSet();</span>
+
+<span class="nc" id="L21">    private Team(Iterable&lt;Player&gt; players) {</span>
+<span class="nc" id="L22">        this.players = Sets.newHashSet(players);</span>
+<span class="nc" id="L23">    }</span>
+
+    public boolean containsPlayer(Player p) {
+<span class="nc" id="L26">        return players.contains(p);</span>
+    }
+
+    public boolean containsPlayer(PlayerId id) {
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        for (Player p : players) {</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">            if (p.hasId(id)) {</span>
+<span class="nc" id="L32">                return true;</span>
+            }
+<span class="nc" id="L34">        }</span>
+<span class="nc" id="L35">        return false;</span>
+    }
+
+    public Player get(PlayerId id) {
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        for (Player p : players) {</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">            if (p.hasId(id)) {</span>
+<span class="nc" id="L41">                return p;</span>
+            }
+<span class="nc" id="L43">        }</span>
+<span class="nc" id="L44">        throw new IllegalStateException();</span>
+    }
+
+    public void addInjury(Iterable&lt;Player&gt; ps) {
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        for (Player p : ps) {</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">            if (p != null) {</span>
+<span class="nc" id="L50">                injured.add(p);</span>
+            }
+<span class="nc" id="L52">        }</span>
+<span class="nc" id="L53">    }</span>
+
+    public Iterable&lt;Player&gt; getInjuries() {
+<span class="nc" id="L56">        return ImmutableSet.copyOf(injured);</span>
+    }
+
+    public void processManualChanges(Changes changes) {
+
+<span class="nc bnc" id="L61" title="All 2 branches missed.">        for (Player p : changes.get(Changes.ChangeType.ACQUISITION)) {</span>
+<span class="nc" id="L62">            players.add(p);</span>
+<span class="nc" id="L63">        }</span>
+
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        for (Player p : changes.get(Changes.ChangeType.FOURTY_MAN)) {</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            if (containsPlayer(p)) {</span>
+<span class="nc" id="L67">                Player updated = get(p.getId());</span>
+<span class="nc" id="L68">                remove(p);</span>
+<span class="nc" id="L69">                updated.setOn40Man(Boolean.TRUE);</span>
+<span class="nc" id="L70">                players.add(updated);</span>
+            }
+<span class="nc" id="L72">        }</span>
+
+<span class="nc bnc" id="L74" title="All 2 branches missed.">        for (Player p : changes.get(Changes.ChangeType.RELEASE)) {</span>
+<span class="nc" id="L75">            remove(p);</span>
+<span class="nc" id="L76">        }</span>
+<span class="nc" id="L77">    }</span>
+
+    public void remove(Iterable&lt;Player&gt; ps) {
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        for (Player p : ps) {</span>
+<span class="nc" id="L81">            remove(p);</span>
+<span class="nc" id="L82">        }</span>
+<span class="nc" id="L83">    }</span>
+
+    public void remove(Player p) {
+<span class="nc" id="L86">        players.remove(p);</span>
+<span class="nc" id="L87">        injured.remove(p);</span>
+<span class="nc" id="L88">    }</span>
+
+    public Integer size() {
+<span class="nc" id="L91">        return players.size();</span>
+    }
+
+
+    @Override
+    public Iterator&lt;Player&gt; iterator() {
+<span class="nc" id="L97">        return players.iterator();</span>
+    }
+
+    public static Team create(Iterable&lt;Player&gt; players) {
+<span class="nc" id="L101">        return new Team(players);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

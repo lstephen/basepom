@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RosterSelection.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.roster</a> &gt; <span class="el_source">RosterSelection.java</span></div><h1>RosterSelection.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.roster;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+import com.ljs.ootp.ai.io.Printables;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.Slot;
+import com.ljs.ootp.ai.regression.BattingRegression;
+import com.ljs.ootp.ai.regression.PitchingRegression;
+import com.ljs.ootp.ai.regression.Predictions;
+import com.ljs.ootp.ai.roster.Changes.ChangeType;
+import com.ljs.ootp.ai.roster.Roster.Status;
+import com.ljs.ootp.ai.selection.HitterSelectionFactory;
+import com.ljs.ootp.ai.selection.Mode;
+import com.ljs.ootp.ai.selection.PitcherSelectionFactory;
+import com.ljs.ootp.ai.selection.Selection;
+import com.ljs.ootp.ai.selection.Selections;
+import com.ljs.ootp.ai.selection.SlotSelection;
+import com.ljs.ootp.ai.stats.BattingStats;
+import com.ljs.ootp.ai.stats.PitcherOverall;
+import com.ljs.ootp.ai.stats.PitchingStats;
+import com.ljs.ootp.ai.stats.TeamStats;
+import com.ljs.ootp.ai.value.TradeValue;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Set;
+
+public final class RosterSelection {
+
+<span class="nc" id="L37">    private static final Double MR_CONSTANT = .865;</span>
+
+    private final Team team;
+
+    private final HitterSelectionFactory hitterSelectionFactory;
+
+    private final PitcherSelectionFactory pitcherSelectionFactory;
+
+    private final Predictions predictions;
+
+    private final TradeValue value;
+
+    private Roster previous;
+
+    private BattingRegression batting;
+
+    private PitchingRegression pitching;
+
+<span class="nc" id="L55">    private List&lt;Status&gt; remainingLevels =</span>
+<span class="nc" id="L56">        Lists.newArrayList(Status.AAA, Status.AA, Status.A);</span>
+
+    private FourtyManRoster fourtyManRoster;
+
+    private RosterSelection(
+<span class="nc" id="L61">        Team team, Predictions predictions, TradeValue value) {</span>
+
+<span class="nc" id="L63">        this.team = team;</span>
+<span class="nc" id="L64">        this.predictions = predictions;</span>
+<span class="nc" id="L65">        this.value = value;</span>
+
+<span class="nc" id="L67">        hitterSelectionFactory = HitterSelectionFactory.using(predictions);</span>
+<span class="nc" id="L68">        pitcherSelectionFactory = PitcherSelectionFactory.using(predictions);</span>
+<span class="nc" id="L69">    }</span>
+
+    public void remove(Player p) {
+<span class="nc" id="L72">        team.remove(p);</span>
+<span class="nc" id="L73">    }</span>
+
+    public void setPrevious(Roster previous) {
+<span class="nc" id="L76">        this.previous = previous;</span>
+<span class="nc" id="L77">    }</span>
+
+    private Iterable&lt;Player&gt; getAvailableHitters(Roster roster) {
+<span class="nc" id="L80">        Set&lt;Player&gt; available = Sets.newHashSet(</span>
+<span class="nc" id="L81">                Selections.onlyHitters(</span>
+<span class="nc" id="L82">                    Selections.onlyOn40Man(roster.getUnassigned())));</span>
+
+<span class="nc" id="L84">        available.removeAll(getToBeRemoved(available));</span>
+
+<span class="nc" id="L86">        return available;</span>
+    }
+
+    private Iterable&lt;Player&gt; getAvailablePitchers(Roster roster) {
+<span class="nc" id="L90">        Set&lt;Player&gt; available = Sets.newHashSet(Selections.onlyPitchers(Selections.onlyOn40Man(roster.getUnassigned())));</span>
+<span class="nc" id="L91">        available.removeAll(getToBeRemoved(available));</span>
+<span class="nc" id="L92">        return available;</span>
+    }
+
+    private Set&lt;Player&gt; getToBeRemoved(Iterable&lt;Player&gt; available) {
+<span class="nc" id="L96">        Set&lt;Player&gt; toRemove = Sets.newHashSet();</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (previous != null) {</span>
+<span class="nc" id="L98">            ImmutableSet&lt;Player&gt; toRemoveFromFourtyMan = null;</span>
+
+<span class="nc bnc" id="L100" title="All 2 branches missed.">            for (Player p : available) {</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">                if (p.getClearedWaivers().or(Boolean.FALSE)) {</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">					if (toRemoveFromFourtyMan == null) {</span>
+<span class="nc" id="L103">						toRemoveFromFourtyMan =</span>
+<span class="nc" id="L104">							ImmutableSet.copyOf(getFourtyManRoster().getPlayersToRemove());</span>
+					}
+
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                    if (toRemoveFromFourtyMan.contains(p)) {</span>
+<span class="nc" id="L108">						toRemove.add(p);</span>
+					}
+                }
+<span class="nc" id="L111">            }</span>
+
+        }
+<span class="nc" id="L114">        return toRemove;</span>
+    }
+
+    private FourtyManRoster getFourtyManRoster() {
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        if (fourtyManRoster == null) {</span>
+<span class="nc" id="L119">            Roster roster = Roster.create(previous);</span>
+
+<span class="nc bnc" id="L121" title="All 2 branches missed.">            for (Player p : previous.getAllPlayers()) {</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">                if (!team.containsPlayer(p)) {</span>
+<span class="nc" id="L123">                    roster.release(p);</span>
+                }
+<span class="nc" id="L125">            }</span>
+
+<span class="nc" id="L127">            fourtyManRoster =</span>
+                new FourtyManRoster(
+                    roster,
+                    Predictions
+<span class="nc" id="L131">                        .predict(team)</span>
+<span class="nc" id="L132">                        .using(batting, pitching, predictions.getPitcherOverall()),</span>
+                value);
+        }
+<span class="nc" id="L135">        return fourtyManRoster;</span>
+    }
+
+    public Roster select(Mode mode, Changes changes) {
+<span class="nc" id="L139">        return select(</span>
+            mode,
+            changes,
+<span class="nc" id="L142">            hitterSelectionFactory.create(mode),</span>
+<span class="nc" id="L143">            pitcherSelectionFactory.create(mode));</span>
+    }
+
+    private Roster select(Mode mode, Changes changes, Selection hitting, Selection pitching) {
+<span class="nc" id="L147">        Roster roster = Roster.create(team);</span>
+<span class="nc" id="L148">        Set&lt;Player&gt; forced = Sets.newHashSet(getForced(changes));</span>
+<span class="nc" id="L149">        Set&lt;Player&gt; ml = Sets.newHashSet();</span>
+
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        for (Player p : changes.get(ChangeType.FORCE_ML)) {</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">            if (!previous.contains(p)) {</span>
+<span class="nc" id="L153">                previous.assign(Status.UNK, p);</span>
+            }
+<span class="nc" id="L155">        }</span>
+
+<span class="nc bnc" id="L157" title="All 2 branches missed.">        for (Player p : changes.get(ChangeType.FORCE_ML)) {</span>
+<span class="nc bnc" id="L158" title="All 2 branches missed.">          if (changes.get(ChangeType.FORCE_FORCE_ML).contains(p)) {</span>
+<span class="nc" id="L159">            System.out.println(&quot;Really forced: &quot; + p.getShortName());</span>
+<span class="nc" id="L160">            continue;</span>
+          }
+
+<span class="nc" id="L163">          FourtyManRoster fourtyMan = getFourtyManRoster();</span>
+<span class="nc" id="L164">          fourtyMan.setChanges(changes);</span>
+
+<span class="nc bnc" id="L166" title="All 2 branches missed.">          if (!fourtyMan.getDesired40ManRoster().contains(p)) {</span>
+<span class="nc" id="L167">              System.out.println(&quot;Not on desired 40 Man: &quot; + p.getShortName());</span>
+<span class="nc" id="L168">              roster.release(p);</span>
+<span class="nc" id="L169">              forced.remove(p);</span>
+          }
+<span class="nc" id="L171">        }</span>
+
+<span class="nc" id="L173">        assignToDisabledList(roster, team.getInjuries());</span>
+
+<span class="nc" id="L175">        forced.removeAll(roster.getPlayers(Status.DL));</span>
+
+<span class="nc" id="L177">        ml.addAll(</span>
+<span class="nc" id="L178">            hitting.select(</span>
+<span class="nc" id="L179">                Selections.onlyHitters(forced),</span>
+<span class="nc" id="L180">                getAvailableHitters(roster)).values());</span>
+
+<span class="nc" id="L182">        ml.addAll(</span>
+<span class="nc" id="L183">            pitching.select(</span>
+<span class="nc" id="L184">                Selections.onlyPitchers(forced),</span>
+<span class="nc" id="L185">                getAvailablePitchers(roster)).values());</span>
+
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        while (ml.size() &gt; mode.getMajorLeagueRosterLimit()</span>
+<span class="nc bnc" id="L188" title="All 2 branches missed.">            &amp;&amp; !Sets.difference(ml, forced).isEmpty()) {</span>
+<span class="nc" id="L189">            ml.remove(Ordering</span>
+<span class="nc" id="L190">                .natural()</span>
+<span class="nc" id="L191">                .onResultOf(value.getTradeTargetValue())</span>
+<span class="nc" id="L192">                .min(Sets.difference(ml, forced)));</span>
+        }
+
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        while (ml.size() &gt; mode.getMajorLeagueRosterLimit()) {</span>
+            Player p = Ordering
+<span class="nc" id="L197">                .natural()</span>
+<span class="nc" id="L198">                .onResultOf(value.getTradeTargetValue())</span>
+<span class="nc" id="L199">                .min(ml);</span>
+
+<span class="nc" id="L201">            ml.remove(p);</span>
+
+<span class="nc bnc" id="L203" title="All 2 branches missed.">            if (forced.contains(p)) {</span>
+<span class="nc" id="L204">                roster.release(p);</span>
+            }
+<span class="nc" id="L206">        }</span>
+
+<span class="nc" id="L208">        roster.assign(Roster.Status.ML, ml);</span>
+<span class="nc" id="L209">        assignMinors(roster);</span>
+
+<span class="nc" id="L211">        return roster;</span>
+    }
+
+    private void assignToDisabledList(Roster r, Iterable&lt;Player&gt; ps) {
+<span class="nc bnc" id="L215" title="All 2 branches missed.">        for (Player p : ps) {</span>
+<span class="nc" id="L216">            boolean isOn40Man = p.getOn40Man().or(Boolean.TRUE);</span>
+<span class="nc bnc" id="L217" title="All 4 branches missed.">            boolean isOnDl = previous != null &amp;&amp; previous.getStatus(p) == Status.DL;</span>
+
+<span class="nc bnc" id="L219" title="All 4 branches missed.">            if (isOn40Man || isOnDl) {</span>
+<span class="nc" id="L220">                r.assign(com.ljs.ootp.ai.roster.Roster.Status.DL, p);</span>
+            };
+<span class="nc" id="L222">        }</span>
+<span class="nc" id="L223">    }</span>
+
+    public void assignMinors(Roster roster) {
+
+<span class="nc" id="L227">        List&lt;Status&gt; remainingLevels = Lists.newArrayList(this.remainingLevels);</span>
+
+<span class="nc bnc" id="L229" title="All 2 branches missed.">        while (!remainingLevels.isEmpty()) {</span>
+<span class="nc" id="L230">            ImmutableSet&lt;Player&gt; availableHitters =</span>
+<span class="nc" id="L231">                Selections.onlyHitters(roster.getUnassigned());</span>
+
+<span class="nc" id="L233">            ImmutableSet&lt;Player&gt; availablePitchers =</span>
+<span class="nc" id="L234">                Selections.onlyPitchers(roster.getUnassigned());</span>
+
+<span class="nc" id="L236">            int hittersSize =</span>
+<span class="nc" id="L237">                ((availableHitters.size() + remainingLevels.size()) - 1) /</span>
+<span class="nc" id="L238">                remainingLevels.size();</span>
+<span class="nc" id="L239">            int pitchersSize = ((availablePitchers.size() + remainingLevels</span>
+<span class="nc" id="L240">                .size()) - 1) / remainingLevels.size();</span>
+
+<span class="nc" id="L242">            Multiset&lt;Slot&gt; slots = HashMultiset.create();</span>
+
+<span class="nc bnc" id="L244" title="All 2 branches missed.">            for (Slot s : Slot.values()) {</span>
+<span class="nc" id="L245">                int toAdd = ((Slot.countPlayersWithPrimary(roster</span>
+<span class="nc" id="L246">                    .getUnassigned(), s) + remainingLevels.size()) - 1) /</span>
+<span class="nc" id="L247">                    remainingLevels.size();</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">                for (int i = 0; i &lt; toAdd; i++) {</span>
+<span class="nc" id="L249">                    slots.add(s);</span>
+                }
+
+            }
+
+<span class="nc" id="L254">            Status level = remainingLevels.get(0);</span>
+
+<span class="nc" id="L256">            roster.assign(</span>
+                level,
+                SlotSelection
+<span class="nc" id="L259">                    .builder()</span>
+<span class="nc" id="L260">                    .slots(slots)</span>
+<span class="nc" id="L261">                    .size(hittersSize)</span>
+<span class="nc" id="L262">                    .ordering(hitterSelectionFactory.byOverall())</span>
+<span class="nc" id="L263">                    .build()</span>
+<span class="nc" id="L264">                    .select(ImmutableSet.&lt;Player&gt;of(), availableHitters)</span>
+<span class="nc" id="L265">                    .values());</span>
+
+<span class="nc" id="L267">            roster.assign(</span>
+                level,
+                SlotSelection
+<span class="nc" id="L270">                    .builder()</span>
+<span class="nc" id="L271">                    .slots(slots)</span>
+<span class="nc" id="L272">                    .size(pitchersSize)</span>
+<span class="nc" id="L273">                    .ordering(pitcherSelectionFactory.byOverall())</span>
+<span class="nc" id="L274">                    .build()</span>
+<span class="nc" id="L275">                    .select(ImmutableSet.&lt;Player&gt;of(), availablePitchers)</span>
+<span class="nc" id="L276">                    .values());</span>
+
+<span class="nc" id="L278">            remainingLevels.remove(level);</span>
+<span class="nc" id="L279">        }</span>
+
+<span class="nc" id="L281">    }</span>
+
+    private ImmutableSet&lt;Player&gt; getForced(Changes changes) {
+<span class="nc" id="L284">        Set&lt;Player&gt; forced = Sets.newHashSet();</span>
+
+<span class="nc bnc" id="L286" title="All 2 branches missed.">        for (Player p : changes.get(Changes.ChangeType.FORCE_ML)) {</span>
+<span class="nc" id="L287">            forced.add(p);</span>
+<span class="nc" id="L288">        }</span>
+
+<span class="nc bnc" id="L290" title="All 2 branches missed.">        if (previous != null) {</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">            for (Player p : previous.getPlayers(Status.ML)) {</span>
+<span class="nc bnc" id="L292" title="All 2 branches missed.">                if (team.containsPlayer(p)</span>
+<span class="nc bnc" id="L293" title="All 2 branches missed.">                    &amp;&amp; p.getOutOfOptions().or(Boolean.FALSE)</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">                    &amp;&amp; !p.getClearedWaivers().or(Boolean.FALSE)</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">                    &amp;&amp; !Iterables.contains(team.getInjuries(), p)) {</span>
+
+<span class="nc" id="L297">                    forced.add(p);</span>
+                }
+<span class="nc" id="L299">            }</span>
+        }
+<span class="nc" id="L301">        return ImmutableSet.copyOf(forced);</span>
+    }
+
+    public void printBattingSelectionTable(OutputStream out, Roster roster, TeamStats&lt;BattingStats&gt; stats) {
+<span class="nc" id="L305">        Printables.print((w) -&gt; printBattingSelectionTable(w, roster, stats)).to(out);</span>
+<span class="nc" id="L306">    }</span>
+
+    public void printBattingSelectionTable(PrintWriter w, Roster roster, TeamStats&lt;BattingStats&gt; stats) {
+<span class="nc" id="L309">        w.println();</span>
+<span class="nc" id="L310">        TeamStats&lt;BattingStats&gt; batting = predictions.getAllBatting();</span>
+
+        for (Player p :
+<span class="nc bnc" id="L313" title="All 2 branches missed.">            hitterSelectionFactory.byOverall().sortedCopy(Selections.onlyHitters(batting.getPlayers()))) {</span>
+
+<span class="nc" id="L315">            w.println(</span>
+<span class="nc" id="L316">                String.format(</span>
+                    &quot;%-2s %-15s%s %3s %2d | %14s %3d %3s | %14s %3d %3s | %2s || %3d | %8s | %s&quot;,
+<span class="nc" id="L318">                    p.getPosition(),</span>
+<span class="nc" id="L319">                    p.getShortName(),</span>
+<span class="nc" id="L320">                    p.getRosterStatus(),</span>
+<span class="nc bnc" id="L321" title="All 2 branches missed.">                    roster.getStatus(p) != null ? roster.getStatus(p) : &quot;&quot;,</span>
+<span class="nc" id="L322">                    p.getAge(),</span>
+<span class="nc" id="L323">                    batting.getSplits(p).getVsLeft().getSlashLine(),</span>
+<span class="nc" id="L324">                    batting.getSplits(p).getVsLeft().getWobaPlus(),</span>
+<span class="nc bnc" id="L325" title="All 2 branches missed.">                    stats.contains(p) ? stats.getSplits(p).getVsLeft().getWobaPlus() : &quot;&quot;,</span>
+<span class="nc" id="L326">                    batting.getSplits(p).getVsRight().getSlashLine(),</span>
+<span class="nc" id="L327">                    batting.getSplits(p).getVsRight().getWobaPlus(),</span>
+<span class="nc bnc" id="L328" title="All 2 branches missed.">                    stats.contains(p) ? stats.getSplits(p).getVsRight().getWobaPlus() : &quot;&quot;,</span>
+<span class="nc" id="L329">                    p.getIntangibles(),</span>
+<span class="nc" id="L330">                    batting.getOverall(p).getWobaPlus(),</span>
+<span class="nc" id="L331">                    p.getDefensiveRatings().getPositionScores(),</span>
+<span class="nc" id="L332">                    Joiner.on(',').join(Slot.getPlayerSlots(p))));</span>
+<span class="nc" id="L333">        }</span>
+
+<span class="nc" id="L335">        w.flush();</span>
+<span class="nc" id="L336">    }</span>
+
+    public void printPitchingSelectionTable(OutputStream out, Roster roster, TeamStats&lt;PitchingStats&gt; stats) {
+<span class="nc" id="L339">        Printables.print((w) -&gt; printPitchingSelectionTable(w, roster, stats)).to(out);</span>
+<span class="nc" id="L340">    }</span>
+
+    public void printPitchingSelectionTable(PrintWriter w, Roster roster, TeamStats&lt;PitchingStats&gt; stats) {
+<span class="nc" id="L343">        w.println();</span>
+<span class="nc" id="L344">        TeamStats&lt;PitchingStats&gt; pitching = predictions.getAllPitching();</span>
+<span class="nc" id="L345">        PitcherOverall method = predictions.getPitcherOverall();</span>
+
+<span class="nc" id="L347">        Integer statusLength = Iterables.getFirst(roster.getAllPlayers(), null).getRosterStatus().length();</span>
+
+<span class="nc" id="L349">        w.format(&quot;%&quot; + (25 + statusLength) + &quot;s |  H/9  K/9 BB/9 HR/9 |%n&quot;, &quot;&quot;);</span>
+
+<span class="nc bnc" id="L351" title="All 2 branches missed.">        for (Player p : pitcherSelectionFactory</span>
+<span class="nc" id="L352">            .byOverall()</span>
+<span class="nc" id="L353">            .sortedCopy(Selections.onlyPitchers(pitching.getPlayers()))) {</span>
+
+<span class="nc" id="L355">            w.println(</span>
+<span class="nc" id="L356">                String.format(</span>
+                    &quot;%-2s %-15s%s %3s %2d | %4.1f %4.1f %4.1f %4.1f | %3d %3s | %3d %3s | %2s || %3d %3s | %s&quot;,
+<span class="nc" id="L358">                    p.getPosition(),</span>
+<span class="nc" id="L359">                    p.getShortName(),</span>
+<span class="nc" id="L360">                    p.getRosterStatus(),</span>
+<span class="nc bnc" id="L361" title="All 2 branches missed.">                    roster.getStatus(p) == null ? &quot;&quot; : roster.getStatus(p),</span>
+<span class="nc" id="L362">                    Integer.valueOf(p.getAge()),</span>
+<span class="nc" id="L363">                    pitching.getSplits(p).getOverall().getHitsPerNine(),</span>
+<span class="nc" id="L364">                    pitching.getSplits(p).getOverall().getStrikeoutsPerNine(),</span>
+<span class="nc" id="L365">                    pitching.getSplits(p).getOverall().getWalksPerNine(),</span>
+<span class="nc" id="L366">                    pitching.getSplits(p).getOverall().getHomeRunsPerNine(),</span>
+<span class="nc" id="L367">                    method.getPlus(pitching.getSplits(p).getVsLeft()),</span>
+<span class="nc bnc" id="L368" title="All 2 branches missed.">                    stats.contains(p) ? Math.max(0, Math.min(method.getPlus(stats.getSplits(p).getVsLeft()), 999)) : &quot;&quot;,</span>
+<span class="nc" id="L369">                    method.getPlus(pitching.getSplits(p).getVsRight()),</span>
+<span class="nc bnc" id="L370" title="All 2 branches missed.">                    stats.contains(p) ? Math.max(0, Math.min(method.getPlus(stats.getSplits(p).getVsRight()), 999)) : &quot;&quot;,</span>
+<span class="nc" id="L371">                    p.getIntangibles(),</span>
+<span class="nc" id="L372">                    method.getPlus(pitching.getOverall(p)),</span>
+<span class="nc bnc" id="L373" title="All 2 branches missed.">                    p.getPosition().equals(&quot;MR&quot;)</span>
+<span class="nc" id="L374">                        ? (int) (MR_CONSTANT * method.getPlus(pitching.getOverall(p)))</span>
+                        : &quot;&quot;,
+<span class="nc" id="L376">                    Joiner.on(',').join(Slot.getPlayerSlots(p))</span>
+                ));
+<span class="nc" id="L378">        }</span>
+
+<span class="nc" id="L380">        w.flush();</span>
+<span class="nc" id="L381">    }</span>
+
+    public static RosterSelection ootpx(Team team, BattingRegression batting,
+        PitchingRegression pitching, TradeValue value) {
+
+<span class="nc" id="L386">        RosterSelection selection = new RosterSelection(</span>
+            team,
+            Predictions
+<span class="nc" id="L389">                .predict(team)</span>
+<span class="nc" id="L390">                .using(batting, pitching, PitcherOverall.FIP),</span>
+            value);
+<span class="nc" id="L392">        selection.batting = batting;</span>
+<span class="nc" id="L393">        selection.pitching = pitching;</span>
+
+<span class="nc" id="L395">        selection.remainingLevels = Lists.newArrayList(Status.AAA, Status.AA, Status.A, Status.SA, Status.R);</span>
+
+<span class="nc" id="L397">        return selection;</span>
+    }
+
+    public static RosterSelection ootp6(Team team, BattingRegression batting,
+        PitchingRegression pitching, TradeValue value) {
+
+<span class="nc" id="L403">        RosterSelection selection = new RosterSelection(</span>
+            team,
+            Predictions
+<span class="nc" id="L406">                .predict(team)</span>
+<span class="nc" id="L407">                .using(batting, pitching, PitcherOverall.FIP),</span>
+            value);
+<span class="nc" id="L409">        selection.batting = batting;</span>
+<span class="nc" id="L410">        selection.pitching = pitching;</span>
+
+<span class="nc" id="L412">        return selection;</span>
+    }
+
+    public static RosterSelection ootp5(Team team, BattingRegression batting,
+        PitchingRegression pitching, TradeValue value) {
+
+<span class="nc" id="L418">        RosterSelection selection = new RosterSelection(</span>
+            team,
+            Predictions
+<span class="nc" id="L421">                .predict(team)</span>
+<span class="nc" id="L422">                .using(batting, pitching, PitcherOverall.WOBA_AGAINST),</span>
+            value);
+
+<span class="nc" id="L425">        selection.batting = batting;</span>
+<span class="nc" id="L426">        selection.pitching = pitching;</span>
+
+<span class="nc" id="L428">        return selection;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

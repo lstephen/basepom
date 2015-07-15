@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>TeamRatings.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.ootp5.site</a> &gt; <span class="el_source">TeamRatings.java</span></div><h1>TeamRatings.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.ootp5.site;
+
+import com.google.common.collect.ImmutableSet;
+import com.ljs.ootp.extract.html.Page;
+import com.ljs.ootp.ai.data.Id;
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.PlayerId;
+import com.ljs.ootp.ai.roster.Team;
+import com.ljs.ootp.ai.site.Site;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+/**
+ *
+ * @author lstephen
+ */
+public class TeamRatings {
+
+    private final Site site;
+
+    private final Id&lt;Team&gt; team;
+
+    private final Page page;
+
+<span class="nc" id="L26">    public TeamRatings(Site site, Id&lt;Team&gt; team) {</span>
+<span class="nc" id="L27">        this.site = site;</span>
+<span class="nc" id="L28">        this.team = team;</span>
+<span class="nc" id="L29">        page = site.getPage(&quot;team&quot; + team.get() + &quot;rr.html&quot;);</span>
+<span class="nc" id="L30">    }</span>
+
+    public Team extractTeam() {
+        ImmutableSet.Builder&lt;Player&gt; result =
+<span class="nc" id="L34">            ImmutableSet.builder();</span>
+
+<span class="nc bnc" id="L36" title="All 2 branches missed.">        for (PlayerId id : extractPlayerIds()) {</span>
+<span class="nc" id="L37">            Player p = site.getPlayer(id);</span>
+
+<span class="nc bnc" id="L39" title="All 2 branches missed.">            if (p != null) {</span>
+<span class="nc" id="L40">                result.add(p);</span>
+            }
+<span class="nc" id="L42">        }</span>
+
+<span class="nc" id="L44">        Team team = Team.create(result.build());</span>
+
+<span class="nc" id="L46">        team.addInjury(site.getPlayers(new SingleTeamImpl(site, this.team).getInjuries()));</span>
+
+<span class="nc" id="L48">        return team;</span>
+    }
+
+    private ImmutableSet&lt;PlayerId&gt; extractPlayerIds() {
+<span class="nc" id="L52">        Document doc = page.load();</span>
+
+<span class="nc" id="L54">        Elements els = doc.select(&quot;td a&quot;);</span>
+
+<span class="nc" id="L56">        ImmutableSet.Builder&lt;PlayerId&gt; ids = ImmutableSet.builder();</span>
+
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        for (Element el : els) {</span>
+<span class="nc" id="L59">            ids.add(new PlayerId(el.attr(&quot;href&quot;).replaceAll(&quot;.html&quot;, &quot;&quot;)));</span>
+<span class="nc" id="L60">        }</span>
+
+<span class="nc" id="L62">        return ids.build();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

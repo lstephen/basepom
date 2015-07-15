@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DepthChart.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.selection.depthchart</a> &gt; <span class="el_source">DepthChart.java</span></div><h1>DepthChart.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.selection.depthchart;
+
+import com.ljs.ootp.ai.player.Player;
+import com.ljs.ootp.ai.player.ratings.Position;
+
+import java.io.PrintWriter;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
+
+import org.apache.commons.lang3.StringUtils;
+
+/**
+ *
+ * @author lstephen
+ */
+<span class="nc" id="L27">public class DepthChart {</span>
+
+<span class="nc" id="L29">    private final Map&lt;Position, Player&gt; starters = Maps.newHashMap();</span>
+
+<span class="nc" id="L31">    private final Map&lt;Position, Player&gt; defenders = Maps.newHashMap();</span>
+
+<span class="nc" id="L33">    private final List&lt;Backup&gt; backups = Lists.newArrayList();</span>
+
+    public void setStarter(Position position, Player player) {
+<span class="nc" id="L36">        starters.put(position, player);</span>
+<span class="nc" id="L37">    }</span>
+
+    public Player getStarter(Position position) {
+<span class="nc" id="L40">        return starters.get(position);</span>
+    }
+
+    public void setDefensiveReplacement(Position position, Player player) {
+<span class="nc" id="L44">        defenders.put(position, player);</span>
+<span class="nc" id="L45">    }</span>
+
+    public Optional&lt;Player&gt; getDefensiveReplacement(Position position) {
+<span class="nc" id="L48">        return Optional.fromNullable(defenders.get(position));</span>
+    }
+
+    public void addBackup(Position position, Player player, Number pct) {
+<span class="nc" id="L52">        backups.add(Backup.create(position, player, pct.intValue()));</span>
+<span class="nc" id="L53">    }</span>
+
+    private Iterable&lt;Backup&gt; getBackups(Position position) {
+<span class="nc" id="L56">        List&lt;Backup&gt; result = Lists.newArrayList();</span>
+
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        for (Backup bu : backups) {</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">            if (bu.position == position) {</span>
+<span class="nc" id="L60">                result.add(bu);</span>
+            }
+<span class="nc" id="L62">        }</span>
+
+<span class="nc" id="L64">        return result;</span>
+    }
+
+    public void print(PrintWriter w) {
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        for (Position p : Ordering</span>
+<span class="nc" id="L69">            .explicit(Arrays.asList(Position.values()))</span>
+<span class="nc" id="L70">            .sortedCopy(starters.keySet())) {</span>
+
+<span class="nc" id="L72">            Optional&lt;Player&gt; dr = getDefensiveReplacement(p);</span>
+
+<span class="nc" id="L74">            w.println(</span>
+<span class="nc" id="L75">                String.format(</span>
+                    &quot;%2s: %-15s DR: %-15s BU: %s&quot;,
+<span class="nc" id="L77">                    p.getAbbreviation(),</span>
+<span class="nc" id="L78">                    StringUtils.abbreviate(getStarter(p).getShortName(), 15),</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">                    dr.isPresent() ? StringUtils.abbreviate(dr.get().getShortName(), 15) : &quot;&quot;,</span>
+<span class="nc" id="L80">                    Joiner.on(' ').join(Iterables.transform(getBackups(p), Backup.format()))));</span>
+<span class="nc" id="L81">            w.flush();</span>
+<span class="nc" id="L82">        }</span>
+
+<span class="nc" id="L84">        w.flush();</span>
+<span class="nc" id="L85">    }</span>
+
+<span class="nc" id="L87">    private static class Backup {</span>
+
+        private final Position position;
+
+        private final Player player;
+
+        private final BackupPlayingTime percentage;
+
+<span class="nc" id="L95">        private Backup(Position position, Player player, Integer percentage) {</span>
+<span class="nc" id="L96">            this.position = position;</span>
+<span class="nc" id="L97">            this.player = player;</span>
+<span class="nc" id="L98">            this.percentage = BackupPlayingTime.roundFrom(percentage);</span>
+<span class="nc" id="L99">        }</span>
+
+        public static Function&lt;Backup, String&gt; format() {
+<span class="nc" id="L102">            return new Function&lt;Backup, String&gt;() {</span>
+                @Override
+                public String apply(Backup bu) {
+<span class="nc" id="L105">                    Preconditions.checkNotNull(bu);</span>
+
+<span class="nc" id="L107">                    return String.format(</span>
+                        &quot;(%s) %-15s&quot;,
+<span class="nc" id="L109">                        bu.percentage.format(),</span>
+<span class="nc" id="L110">                        StringUtils.abbreviate(bu.player.getShortName(), 15));</span>
+                }
+            };
+        }
+
+        public static Backup create(
+            Position position, Player player, Integer percentage) {
+
+<span class="nc" id="L118">            return new Backup(position, player, percentage);</span>
+        }
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>All.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.selection.lineup</a> &gt; <span class="el_source">All.java</span></div><h1>All.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.selection.lineup;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.UnmodifiableIterator;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class All&lt;T&gt; implements Iterable&lt;T&gt; {
+
+    private final T vsRhp;
+    private final T vsRhpPlusDh;
+    private final T vsLhp;
+    private final T vsLhpPlusDh;
+
+<span class="nc" id="L18">    private All(Builder&lt;T&gt; builder) {</span>
+<span class="nc" id="L19">        Preconditions.checkNotNull(builder.vsRhp);</span>
+<span class="nc" id="L20">        Preconditions.checkNotNull(builder.vsRhpPlusDh);</span>
+<span class="nc" id="L21">        Preconditions.checkNotNull(builder.vsLhp);</span>
+<span class="nc" id="L22">        Preconditions.checkNotNull(builder.vsLhpPlusDh);</span>
+
+<span class="nc" id="L24">        this.vsRhp = builder.vsRhp;</span>
+<span class="nc" id="L25">        this.vsRhpPlusDh = builder.vsRhpPlusDh;</span>
+<span class="nc" id="L26">        this.vsLhp = builder.vsLhp;</span>
+<span class="nc" id="L27">        this.vsLhpPlusDh = builder.vsLhpPlusDh;</span>
+<span class="nc" id="L28">    }</span>
+
+    public T getVsRhp() {
+<span class="nc" id="L31">        return vsRhp;</span>
+    }
+
+    public T getVsRhpPlusDh() {
+<span class="nc" id="L35">        return vsRhpPlusDh;</span>
+    }
+
+    public T getVsLhp() {
+<span class="nc" id="L39">        return vsLhp;</span>
+    }
+
+    public T getVsLhpPlusDh() {
+<span class="nc" id="L43">        return vsLhpPlusDh;</span>
+    }
+
+    @Override
+    public UnmodifiableIterator&lt;T&gt; iterator() {
+<span class="nc" id="L48">        return ImmutableList</span>
+<span class="nc" id="L49">            .of(vsRhp, vsRhpPlusDh, vsLhp, vsLhpPlusDh)</span>
+<span class="nc" id="L50">            .iterator();</span>
+    }
+
+    public static &lt;T&gt; Builder&lt;T&gt; builder() {
+<span class="nc" id="L54">        return Builder.create();</span>
+    }
+
+    private static &lt;T&gt; All&lt;T&gt; build(Builder&lt;T&gt; builder) {
+<span class="nc" id="L58">        return new All&lt;T&gt;(builder);</span>
+    }
+
+    public static final class Builder&lt;T&gt; {
+
+        private T vsRhp;
+        private T vsRhpPlusDh;
+        private T vsLhp;
+        private T vsLhpPlusDh;
+
+<span class="nc" id="L68">        private Builder() { }</span>
+
+        public Builder&lt;T&gt; vsRhp(T vsRhp) {
+<span class="nc" id="L71">            this.vsRhp = vsRhp;</span>
+<span class="nc" id="L72">            return this;</span>
+        }
+
+        public Builder&lt;T&gt; vsRhpPlusDh(T vsRhpPlusDh) {
+<span class="nc" id="L76">            this.vsRhpPlusDh = vsRhpPlusDh;</span>
+<span class="nc" id="L77">            return this;</span>
+        }
+
+        public Builder&lt;T&gt; vsLhp(T vsLhp) {
+<span class="nc" id="L81">            this.vsLhp = vsLhp;</span>
+<span class="nc" id="L82">            return this;</span>
+        }
+
+        public Builder&lt;T&gt; vsLhpPlusDh(T vsLhpPlusDh) {
+<span class="nc" id="L86">            this.vsLhpPlusDh = vsLhpPlusDh;</span>
+<span class="nc" id="L87">            return this;</span>
+        }
+
+        public All&lt;T&gt; build() {
+<span class="nc" id="L91">            return All.build(this);</span>
+        }
+
+        private static &lt;T&gt; Builder&lt;T&gt; create() {
+<span class="nc" id="L95">            return new Builder&lt;T&gt;();</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

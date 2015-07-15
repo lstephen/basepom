@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>EloRatings.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.ljs.ootp.ai.elo</a> &gt; <span class="el_source">EloRatings.java</span></div><h1>EloRatings.java</h1><pre class="source lang-java linenums">package com.ljs.ootp.ai.elo;
+
+import com.google.common.collect.Maps;
+import com.ljs.ootp.ai.data.Id;
+import com.ljs.ootp.ai.roster.Team;
+import java.util.Map;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class EloRatings {
+
+<span class="nc" id="L14">  private final Map&lt;Id&lt;Team&gt;, Long&gt; ratings = Maps.newHashMap();</span>
+
+<span class="nc" id="L16">  private Double kFactor = 4.0;</span>
+
+<span class="nc" id="L18">  private EloRatings() { }</span>
+
+  public void setKFactor(Double kFactor) {
+<span class="nc" id="L21">    this.kFactor = kFactor;</span>
+<span class="nc" id="L22">  }</span>
+
+  public Long get(Id&lt;Team&gt; team) {
+<span class="nc bnc" id="L25" title="All 2 branches missed.">    if (!ratings.containsKey(team)) {</span>
+<span class="nc" id="L26">      ratings.put(team, 1500L);</span>
+    }
+<span class="nc" id="L28">    return ratings.get(team);</span>
+  }
+
+  public void update(GameResult result) {
+<span class="nc" id="L32">    Long visitorRating = get(result.getVisitor());</span>
+<span class="nc" id="L33">    Long homeRating = get(result.getHome());</span>
+
+<span class="nc" id="L35">    ratings.put(result.getVisitor(), newRating(visitorRating, homeRating, result.getVisitorScore(), result.getHomeScore(), false));</span>
+<span class="nc" id="L36">    ratings.put(result.getHome(), newRating(homeRating, visitorRating, result.getHomeScore(), result.getVisitorScore(), true));</span>
+<span class="nc" id="L37">  }</span>
+
+  private Long newRating(Long ratingFor, Long ratingAgainst, Integer scoreFor, Integer scoreAgainst, boolean home) {
+<span class="nc bnc" id="L40" title="All 2 branches missed.">    Integer w = scoreFor &gt; scoreAgainst ? 1 : 0;</span>
+
+<span class="nc" id="L42">    Double k = kFactor * Math.pow(Math.abs(scoreFor - scoreAgainst), 0.33);</span>
+
+<span class="nc bnc" id="L44" title="All 2 branches missed.">    Double dr = (double) (ratingFor - ratingAgainst) + (home ? 25 : -25);</span>
+
+<span class="nc" id="L46">    Double we = 1 / (Math.pow(10, -dr / 400) + 1);</span>
+
+<span class="nc" id="L48">    return (long) (ratingFor + k * (w - we));</span>
+  }
+
+
+  public void setRating(Id&lt;Team&gt; team, Long rating) {
+<span class="nc" id="L53">    ratings.put(team, rating);</span>
+<span class="nc" id="L54">  }</span>
+
+  public static EloRatings create() {
+<span class="nc" id="L57">    return new EloRatings();</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
