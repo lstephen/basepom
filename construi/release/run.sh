@@ -38,6 +38,8 @@ develop_version=`mvn -B help:evaluate -Dexpression=project.version | grep "^[^\s
 
 echo "New development version is $develop_version"
 
+mvn -B versions:set -DnewVersion=$develop_version -DgenerateBackupPoms=false
+
 echo "Pushing to develop..."
 git add pom.xml
 git commit -m "Update develop to $develop_version"
