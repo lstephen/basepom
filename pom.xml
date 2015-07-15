@@ -58,6 +58,7 @@
 
   <modules>
     <module>java</module>
+    <module>java-rspec</module>
   </modules>
 
 </project>
