@@ -54,12 +54,37 @@
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.scm.id>github</project.scm.id>
+
+    <plugin.gpg.version>1.6</plugin.gpg.version>
   </properties>
 
   <modules>
     <module>java</module>
     <module>java-rspec</module>
   </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>${plugin.gpg.version}</version>
+        <configuration>
+          <useAgent>false</useAgent>
+          <passphrase>${env.GPG_PASSPHRASE}</passphrase>
+        </configuration>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
 

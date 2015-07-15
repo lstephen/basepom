@@ -36,7 +36,6 @@
     <plugin.duplicate-finder.version>1.2.0</plugin.duplicate-finder.version>
     <plugin.enforcer.version>1.4</plugin.enforcer.version>
     <plugin.findbugs.version>3.0.1</plugin.findbugs.version>
-    <plugin.gpg.version>1.6</plugin.gpg.version>
     <plugin.install.version>2.5.2</plugin.install.version>
     <plugin.jacoco.version>0.7.5.201505241946</plugin.jacoco.version>
     <plugin.jar.version>2.6</plugin.jar.version>
@@ -131,25 +130,6 @@
             <phase>verify</phase>
             <goals>
               <goal>enforce</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <version>${plugin.gpg.version}</version>
-        <configuration>
-          <useAgent>false</useAgent>
-          <passphrase>${env.GPG_PASSPHRASE}</passphrase>
-        </configuration>
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
             </goals>
           </execution>
         </executions>
