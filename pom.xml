@@ -37,6 +37,17 @@
     <system>GitHub Issues</system>
   </issueManagement>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
   <properties>
     <github.url>https://github.com/lstephen/${project.artifactId}</github.url>
     <github.site>https://lstephen.github.io/${project.artifactId}</github.site>
