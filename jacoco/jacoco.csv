@@ -181,7 +181,7 @@ ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChartSelection.new Object() {.
 ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChart,144,0,8,0,33,0,12,0,8,0
 ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChart.Backup,24,0,0,0,7,0,3,0,3,0
 ootp-ai,com.ljs.ootp.ai.selection.depthchart,BackupPlayingTime,158,0,6,0,21,0,9,0,6,0
-ootp-ai,com.ljs.ootp.ai,Main,1751,0,122,0,419,0,72,0,10,0
+ootp-ai,com.ljs.ootp.ai,Main,1756,0,124,0,420,0,73,0,10,0
 ootp-ai,com.ljs.ootp.ai,Main.new Object() {...},37,0,0,0,2,0,1,0,1,0
 ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},19,0,2,0,2,0,3,0,2,0
 ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},11,0,0,0,2,0,2,0,2,0

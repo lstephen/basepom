@@ -662,66 +662,67 @@ import org.joda.time.DateTimeConstants;
             site,
             new PlayerValue(ps, battingRegression, pitchingRegression)
 <span class="nc" id="L664">                .getNowValue());</span>
+<span class="nc bnc" id="L665" title="All 2 branches missed.">        if (!site.getName().contains(&quot;OLD_BTH&quot;)) {</span>
+<span class="nc" id="L666">          LOG.info(&quot;Power Rankings...&quot;);</span>
+<span class="nc" id="L667">          Printables.print(site.getPowerRankingsReport(now)).to(out);</span>
+        }
 
-<span class="nc" id="L666">        LOG.info(&quot;Power Rankings...&quot;);</span>
-<span class="nc" id="L667">        Printables.print(site.getPowerRankingsReport(now)).to(out);</span>
+<span class="nc" id="L670">        LOG.info(&quot;Team Now Report...&quot;);</span>
 
-<span class="nc" id="L669">        LOG.info(&quot;Team Now Report...&quot;);</span>
+<span class="nc" id="L672">        now.sortByEndOfSeason();</span>
 
-<span class="nc" id="L671">        now.sortByEndOfSeason();</span>
+<span class="nc" id="L674">        Printables.print(now).to(out);</span>
 
-<span class="nc" id="L673">        Printables.print(now).to(out);</span>
-
-<span class="nc" id="L675">        LOG.info(&quot;Team Medium Term Report...&quot;);</span>
-<span class="nc" id="L676">        TeamReport future = TeamReport.create(</span>
+<span class="nc" id="L676">        LOG.info(&quot;Team Medium Term Report...&quot;);</span>
+<span class="nc" id="L677">        TeamReport future = TeamReport.create(</span>
             &quot;Medium Term&quot;,
             ps,
             site,
             new PlayerValue(ps, battingRegression, pitchingRegression)
-<span class="nc" id="L681">                .getFutureValue());</span>
+<span class="nc" id="L682">                .getFutureValue());</span>
 
-<span class="nc" id="L683">        future.sortByTalentLevel();</span>
-<span class="nc" id="L684">        Printables.print(future).to(out);</span>
+<span class="nc" id="L684">        future.sortByTalentLevel();</span>
+<span class="nc" id="L685">        Printables.print(future).to(out);</span>
 
-<span class="nc" id="L686">        generic.setLimit(10);</span>
-<span class="nc" id="L687">        generic.clearMultiplier();</span>
-<span class="nc" id="L688">        generic.setCustomValueFunction(</span>
+<span class="nc" id="L687">        generic.setLimit(10);</span>
+<span class="nc" id="L688">        generic.clearMultiplier();</span>
+<span class="nc" id="L689">        generic.setCustomValueFunction(</span>
             new PlayerValue(ps, battingRegression, pitchingRegression)
-<span class="nc" id="L690">                .getFutureValue());</span>
+<span class="nc" id="L691">                .getFutureValue());</span>
 
-<span class="nc bnc" id="L692" title="All 2 branches missed.">        for (final Slot s : Slot.values()) {</span>
-<span class="nc bnc" id="L693" title="All 2 branches missed.">            if (s == Slot.P) {</span>
-<span class="nc" id="L694">                continue;</span>
+<span class="nc bnc" id="L693" title="All 2 branches missed.">        for (final Slot s : Slot.values()) {</span>
+<span class="nc bnc" id="L694" title="All 2 branches missed.">            if (s == Slot.P) {</span>
+<span class="nc" id="L695">                continue;</span>
             }
 
-<span class="nc" id="L697">            LOG.log(Level.INFO, &quot;Slot Report: {0}...&quot;, s.name());</span>
+<span class="nc" id="L698">            LOG.log(Level.INFO, &quot;Slot Report: {0}...&quot;, s.name());</span>
 
-<span class="nc" id="L699">            generic.setTitle(&quot;Top: &quot; + s.name());</span>
-<span class="nc" id="L700">            generic.setPlayers(Iterables.filter(all, new Predicate&lt;Player&gt;() {</span>
+<span class="nc" id="L700">            generic.setTitle(&quot;Top: &quot; + s.name());</span>
+<span class="nc" id="L701">            generic.setPlayers(Iterables.filter(all, new Predicate&lt;Player&gt;() {</span>
                 public boolean apply(Player p) {
-<span class="nc bnc" id="L702" title="All 2 branches missed.">                    return Slot.getPrimarySlot(p) == s;</span>
+<span class="nc bnc" id="L703" title="All 2 branches missed.">                    return Slot.getPrimarySlot(p) == s;</span>
                 }
             }));
 
-<span class="nc" id="L706">            generic.print(out);</span>
+<span class="nc" id="L707">            generic.print(out);</span>
         }
 
-<span class="nc bnc" id="L709" title="All 2 branches missed.">        for (final Position pos : ImmutableList.of(Position.SECOND_BASE, Position.THIRD_BASE)) {</span>
-<span class="nc" id="L710">            LOG.log(Level.INFO, &quot;Position Report: {0}...&quot;, pos.name());</span>
+<span class="nc bnc" id="L710" title="All 2 branches missed.">        for (final Position pos : ImmutableList.of(Position.SECOND_BASE, Position.THIRD_BASE)) {</span>
+<span class="nc" id="L711">            LOG.log(Level.INFO, &quot;Position Report: {0}...&quot;, pos.name());</span>
 
-<span class="nc" id="L712">            generic.setTitle(&quot;Top: &quot; + pos.name());</span>
-<span class="nc" id="L713">            generic.setPlayers(Iterables.filter(all, new Predicate&lt;Player&gt;() {</span>
+<span class="nc" id="L713">            generic.setTitle(&quot;Top: &quot; + pos.name());</span>
+<span class="nc" id="L714">            generic.setPlayers(Iterables.filter(all, new Predicate&lt;Player&gt;() {</span>
                 public boolean apply(Player pl) {
-<span class="nc" id="L715">                    return pl.getPosition().equals(pos.getAbbreviation());</span>
+<span class="nc" id="L716">                    return pl.getPosition().equals(pos.getAbbreviation());</span>
                 }
             }));
 
-<span class="nc" id="L719">            generic.print(out);</span>
-<span class="nc" id="L720">        }</span>
+<span class="nc" id="L720">            generic.print(out);</span>
+<span class="nc" id="L721">        }</span>
 
-<span class="nc" id="L722">        LOG.log(Level.INFO, &quot;League wide replacement Level...&quot;);</span>
+<span class="nc" id="L723">        LOG.log(Level.INFO, &quot;League wide replacement Level...&quot;);</span>
 
-<span class="nc" id="L724">        generic.setCustomValueFunction(tv.getTradeTargetValue());</span>
+<span class="nc" id="L725">        generic.setCustomValueFunction(tv.getTradeTargetValue());</span>
 
         /*LOG.log(Level.INFO, &quot;Trade target report...&quot;);
         generic.setTitle(&quot;Trade Targets&quot;);
@@ -735,21 +736,21 @@ import org.joda.time.DateTimeConstants;
         generic.setLimit(50);
         generic.print(out);*/
 
-<span class="nc" id="L738">        LOG.log(Level.INFO, &quot;Trade Bait report...&quot;);</span>
-<span class="nc" id="L739">        generic.setCustomValueFunction(tv.getTradeBaitValue(site, salaryRegression));</span>
-<span class="nc" id="L740">        generic.setTitle(&quot;Trade Bait&quot;);</span>
-<span class="nc" id="L741">        generic.setPlayers(newRoster.getAllPlayers());</span>
-<span class="nc" id="L742">        generic.setLimit(200);</span>
-<span class="nc" id="L743">        generic.clearMultiplier();</span>
-<span class="nc" id="L744">        generic.print(out);</span>
+<span class="nc" id="L739">        LOG.log(Level.INFO, &quot;Trade Bait report...&quot;);</span>
+<span class="nc" id="L740">        generic.setCustomValueFunction(tv.getTradeBaitValue(site, salaryRegression));</span>
+<span class="nc" id="L741">        generic.setTitle(&quot;Trade Bait&quot;);</span>
+<span class="nc" id="L742">        generic.setPlayers(newRoster.getAllPlayers());</span>
+<span class="nc" id="L743">        generic.setLimit(200);</span>
+<span class="nc" id="L744">        generic.clearMultiplier();</span>
+<span class="nc" id="L745">        generic.print(out);</span>
 
-<span class="nc" id="L746">        generic.setCustomValueFunction(tv.getTradeTargetValue());</span>
+<span class="nc" id="L747">        generic.setCustomValueFunction(tv.getTradeTargetValue());</span>
 
         Iterable&lt;Player&gt; topBait = Ordering
-<span class="nc" id="L749">            .natural()</span>
-<span class="nc" id="L750">            .reverse()</span>
-<span class="nc" id="L751">            .onResultOf(tv.getTradeBaitValue(site, salaryRegression))</span>
-<span class="nc" id="L752">            .sortedCopy(newRoster.getAllPlayers());</span>
+<span class="nc" id="L750">            .natural()</span>
+<span class="nc" id="L751">            .reverse()</span>
+<span class="nc" id="L752">            .onResultOf(tv.getTradeBaitValue(site, salaryRegression))</span>
+<span class="nc" id="L753">            .sortedCopy(newRoster.getAllPlayers());</span>
 
 
         /*LOG.log(Level.INFO, &quot;Top Trades...&quot;);
@@ -801,24 +802,24 @@ import org.joda.time.DateTimeConstants;
             idx++;
         }*/
 
-<span class="nc" id="L804">        LOG.log(Level.INFO, &quot;Non Top 10 prospects...&quot;);</span>
-<span class="nc" id="L805">        ImmutableSet&lt;Player&gt; nonTopTens =</span>
-<span class="nc" id="L806">            ImmutableSet.copyOf(</span>
-<span class="nc" id="L807">                Iterables.filter(</span>
+<span class="nc" id="L805">        LOG.log(Level.INFO, &quot;Non Top 10 prospects...&quot;);</span>
+<span class="nc" id="L806">        ImmutableSet&lt;Player&gt; nonTopTens =</span>
+<span class="nc" id="L807">            ImmutableSet.copyOf(</span>
+<span class="nc" id="L808">                Iterables.filter(</span>
                     all,
-<span class="nc" id="L809">                    new Predicate&lt;Player&gt;() {</span>
+<span class="nc" id="L810">                    new Predicate&lt;Player&gt;() {</span>
                         public boolean apply(Player p) {
-<span class="nc bnc" id="L811" title="All 2 branches missed.">                            return !p.getTeamTopProspectPosition().isPresent()</span>
-<span class="nc bnc" id="L812" title="All 2 branches missed.">                                &amp;&amp; p.getAge() &lt;= 25</span>
-<span class="nc bnc" id="L813" title="All 2 branches missed.">                                &amp;&amp; site.getCurrentSalary(p) == 0;</span>
+<span class="nc bnc" id="L812" title="All 2 branches missed.">                            return !p.getTeamTopProspectPosition().isPresent()</span>
+<span class="nc bnc" id="L813" title="All 2 branches missed.">                                &amp;&amp; p.getAge() &lt;= 25</span>
+<span class="nc bnc" id="L814" title="All 2 branches missed.">                                &amp;&amp; site.getCurrentSalary(p) == 0;</span>
                         }
                     }));
 
-<span class="nc" id="L817">        generic.setTitle(&quot;Non Top prospects&quot;);</span>
-<span class="nc" id="L818">        generic.setMultiplier(0.91);</span>
-<span class="nc" id="L819">        generic.setLimit(50);</span>
-<span class="nc" id="L820">        generic.setPlayers(nonTopTens);</span>
-<span class="nc" id="L821">        generic.print(out);</span>
+<span class="nc" id="L818">        generic.setTitle(&quot;Non Top prospects&quot;);</span>
+<span class="nc" id="L819">        generic.setMultiplier(0.91);</span>
+<span class="nc" id="L820">        generic.setLimit(50);</span>
+<span class="nc" id="L821">        generic.setPlayers(nonTopTens);</span>
+<span class="nc" id="L822">        generic.print(out);</span>
 
         /*idx = 1;
         for (Trade trade
@@ -838,23 +839,23 @@ import org.joda.time.DateTimeConstants;
         }*/
 
 
-<span class="nc" id="L841">        LOG.log(Level.INFO, &quot;Minor league non-prospects...&quot;);</span>
+<span class="nc" id="L842">        LOG.log(Level.INFO, &quot;Minor league non-prospects...&quot;);</span>
 
-<span class="nc" id="L843">        ImmutableSet&lt;Player&gt; mlNonProspects =</span>
-<span class="nc" id="L844">            ImmutableSet.copyOf(</span>
-<span class="nc" id="L845">                Iterables.filter(</span>
+<span class="nc" id="L844">        ImmutableSet&lt;Player&gt; mlNonProspects =</span>
+<span class="nc" id="L845">            ImmutableSet.copyOf(</span>
+<span class="nc" id="L846">                Iterables.filter(</span>
                     minorLeaguers,
-<span class="nc" id="L847">                    new Predicate&lt;Player&gt;() {</span>
+<span class="nc" id="L848">                    new Predicate&lt;Player&gt;() {</span>
                         public boolean apply(Player p) {
-<span class="nc bnc" id="L849" title="All 2 branches missed.">                            return p.getAge() &gt; 25;</span>
+<span class="nc bnc" id="L850" title="All 2 branches missed.">                            return p.getAge() &gt; 25;</span>
                         }
                     }));
 
-<span class="nc" id="L853">        generic.setTitle(&quot;ML non-prospects&quot;);</span>
-<span class="nc" id="L854">        generic.setPlayers(mlNonProspects);</span>
-<span class="nc" id="L855">        generic.print(out);</span>
+<span class="nc" id="L854">        generic.setTitle(&quot;ML non-prospects&quot;);</span>
+<span class="nc" id="L855">        generic.setPlayers(mlNonProspects);</span>
+<span class="nc" id="L856">        generic.print(out);</span>
 
-<span class="nc" id="L857">        generic.clearMultiplier();</span>
+<span class="nc" id="L858">        generic.clearMultiplier();</span>
 
         //LOG.log(Level.INFO, &quot;Top Trades for non-prospect minor leaguers...&quot;);
 
@@ -875,8 +876,8 @@ import org.joda.time.DateTimeConstants;
             idx++;
         }*/
 
-<span class="nc" id="L878">        LOG.log(Level.INFO, &quot;Done.&quot;);</span>
-<span class="nc" id="L879">    }</span>
+<span class="nc" id="L879">        LOG.log(Level.INFO, &quot;Done.&quot;);</span>
+<span class="nc" id="L880">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
