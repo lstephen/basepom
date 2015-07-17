@@ -114,7 +114,7 @@ public final class SiteImpl implements Site, SalarySource {
     try {
       PageLoader loader = PageLoaderBuilder
 <span class="nc" id="L116">        .create()</span>
-<span class="nc" id="L117">        .diskCache(Config.createDefault().getValue(&quot;cache.dir&quot;).or(DiskCachingLoader.DEFAULT_CACHE_DIR))</span>
+<span class="nc" id="L117">        .diskCache(Config.createDefault().getValue(&quot;cache.dir&quot;).or(DiskCachingLoader.DEFAULT_CACHE_DIR) + &quot;/&quot; + getName())</span>
 <span class="nc" id="L118">        .inMemoryCache()</span>
 <span class="nc" id="L119">        .build();</span>
 

@@ -17,7 +17,7 @@ ootp-ai,com.ljs.ootp.ai.stats,PitcherOverall,23,29,0,0,4,4,4,2,4,2
 ootp-ai,com.ljs.ootp.ai.stats,SplitPercentagesHolder,8,0,0,0,4,0,3,0,3,0
 ootp-ai,com.ljs.ootp.ai.stats,SplitStats,23,0,0,0,6,0,4,0,4,0
 ootp-ai,com.ljs.ootp.ai.stats,BaseRuns,0,22,0,0,0,7,0,1,0,1
-ootp-ai,com.ljs.ootp.ai.config,Config,73,0,10,0,13,0,9,0,4,0
+ootp-ai,com.ljs.ootp.ai.config,Config,79,0,10,0,15,0,10,0,5,0
 ootp-ai,com.ljs.ootp.ai.selection.rotation,Rotation.Role,68,0,0,0,1,0,4,0,4,0
 ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.Move,22,0,0,0,6,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.rotation,Rotation.new Object() {...},51,0,0,0,2,0,1,0,1,0
@@ -181,7 +181,7 @@ ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChartSelection.new Object() {.
 ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChart,144,0,8,0,33,0,12,0,8,0
 ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChart.Backup,24,0,0,0,7,0,3,0,3,0
 ootp-ai,com.ljs.ootp.ai.selection.depthchart,BackupPlayingTime,158,0,6,0,21,0,9,0,6,0
-ootp-ai,com.ljs.ootp.ai,Main,1811,0,124,0,429,0,73,0,10,0
+ootp-ai,com.ljs.ootp.ai,Main,1751,0,122,0,419,0,72,0,10,0
 ootp-ai,com.ljs.ootp.ai,Main.new Object() {...},37,0,0,0,2,0,1,0,1,0
 ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},19,0,2,0,2,0,3,0,2,0
 ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},11,0,0,0,2,0,2,0,2,0
@@ -192,7 +192,7 @@ ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},27,0,6,0,4,0,5,0,2,0
 ootp-ai,com.ljs.ootp.ai.player.ratings.json,BattingPotentialSerializer,10,0,0,0,5,0,3,0,3,0
 ootp-ai,com.ljs.ootp.ai.ootp5,SiteImpl.new Predicate() {...},11,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.ootp5,SiteImpl.new Function() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.ootp5,SiteImpl,359,0,12,0,80,0,54,0,48,0
+ootp-ai,com.ljs.ootp.ai.ootp5,SiteImpl,369,0,12,0,80,0,54,0,48,0
 ootp-ai,com.ljs.ootp.ai.ootp5,Ootp5,19,0,0,0,6,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.io,SalaryFormat,23,0,2,0,3,0,4,0,3,0
 ootp-ai,com.ljs.ootp.ai.io,Printables.new Printables.PrintDestination() {...},26,0,0,0,7,0,3,0,3,0

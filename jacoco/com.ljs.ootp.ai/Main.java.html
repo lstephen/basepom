@@ -63,10 +63,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JOptionPane;
-
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
@@ -83,651 +82,646 @@ import org.joda.time.DateTimeConstants;
  *
  * @author lstephen
  */
-<span class="nc" id="L86">public class Main {</span>
+<span class="nc" id="L85">public class Main {</span>
 
-<span class="nc" id="L88">    private static final Logger LOG = Logger.getLogger(Main.class.getName());</span>
+<span class="nc" id="L87">    private static final Logger LOG = Logger.getLogger(Main.class.getName());</span>
 
-<span class="nc" id="L90">    private static final SiteDefinition TWML =</span>
-<span class="nc" id="L91">        SiteDefinitionFactory.ootp6(</span>
-<span class="nc" id="L92">           &quot;TWML&quot;, &quot;http://www.darowski.com/twml/OOTP6Reports/&quot;, Id.&lt;Team&gt;valueOf(19), &quot;Splendid Splinter&quot;, 20);</span>
+<span class="nc" id="L89">    private static final SiteDefinition TWML =</span>
+<span class="nc" id="L90">        SiteDefinitionFactory.ootp6(</span>
+<span class="nc" id="L91">           &quot;TWML&quot;, &quot;http://www.darowski.com/twml/OOTP6Reports/&quot;, Id.&lt;Team&gt;valueOf(19), &quot;Splendid Splinter&quot;, 20);</span>
 
-<span class="nc" id="L94">    private static final SiteDefinition CBL =</span>
-<span class="nc" id="L95">        SiteDefinitionFactory.ootp5(</span>
-<span class="nc" id="L96">            &quot;CBL&quot;, &quot;http://www.thecblonline.com/files/&quot;, Id.&lt;Team&gt;valueOf(20), &quot;National&quot;, 20);</span>
+<span class="nc" id="L93">    private static final SiteDefinition CBL =</span>
+<span class="nc" id="L94">        SiteDefinitionFactory.ootp5(</span>
+<span class="nc" id="L95">            &quot;CBL&quot;, &quot;http://www.thecblonline.com/files/&quot;, Id.&lt;Team&gt;valueOf(20), &quot;National&quot;, 20);</span>
 
-<span class="nc" id="L98">    private static final SiteDefinition HFTC =</span>
-<span class="nc" id="L99">        SiteDefinitionFactory.ootp5(</span>
-<span class="nc" id="L100">            &quot;HFTC&quot;, &quot;http://www.hitforthecycle.com/hftc-ootp/&quot;, Id.&lt;Team&gt;valueOf(8), &quot;American&quot;, 32);</span>
+<span class="nc" id="L97">    private static final SiteDefinition HFTC =</span>
+<span class="nc" id="L98">        SiteDefinitionFactory.ootp5(</span>
+<span class="nc" id="L99">            &quot;HFTC&quot;, &quot;http://www.hitforthecycle.com/hftc-ootp/&quot;, Id.&lt;Team&gt;valueOf(8), &quot;American&quot;, 32);</span>
 
-<span class="nc" id="L102">    private static final SiteDefinition OLD_BTH_CHC =</span>
-<span class="nc" id="L103">        SiteDefinitionFactory.ootp6(&quot;BTH&quot;, &quot;http://bthbaseball.allsimbaseball10.com/game/oldbth/lgreports/&quot;, Id.&lt;Team&gt;valueOf(20), &quot;National&quot;, 30);</span>
+<span class="nc" id="L101">    private static final SiteDefinition OLD_BTH_CHC =</span>
+<span class="nc" id="L102">        SiteDefinitionFactory.ootp6(&quot;BTH&quot;, &quot;http://bthbaseball.allsimbaseball10.com/game/oldbth/lgreports/&quot;, Id.&lt;Team&gt;valueOf(20), &quot;National&quot;, 30);</span>
 
-<span class="nc" id="L105">    private static final SiteDefinition OLD_BTH_NYY =</span>
-<span class="nc" id="L106">        SiteDefinitionFactory.ootp6(&quot;OLD_BTH_NYY&quot;, &quot;http://bthbaseball.allsimbaseball10.com/game/oldbth/lgreports/&quot;, Id.&lt;Team&gt;valueOf(3), &quot;American&quot;, 30);</span>
+<span class="nc" id="L104">    private static final SiteDefinition OLD_BTH_NYY =</span>
+<span class="nc" id="L105">        SiteDefinitionFactory.ootp6(&quot;OLD_BTH_NYY&quot;, &quot;http://bthbaseball.allsimbaseball10.com/game/oldbth/lgreports/&quot;, Id.&lt;Team&gt;valueOf(3), &quot;American&quot;, 30);</span>
 
-<span class="nc" id="L108">    private static final SiteDefinition BTHUSTLE =</span>
-<span class="nc" id="L109">        SiteDefinitionFactory.ootp6(&quot;BTHUSTLE&quot;, &quot;http://bthbaseball.allsimbaseball10.com/game/lgreports/&quot;, Id.&lt;Team&gt;valueOf(14), &quot;National&quot;, 16);</span>
+<span class="nc" id="L107">    private static final SiteDefinition BTHUSTLE =</span>
+<span class="nc" id="L108">        SiteDefinitionFactory.ootp6(&quot;BTHUSTLE&quot;, &quot;http://bthbaseball.allsimbaseball10.com/game/lgreports/&quot;, Id.&lt;Team&gt;valueOf(14), &quot;National&quot;, 16);</span>
 
-<span class="nc" id="L111">    private static final SiteDefinition SAVOY =</span>
-<span class="nc" id="L112">        SiteDefinitionFactory.ootp5(&quot;SAVOY&quot;, &quot;http://www.thecblonline.com/savoy/&quot;, Id.&lt;Team&gt;valueOf(26), &quot;UBA&quot;, 26);</span>
+<span class="nc" id="L110">    private static final SiteDefinition SAVOY =</span>
+<span class="nc" id="L111">        SiteDefinitionFactory.ootp5(&quot;SAVOY&quot;, &quot;http://www.thecblonline.com/savoy/&quot;, Id.&lt;Team&gt;valueOf(26), &quot;UBA&quot;, 26);</span>
 
-<span class="nc" id="L114">    private static final SiteDefinition LBB =</span>
-<span class="nc" id="L115">        SiteDefinitionFactory.ootp5(&quot;LBB&quot;, &quot;http://bbs56.net/LBB/Site/Leaguesite/&quot;, Id.&lt;Team&gt;valueOf(3), &quot;AL&quot;, 20);</span>
+<span class="nc" id="L113">    private static final SiteDefinition LBB =</span>
+<span class="nc" id="L114">        SiteDefinitionFactory.ootp5(&quot;LBB&quot;, &quot;http://bbs56.net/LBB/Site/Leaguesite/&quot;, Id.&lt;Team&gt;valueOf(3), &quot;AL&quot;, 20);</span>
 
-<span class="nc" id="L117">    private static final SiteDefinition GABL =</span>
-<span class="nc" id="L118">        SiteDefinitionFactory.ootp5(&quot;GABL&quot;, &quot;http://www.goldenageofbaseball.com/commish/Leaguesite/&quot;, Id.&lt;Team&gt;valueOf(22), &quot;National&quot;, 30);</span>
+<span class="nc" id="L116">    private static final SiteDefinition GABL =</span>
+<span class="nc" id="L117">        SiteDefinitionFactory.ootp5(&quot;GABL&quot;, &quot;http://www.goldenageofbaseball.com/commish/Leaguesite/&quot;, Id.&lt;Team&gt;valueOf(22), &quot;National&quot;, 30);</span>
 
-<span class="nc" id="L120">    private static final SiteDefinition TFMS =</span>
-<span class="nc" id="L121">        SiteDefinitionFactory.ootp5(&quot;TFMS&quot;, &quot;tfms5-2004/&quot;, Id.&lt;Team&gt;valueOf(3), &quot;League 2&quot;, 16);</span>
+<span class="nc" id="L119">    private static final SiteDefinition TFMS =</span>
+<span class="nc" id="L120">        SiteDefinitionFactory.ootp5(&quot;TFMS&quot;, &quot;tfms5-2004/&quot;, Id.&lt;Team&gt;valueOf(3), &quot;League 2&quot;, 16);</span>
 
     private static final ImmutableMap&lt;String, SiteDefinition&gt; SITES =
         ImmutableMap
-<span class="nc" id="L125">            .&lt;String, SiteDefinition&gt;builder()</span>
-<span class="nc" id="L126">            .put(&quot;TWML&quot;, TWML)</span>
-<span class="nc" id="L127">            .put(&quot;CBL&quot;, CBL)</span>
-<span class="nc" id="L128">            .put(&quot;HFTC&quot;, HFTC)</span>
-<span class="nc" id="L129">            .put(&quot;OLD_BTH - CHC&quot;, OLD_BTH_CHC)</span>
-<span class="nc" id="L130">            .put(&quot;OLD_BTH - NYY&quot;, OLD_BTH_NYY)</span>
-<span class="nc" id="L131">            .put(&quot;BTHUSTLE&quot;, BTHUSTLE)</span>
-<span class="nc" id="L132">            .put(&quot;LBB&quot;, LBB)</span>
-<span class="nc" id="L133">            .put(&quot;SAVOY&quot;, SAVOY)</span>
-<span class="nc" id="L134">            .put(&quot;GABL&quot;, GABL)</span>
-<span class="nc" id="L135">            .build();</span>
+<span class="nc" id="L124">            .&lt;String, SiteDefinition&gt;builder()</span>
+<span class="nc" id="L125">            .put(&quot;TWML&quot;, TWML)</span>
+<span class="nc" id="L126">            .put(&quot;CBL&quot;, CBL)</span>
+<span class="nc" id="L127">            .put(&quot;HFTC&quot;, HFTC)</span>
+<span class="nc" id="L128">            .put(&quot;OLD_BTH_CHC&quot;, OLD_BTH_CHC)</span>
+<span class="nc" id="L129">            .put(&quot;OLD_BTH_NYY&quot;, OLD_BTH_NYY)</span>
+<span class="nc" id="L130">            .put(&quot;BTHUSTLE&quot;, BTHUSTLE)</span>
+<span class="nc" id="L131">            .put(&quot;LBB&quot;, LBB)</span>
+<span class="nc" id="L132">            .put(&quot;SAVOY&quot;, SAVOY)</span>
+<span class="nc" id="L133">            .put(&quot;GABL&quot;, GABL)</span>
+<span class="nc" id="L134">            .build();</span>
 
-<span class="nc" id="L137">    private static ImmutableSet&lt;SiteDefinition&gt; LOOK_TO_NEXT_SEASON = ImmutableSet.of();</span>
+<span class="nc" id="L136">    private static ImmutableSet&lt;SiteDefinition&gt; LOOK_TO_NEXT_SEASON = ImmutableSet.of();</span>
 
-<span class="nc" id="L139">    private static ImmutableSet&lt;SiteDefinition&gt; PLAYOFFS = ImmutableSet.of();</span>
+<span class="nc" id="L138">    private static ImmutableSet&lt;SiteDefinition&gt; PLAYOFFS = ImmutableSet.of();</span>
 
-<span class="nc" id="L141">    private static ImmutableSet&lt;SiteDefinition&gt; INAUGURAL_DRAFT = ImmutableSet.of();</span>
+<span class="nc" id="L140">    private static ImmutableSet&lt;SiteDefinition&gt; INAUGURAL_DRAFT = ImmutableSet.of();</span>
 
     public static void main(String[] args) throws IOException {
-<span class="nc" id="L144">        new Main().run();</span>
-<span class="nc" id="L145">    }</span>
+<span class="nc" id="L143">        new Main().run();</span>
+<span class="nc" id="L144">    }</span>
 
     public void run() throws IOException {
-<span class="nc" id="L148">        String site = System.getProperty(&quot;site&quot;);</span>
+<span class="nc" id="L147">        String site = System.getenv(&quot;OOTPAI_SITE&quot;);</span>
 
-<span class="nc bnc" id="L150" title="All 2 branches missed.">        if (site == null) {</span>
-<span class="nc" id="L151">            site = (String) JOptionPane.showInputDialog(</span>
-                null,
-                &quot;Please select site:&quot;,
-                &quot;OOTP-AI&quot;,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-<span class="nc" id="L157">                Ordering.natural().sortedCopy(SITES.keySet()).toArray(),</span>
-                null);
+<span class="nc bnc" id="L149" title="All 2 branches missed.">        if (site == null) {</span>
+<span class="nc" id="L150">          throw new IllegalStateException(&quot;OOTPAI_SITE is required&quot;);</span>
         }
 
-<span class="nc" id="L161">        run(SITES.get(site));</span>
-<span class="nc" id="L162">    }</span>
+<span class="nc" id="L153">        run(SITES.get(site));</span>
+<span class="nc" id="L154">    }</span>
 
     private void run(SiteDefinition def) throws IOException {
-<span class="nc" id="L165">        File outputDirectory =</span>
-<span class="nc" id="L166">            new File(Config.createDefault().getValue(&quot;output.dir&quot;).or(&quot;c:/ootp&quot;));</span>
+<span class="nc" id="L157">        Preconditions.checkNotNull(def, &quot;SiteDefinition not found&quot;);</span>
 
-<span class="nc" id="L168">        try (</span>
-<span class="nc" id="L169">            FileOutputStream out =</span>
-<span class="nc" id="L170">                new FileOutputStream(new File(outputDirectory, def.getName() + &quot;.txt&quot;), false)) {</span>
-<span class="nc" id="L171">            run(def, out);</span>
-<span class="nc bnc" id="L172" title="All 8 branches missed.">        }</span>
-<span class="nc" id="L173">    }</span>
+<span class="nc" id="L159">        File outputDirectory =</span>
+<span class="nc" id="L160">            new File(Config.createDefault().getValue(&quot;output.dir&quot;).or(&quot;c:/ootp&quot;));</span>
+
+<span class="nc" id="L162">        try (</span>
+<span class="nc" id="L163">            FileOutputStream out =</span>
+<span class="nc" id="L164">                new FileOutputStream(new File(outputDirectory, def.getName() + &quot;.txt&quot;), false)) {</span>
+<span class="nc" id="L165">            run(def, out);</span>
+<span class="nc bnc" id="L166" title="All 8 branches missed.">        }</span>
+<span class="nc" id="L167">    }</span>
 
     private void run(SiteDefinition def, OutputStream out) throws IOException {
-<span class="nc" id="L176">        LOG.log(Level.INFO, &quot;Running for {0}...&quot;, def.getName());</span>
+<span class="nc" id="L170">        LOG.log(Level.INFO, &quot;Running for {0}...&quot;, def.getName());</span>
 
-<span class="nc" id="L178">        Boolean isLookToNextSeason = Boolean.FALSE;</span>
-<span class="nc" id="L179">        Boolean isPlayoffs = Boolean.FALSE;</span>
+<span class="nc" id="L172">        Boolean isLookToNextSeason = Boolean.FALSE;</span>
+<span class="nc" id="L173">        Boolean isPlayoffs = Boolean.FALSE;</span>
 
-<span class="nc bnc" id="L181" title="All 2 branches missed.">        if (LOOK_TO_NEXT_SEASON.contains(def)) {</span>
-<span class="nc" id="L182">            isLookToNextSeason = Boolean.TRUE;</span>
+<span class="nc bnc" id="L175" title="All 2 branches missed.">        if (LOOK_TO_NEXT_SEASON.contains(def)) {</span>
+<span class="nc" id="L176">            isLookToNextSeason = Boolean.TRUE;</span>
         }
 
-<span class="nc bnc" id="L185" title="All 2 branches missed.">        if (PLAYOFFS.contains(def)) {</span>
-<span class="nc" id="L186">            isPlayoffs = Boolean.TRUE;</span>
+<span class="nc bnc" id="L179" title="All 2 branches missed.">        if (PLAYOFFS.contains(def)) {</span>
+<span class="nc" id="L180">            isPlayoffs = Boolean.TRUE;</span>
         }
 
-<span class="nc" id="L189">        final Site site = def.getSite();</span>
+<span class="nc" id="L183">        final Site site = def.getSite();</span>
 
-<span class="nc" id="L191">        SiteHolder.set(site);</span>
+<span class="nc" id="L185">        SiteHolder.set(site);</span>
 
-<span class="nc" id="L193">        Printables.print(LeagueBattingReport.create(site)).to(out);</span>
+<span class="nc" id="L187">        Printables.print(LeagueBattingReport.create(site)).to(out);</span>
 
-<span class="nc" id="L195">        LOG.log(Level.INFO, &quot;Extracting current roster and team...&quot;);</span>
+<span class="nc" id="L189">        LOG.log(Level.INFO, &quot;Extracting current roster and team...&quot;);</span>
 
-<span class="nc" id="L197">        Roster oldRoster = site.extractRoster();</span>
-<span class="nc" id="L198">        Team team = site.extractTeam();</span>
+<span class="nc" id="L191">        Roster oldRoster = site.extractRoster();</span>
+<span class="nc" id="L192">        Team team = site.extractTeam();</span>
 
-<span class="nc" id="L200">        LOG.log(Level.INFO, &quot;Running regressions...&quot;);</span>
+<span class="nc" id="L194">        LOG.log(Level.INFO, &quot;Running regressions...&quot;);</span>
 
-<span class="nc" id="L202">        SplitPercentages pcts = SplitPercentages.create(site);</span>
-<span class="nc" id="L203">        SplitPercentagesHolder.set(pcts);</span>
+<span class="nc" id="L196">        SplitPercentages pcts = SplitPercentages.create(site);</span>
+<span class="nc" id="L197">        SplitPercentagesHolder.set(pcts);</span>
 
-<span class="nc" id="L205">        final BattingRegression battingRegression = BattingRegression.run(site);</span>
-<span class="nc" id="L206">        Printables.print(battingRegression.correlationReport()).to(out);</span>
+<span class="nc" id="L199">        final BattingRegression battingRegression = BattingRegression.run(site);</span>
+<span class="nc" id="L200">        Printables.print(battingRegression.correlationReport()).to(out);</span>
 
-<span class="nc" id="L208">        final PitchingRegression pitchingRegression = PitchingRegression.run(site);</span>
-<span class="nc" id="L209">        Printables.print(pitchingRegression.correlationReport()).to(out);</span>
+<span class="nc" id="L202">        final PitchingRegression pitchingRegression = PitchingRegression.run(site);</span>
+<span class="nc" id="L203">        Printables.print(pitchingRegression.correlationReport()).to(out);</span>
 
-<span class="nc bnc" id="L211" title="All 2 branches missed.">        if (isLookToNextSeason) {</span>
-<span class="nc" id="L212">            battingRegression.ignoreStatsInPredictions();</span>
-<span class="nc" id="L213">            pitchingRegression.ignoreStatsInPredictions();</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        if (isLookToNextSeason) {</span>
+<span class="nc" id="L206">            battingRegression.ignoreStatsInPredictions();</span>
+<span class="nc" id="L207">            pitchingRegression.ignoreStatsInPredictions();</span>
         }
 
-<span class="nc" id="L216">        pcts.print(out);</span>
+<span class="nc" id="L210">        pcts.print(out);</span>
 
 
-<span class="nc" id="L219">        SplitStats.setPercentages(pcts);</span>
-<span class="nc" id="L220">        PlayerRatings.setPercentages(pcts);</span>
-<span class="nc" id="L221">        BestStartersSelection.setPercentages(pcts);</span>
-<span class="nc" id="L222">        Bench.setPercentages(pcts);</span>
+<span class="nc" id="L213">        SplitStats.setPercentages(pcts);</span>
+<span class="nc" id="L214">        PlayerRatings.setPercentages(pcts);</span>
+<span class="nc" id="L215">        BestStartersSelection.setPercentages(pcts);</span>
+<span class="nc" id="L216">        Bench.setPercentages(pcts);</span>
 
-<span class="nc" id="L224">        LOG.info(&quot;Loading manual changes...&quot;);</span>
-<span class="nc" id="L225">        Changes changes = Changes.load(site);</span>
+<span class="nc" id="L218">        LOG.info(&quot;Loading manual changes...&quot;);</span>
+<span class="nc" id="L219">        Changes changes = Changes.load(site);</span>
 
-<span class="nc" id="L227">        team.processManualChanges(changes);</span>
+<span class="nc" id="L221">        team.processManualChanges(changes);</span>
 
-<span class="nc" id="L229">        LOG.info(&quot;Setting up Predictions...&quot;);</span>
-<span class="nc" id="L230">        final Predictions ps = Predictions.predict(team).using(battingRegression, pitchingRegression, site.getPitcherSelectionMethod());</span>
-<span class="nc" id="L231">        final TradeValue tv = new TradeValue(team, ps, battingRegression, pitchingRegression);</span>
+<span class="nc" id="L223">        LOG.info(&quot;Setting up Predictions...&quot;);</span>
+<span class="nc" id="L224">        final Predictions ps = Predictions.predict(team).using(battingRegression, pitchingRegression, site.getPitcherSelectionMethod());</span>
+<span class="nc" id="L225">        final TradeValue tv = new TradeValue(team, ps, battingRegression, pitchingRegression);</span>
 
-<span class="nc" id="L233">        boolean isExpandedRosters =</span>
-<span class="nc bnc" id="L234" title="All 2 branches missed.">            site.getDate().getMonthOfYear() == DateTimeConstants.SEPTEMBER;</span>
+<span class="nc" id="L227">        boolean isExpandedRosters =</span>
+<span class="nc bnc" id="L228" title="All 2 branches missed.">            site.getDate().getMonthOfYear() == DateTimeConstants.SEPTEMBER;</span>
 
-<span class="nc" id="L236">        int month = site.getDate().getMonthOfYear();</span>
+<span class="nc" id="L230">        int month = site.getDate().getMonthOfYear();</span>
 
-<span class="nc" id="L238">        Mode mode = Mode.REGULAR_SEASON;</span>
+<span class="nc" id="L232">        Mode mode = Mode.REGULAR_SEASON;</span>
 
-<span class="nc bnc" id="L240" title="All 2 branches missed.">        if (month &lt; DateTimeConstants.APRIL) {</span>
-<span class="nc" id="L241">            mode = Mode.PRESEASON;</span>
-<span class="nc bnc" id="L242" title="All 2 branches missed.">        } else if (isExpandedRosters) {</span>
-<span class="nc" id="L243">            mode = Mode.EXPANDED;</span>
+<span class="nc bnc" id="L234" title="All 2 branches missed.">        if (month &lt; DateTimeConstants.APRIL) {</span>
+<span class="nc" id="L235">            mode = Mode.PRESEASON;</span>
+<span class="nc bnc" id="L236" title="All 2 branches missed.">        } else if (isExpandedRosters) {</span>
+<span class="nc" id="L237">            mode = Mode.EXPANDED;</span>
         }
 
-<span class="nc" id="L246">        LOG.info(&quot;Loading FAS...&quot;);</span>
-<span class="nc" id="L247">        Iterable&lt;FreeAgentAcquisition&gt; faas = Collections.emptyList();</span>
+<span class="nc" id="L240">        LOG.info(&quot;Loading FAS...&quot;);</span>
+<span class="nc" id="L241">        Iterable&lt;FreeAgentAcquisition&gt; faas = Collections.emptyList();</span>
 
-<span class="nc" id="L249">        Set&lt;Player&gt; released = Sets.newHashSet();</span>
+<span class="nc" id="L243">        Set&lt;Player&gt; released = Sets.newHashSet();</span>
 
-<span class="nc" id="L251">        FreeAgents fas = FreeAgents.create(site, changes, tv.getTradeTargetValue(), tv);</span>
+<span class="nc" id="L245">        FreeAgents fas = FreeAgents.create(site, changes, tv.getTradeTargetValue(), tv);</span>
 
-<span class="nc bnc" id="L253" title="All 2 branches missed.">        if (INAUGURAL_DRAFT.contains(def)) {</span>
-<span class="nc" id="L254">          RosterReport rr = RosterReport.create(site, team);</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (INAUGURAL_DRAFT.contains(def)) {</span>
+<span class="nc" id="L248">          RosterReport rr = RosterReport.create(site, team);</span>
 
-<span class="nc" id="L256">          Printables.print(rr).to(out);</span>
+<span class="nc" id="L250">          Printables.print(rr).to(out);</span>
 
-<span class="nc" id="L258">          final GenericValueReport generic = new GenericValueReport(team, ps, battingRegression, pitchingRegression, null);</span>
+<span class="nc" id="L252">          final GenericValueReport generic = new GenericValueReport(team, ps, battingRegression, pitchingRegression, null);</span>
 
-<span class="nc bnc" id="L260" title="All 4 branches missed.">          if (battingRegression.isEmpty() &amp;&amp; pitchingRegression.isEmpty()) {</span>
-<span class="nc" id="L261">            generic.setCustomValueFunction((Player p) -&gt; {</span>
-<span class="nc" id="L262">              Double base = 0.0;</span>
+<span class="nc bnc" id="L254" title="All 4 branches missed.">          if (battingRegression.isEmpty() &amp;&amp; pitchingRegression.isEmpty()) {</span>
+<span class="nc" id="L255">            generic.setCustomValueFunction((Player p) -&gt; {</span>
+<span class="nc" id="L256">              Double base = 0.0;</span>
 
-<span class="nc bnc" id="L264" title="All 2 branches missed.">              if (p.isPitcher()) {</span>
-<span class="nc" id="L265">                Splits&lt;PitchingRatings&lt;?&gt;&gt; rs = p.getPitchingRatings();</span>
+<span class="nc bnc" id="L258" title="All 2 branches missed.">              if (p.isPitcher()) {</span>
+<span class="nc" id="L259">                Splits&lt;PitchingRatings&lt;?&gt;&gt; rs = p.getPitchingRatings();</span>
 
-<span class="nc" id="L267">                PitchingRatings&lt;?&gt; vL = rs.getVsLeft();</span>
-<span class="nc" id="L268">                PitchingRatings&lt;?&gt; vR = rs.getVsRight();</span>
+<span class="nc" id="L261">                PitchingRatings&lt;?&gt; vL = rs.getVsLeft();</span>
+<span class="nc" id="L262">                PitchingRatings&lt;?&gt; vR = rs.getVsRight();</span>
 
-<span class="nc" id="L270">                base = (vL.getStuff() + vL.getMovement() + vL.getControl()</span>
-<span class="nc" id="L271">                     + 2.0 * (vR.getStuff() + vR.getMovement() + vR.getControl())) / 3.0;</span>
-<span class="nc" id="L272">              } else {</span>
-<span class="nc" id="L273">                Splits&lt;BattingRatings&lt;?&gt;&gt; rs = p.getBattingRatings();</span>
+<span class="nc" id="L264">                base = (vL.getStuff() + vL.getMovement() + vL.getControl()</span>
+<span class="nc" id="L265">                     + 2.0 * (vR.getStuff() + vR.getMovement() + vR.getControl())) / 3.0;</span>
+<span class="nc" id="L266">              } else {</span>
+<span class="nc" id="L267">                Splits&lt;BattingRatings&lt;?&gt;&gt; rs = p.getBattingRatings();</span>
 
-<span class="nc" id="L275">                BattingRatings&lt;?&gt; vL = rs.getVsLeft();</span>
-<span class="nc" id="L276">                BattingRatings&lt;?&gt; vR = rs.getVsRight();</span>
+<span class="nc" id="L269">                BattingRatings&lt;?&gt; vL = rs.getVsLeft();</span>
+<span class="nc" id="L270">                BattingRatings&lt;?&gt; vR = rs.getVsRight();</span>
 
-<span class="nc" id="L278">                base = (vL.getContact() + vL.getPower() + vL.getEye()</span>
-<span class="nc" id="L279">                     + 2.0 * (vR.getContact() + vR.getPower() + vR.getEye())) / 3.0;</span>
+<span class="nc" id="L272">                base = (vL.getContact() + vL.getPower() + vL.getEye()</span>
+<span class="nc" id="L273">                     + 2.0 * (vR.getContact() + vR.getPower() + vR.getEye())) / 3.0;</span>
               }
 
-<span class="nc" id="L282">              Integer need = Slot.getPlayerSlots(p)</span>
-<span class="nc" id="L283">                .stream()</span>
-<span class="nc bnc" id="L284" title="All 2 branches missed.">                .filter((s) -&gt; s != Slot.P)</span>
-<span class="nc bnc" id="L285" title="All 4 branches missed.">                .filter((s) -&gt; s != Slot.H || Slot.getPrimarySlot(p) == Slot.H)</span>
-<span class="nc" id="L286">                .map((s) -&gt; rr.getTargetRatio() - rr.getRatio(s))</span>
-<span class="nc" id="L287">                .max(Integer::compare)</span>
-<span class="nc" id="L288">                .orElse(0);</span>
+<span class="nc" id="L276">              Integer need = Slot.getPlayerSlots(p)</span>
+<span class="nc" id="L277">                .stream()</span>
+<span class="nc bnc" id="L278" title="All 2 branches missed.">                .filter((s) -&gt; s != Slot.P)</span>
+<span class="nc bnc" id="L279" title="All 4 branches missed.">                .filter((s) -&gt; s != Slot.H || Slot.getPrimarySlot(p) == Slot.H)</span>
+<span class="nc" id="L280">                .map((s) -&gt; rr.getTargetRatio() - rr.getRatio(s))</span>
+<span class="nc" id="L281">                .max(Integer::compare)</span>
+<span class="nc" id="L282">                .orElse(0);</span>
 
 
-<span class="nc" id="L291">              need = Math.max(0, need);</span>
+<span class="nc" id="L285">              need = Math.max(0, need);</span>
 
-<span class="nc" id="L293">              int intangibles = 0;</span>
+<span class="nc" id="L287">              int intangibles = 0;</span>
 
-<span class="nc bnc" id="L295" title="All 2 branches missed.">              if (p.getClutch().isPresent()) {</span>
-<span class="nc bnc" id="L296" title="All 3 branches missed.">                switch (p.getClutch().get()) {</span>
+<span class="nc bnc" id="L289" title="All 2 branches missed.">              if (p.getClutch().isPresent()) {</span>
+<span class="nc bnc" id="L290" title="All 3 branches missed.">                switch (p.getClutch().get()) {</span>
                   case GREAT:
-<span class="nc" id="L298">                    intangibles += 1;</span>
-<span class="nc" id="L299">                    break;</span>
+<span class="nc" id="L292">                    intangibles += 1;</span>
+<span class="nc" id="L293">                    break;</span>
                   case SUFFERS:
-<span class="nc" id="L301">                    intangibles += -1;</span>
-<span class="nc" id="L302">                    break;</span>
-<span class="nc" id="L303">                  default:</span>
+<span class="nc" id="L295">                    intangibles += -1;</span>
+<span class="nc" id="L296">                    break;</span>
+<span class="nc" id="L297">                  default:</span>
                     // do nothing
                 }
               }
 
-<span class="nc bnc" id="L308" title="All 2 branches missed.">              if (p.getConsistency().isPresent()) {</span>
-<span class="nc bnc" id="L309" title="All 3 branches missed.">                switch (p.getConsistency().get()) {</span>
+<span class="nc bnc" id="L302" title="All 2 branches missed.">              if (p.getConsistency().isPresent()) {</span>
+<span class="nc bnc" id="L303" title="All 3 branches missed.">                switch (p.getConsistency().get()) {</span>
                   case VERY_INCONSISTENT:
-<span class="nc" id="L311">                    intangibles -= 1;</span>
-<span class="nc" id="L312">                    break;</span>
+<span class="nc" id="L305">                    intangibles -= 1;</span>
+<span class="nc" id="L306">                    break;</span>
                   case GOOD:
-<span class="nc" id="L314">                    intangibles += 1;</span>
-<span class="nc" id="L315">                    break;</span>
+<span class="nc" id="L308">                    intangibles += 1;</span>
+<span class="nc" id="L309">                    break;</span>
                   default:
                     // do nothing
                 }
               }
 
-<span class="nc bnc" id="L321" title="All 2 branches missed.">              Double mrFactor = Slot.getPrimarySlot(p) == Slot.MR ? 0.865 : 1.0;</span>
+<span class="nc bnc" id="L315" title="All 2 branches missed.">              Double mrFactor = Slot.getPrimarySlot(p) == Slot.MR ? 0.865 : 1.0;</span>
 
-<span class="nc" id="L323">              return new Double(mrFactor * base - p.getAge() + need - PlayerValue.getAgingFactor(p) + intangibles).intValue();</span>
+<span class="nc" id="L317">              return new Double(mrFactor * base - p.getAge() + need - PlayerValue.getAgingFactor(p) + intangibles).intValue();</span>
             });
           }
 
-<span class="nc" id="L327">          generic.setTitle(&quot;Selected&quot;);</span>
-<span class="nc" id="L328">          generic.setPlayers(team);</span>
-<span class="nc" id="L329">          generic.print(out);</span>
+<span class="nc" id="L321">          generic.setTitle(&quot;Selected&quot;);</span>
+<span class="nc" id="L322">          generic.setPlayers(team);</span>
+<span class="nc" id="L323">          generic.print(out);</span>
 
-<span class="nc" id="L331">          generic.setTitle(&quot;Free Agents&quot;);</span>
-<span class="nc" id="L332">          generic.setPlayers(site.getFreeAgents());</span>
-<span class="nc" id="L333">          generic.print(out);</span>
-<span class="nc" id="L334">          return;</span>
+<span class="nc" id="L325">          generic.setTitle(&quot;Free Agents&quot;);</span>
+<span class="nc" id="L326">          generic.setPlayers(site.getFreeAgents());</span>
+<span class="nc" id="L327">          generic.print(out);</span>
+<span class="nc" id="L328">          return;</span>
         }
 
-<span class="nc" id="L337">        LOG.info(&quot;Calculating top FA targets...&quot;);</span>
-<span class="nc" id="L338">        Iterable&lt;Player&gt; topFaTargets = fas.getTopTargets(mode);</span>
+<span class="nc" id="L331">        LOG.info(&quot;Calculating top FA targets...&quot;);</span>
+<span class="nc" id="L332">        Iterable&lt;Player&gt; topFaTargets = fas.getTopTargets(mode);</span>
 
-<span class="nc" id="L340">        Integer minRosterSize = 90;</span>
-<span class="nc" id="L341">        Integer maxRosterSize = 110;</span>
+<span class="nc" id="L334">        Integer minRosterSize = 90;</span>
+<span class="nc" id="L335">        Integer maxRosterSize = 110;</span>
 
-<span class="nc bnc" id="L343" title="All 2 branches missed.">        if (site.getName().equals(&quot;LBB&quot;)) {</span>
-<span class="nc" id="L344">            maxRosterSize = 100;</span>
+<span class="nc bnc" id="L337" title="All 2 branches missed.">        if (site.getName().equals(&quot;LBB&quot;)) {</span>
+<span class="nc" id="L338">            maxRosterSize = 100;</span>
         }
-<span class="nc bnc" id="L346" title="All 2 branches missed.">        if (site.getName().equals(&quot;PSD&quot;)) {</span>
-<span class="nc" id="L347">            maxRosterSize = 165;</span>
-<span class="nc" id="L348">            minRosterSize = 135;</span>
+<span class="nc bnc" id="L340" title="All 2 branches missed.">        if (site.getName().equals(&quot;PSD&quot;)) {</span>
+<span class="nc" id="L341">            maxRosterSize = 165;</span>
+<span class="nc" id="L342">            minRosterSize = 135;</span>
         }
 
-<span class="nc bnc" id="L351" title="All 2 branches missed.">        if (oldRoster.size() &gt; maxRosterSize) {</span>
-<span class="nc bnc" id="L352" title="All 2 branches missed.">            for (int i = 0; i &lt; 2; i++) {</span>
-<span class="nc" id="L353">                Optional&lt;Player&gt; release = fas.getPlayerToRelease(team);</span>
+<span class="nc bnc" id="L345" title="All 2 branches missed.">        if (oldRoster.size() &gt; maxRosterSize) {</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">            for (int i = 0; i &lt; 2; i++) {</span>
+<span class="nc" id="L347">                Optional&lt;Player&gt; release = fas.getPlayerToRelease(team);</span>
 
-<span class="nc bnc" id="L355" title="All 2 branches missed.">                if (release.isPresent()) {</span>
-<span class="nc" id="L356">                    team.remove(release.get());</span>
-<span class="nc" id="L357">                    released.add(release.get());</span>
+<span class="nc bnc" id="L349" title="All 2 branches missed.">                if (release.isPresent()) {</span>
+<span class="nc" id="L350">                    team.remove(release.get());</span>
+<span class="nc" id="L351">                    released.add(release.get());</span>
                 }
             }
         }
 
-<span class="nc bnc" id="L362" title="All 2 branches missed.">        if (site.getDate().getMonthOfYear() &lt; DateTimeConstants.SEPTEMBER</span>
-<span class="nc bnc" id="L363" title="All 2 branches missed.">            &amp;&amp; site.getDate().getMonthOfYear() &gt; DateTimeConstants.MARCH</span>
-<span class="nc bnc" id="L364" title="All 2 branches missed.">            &amp;&amp; !battingRegression.isEmpty()</span>
-<span class="nc bnc" id="L365" title="All 2 branches missed.">            &amp;&amp; !pitchingRegression.isEmpty()) {</span>
+<span class="nc bnc" id="L356" title="All 2 branches missed.">        if (site.getDate().getMonthOfYear() &lt; DateTimeConstants.SEPTEMBER</span>
+<span class="nc bnc" id="L357" title="All 2 branches missed.">            &amp;&amp; site.getDate().getMonthOfYear() &gt; DateTimeConstants.MARCH</span>
+<span class="nc bnc" id="L358" title="All 2 branches missed.">            &amp;&amp; !battingRegression.isEmpty()</span>
+<span class="nc bnc" id="L359" title="All 2 branches missed.">            &amp;&amp; !pitchingRegression.isEmpty()) {</span>
 
-<span class="nc" id="L367">            LOG.info(&quot;Determining FA acquisition...&quot;);</span>
+<span class="nc" id="L361">            LOG.info(&quot;Determining FA acquisition...&quot;);</span>
 
-<span class="nc bnc" id="L369" title="All 2 branches missed.">            if (oldRoster.size() &lt;= maxRosterSize) {</span>
-<span class="nc" id="L370">                Integer n = 2;</span>
+<span class="nc bnc" id="L363" title="All 2 branches missed.">            if (oldRoster.size() &lt;= maxRosterSize) {</span>
+<span class="nc" id="L364">                Integer n = 2;</span>
 
-<span class="nc bnc" id="L372" title="All 6 branches missed.">                if (site.getName().equals(&quot;CBL&quot;) || site.getName().equals(&quot;TWML&quot;) || site.getName().equals(&quot;BTHUSTLE&quot;)) {</span>
-<span class="nc" id="L373">                    n = 1;</span>
+<span class="nc bnc" id="L366" title="All 6 branches missed.">                if (site.getName().equals(&quot;CBL&quot;) || site.getName().equals(&quot;TWML&quot;) || site.getName().equals(&quot;BTHUSTLE&quot;)) {</span>
+<span class="nc" id="L367">                    n = 1;</span>
                 }
 
-<span class="nc bnc" id="L376" title="All 2 branches missed.">                if (site.getName().equals(&quot;SAVOY&quot;)</span>
-<span class="nc bnc" id="L377" title="All 2 branches missed.">                  || site.getName().equals(&quot;GABL&quot;)</span>
-<span class="nc bnc" id="L378" title="All 2 branches missed.">                  || site.getName().equals(&quot;BTH&quot;)</span>
-<span class="nc bnc" id="L379" title="All 2 branches missed.">                  || site.getName().contains(&quot;OLD_BTH&quot;)) {</span>
-<span class="nc" id="L380">                    n = 0;</span>
+<span class="nc bnc" id="L370" title="All 2 branches missed.">                if (site.getName().equals(&quot;SAVOY&quot;)</span>
+<span class="nc bnc" id="L371" title="All 2 branches missed.">                  || site.getName().equals(&quot;GABL&quot;)</span>
+<span class="nc bnc" id="L372" title="All 2 branches missed.">                  || site.getName().equals(&quot;BTH&quot;)</span>
+<span class="nc bnc" id="L373" title="All 2 branches missed.">                  || site.getName().contains(&quot;OLD_BTH&quot;)) {</span>
+<span class="nc" id="L374">                    n = 0;</span>
                 }
 
-<span class="nc" id="L383">                faas = FreeAgentAcquisition.select(site, changes, team, fas.all(), tv, n);</span>
+<span class="nc" id="L377">                faas = FreeAgentAcquisition.select(site, changes, team, fas.all(), tv, n);</span>
 
-<span class="nc bnc" id="L385" title="All 2 branches missed.">                if (oldRoster.size() &gt; minRosterSize) {</span>
-<span class="nc bnc" id="L386" title="All 2 branches missed.">                    for (FreeAgentAcquisition faa : faas) {</span>
-<span class="nc" id="L387">                        team.remove(faa.getRelease());</span>
-<span class="nc" id="L388">                    }</span>
+<span class="nc bnc" id="L379" title="All 2 branches missed.">                if (oldRoster.size() &gt; minRosterSize) {</span>
+<span class="nc bnc" id="L380" title="All 2 branches missed.">                    for (FreeAgentAcquisition faa : faas) {</span>
+<span class="nc" id="L381">                        team.remove(faa.getRelease());</span>
+<span class="nc" id="L382">                    }</span>
                 }
             }
         }
 
-<span class="nc" id="L393">        ImmutableSet&lt;Player&gt; futureFas = ImmutableSet.of();</span>
+<span class="nc" id="L387">        ImmutableSet&lt;Player&gt; futureFas = ImmutableSet.of();</span>
 
-<span class="nc bnc" id="L395" title="All 2 branches missed.">        if (isLookToNextSeason) {</span>
-<span class="nc" id="L396">            futureFas =</span>
-<span class="nc" id="L397">                ImmutableSet.copyOf(</span>
-<span class="nc" id="L398">                    Iterables.filter(team, site.isFutureFreeAgent()));</span>
+<span class="nc bnc" id="L389" title="All 2 branches missed.">        if (isLookToNextSeason) {</span>
+<span class="nc" id="L390">            futureFas =</span>
+<span class="nc" id="L391">                ImmutableSet.copyOf(</span>
+<span class="nc" id="L392">                    Iterables.filter(team, site.isFutureFreeAgent()));</span>
 
-<span class="nc" id="L400">            System.out.print(&quot;Removing (FA):&quot;);</span>
-<span class="nc bnc" id="L401" title="All 2 branches missed.">            for (Player p : Player.byShortName().immutableSortedCopy(futureFas)) {</span>
-<span class="nc" id="L402">                System.out.print(p.getShortName() + &quot;/&quot;);</span>
-<span class="nc" id="L403">            }</span>
-<span class="nc" id="L404">            System.out.println();</span>
+<span class="nc" id="L394">            System.out.print(&quot;Removing (FA):&quot;);</span>
+<span class="nc bnc" id="L395" title="All 2 branches missed.">            for (Player p : Player.byShortName().immutableSortedCopy(futureFas)) {</span>
+<span class="nc" id="L396">                System.out.print(p.getShortName() + &quot;/&quot;);</span>
+<span class="nc" id="L397">            }</span>
+<span class="nc" id="L398">            System.out.println();</span>
 
-<span class="nc" id="L406">            team.remove(futureFas);</span>
+<span class="nc" id="L400">            team.remove(futureFas);</span>
         }
 
-<span class="nc" id="L409">        RosterSelection selection = RosterSelection.ootp6(team, battingRegression, pitchingRegression, tv);</span>
+<span class="nc" id="L403">        RosterSelection selection = RosterSelection.ootp6(team, battingRegression, pitchingRegression, tv);</span>
 
-<span class="nc bnc" id="L411" title="All 2 branches missed.">        if (site.getType() == Version.OOTP5) {</span>
-<span class="nc" id="L412">            selection = RosterSelection.ootp5(team, battingRegression, pitchingRegression, tv);</span>
+<span class="nc bnc" id="L405" title="All 2 branches missed.">        if (site.getType() == Version.OOTP5) {</span>
+<span class="nc" id="L406">            selection = RosterSelection.ootp5(team, battingRegression, pitchingRegression, tv);</span>
         }
 
-<span class="nc" id="L415">        selection.setPrevious(oldRoster);</span>
+<span class="nc" id="L409">        selection.setPrevious(oldRoster);</span>
 
-<span class="nc" id="L417">        LOG.log(Level.INFO, &quot;Selecting new rosters...&quot;);</span>
+<span class="nc" id="L411">        LOG.log(Level.INFO, &quot;Selecting new rosters...&quot;);</span>
 
-<span class="nc" id="L419">        Mode selectionMode = mode;</span>
+<span class="nc" id="L413">        Mode selectionMode = mode;</span>
 
-<span class="nc bnc" id="L421" title="All 2 branches missed.">        if (isPlayoffs) {</span>
-<span class="nc" id="L422">            selectionMode = Mode.PLAYOFFS;</span>
+<span class="nc bnc" id="L415" title="All 2 branches missed.">        if (isPlayoffs) {</span>
+<span class="nc" id="L416">            selectionMode = Mode.PLAYOFFS;</span>
         }
 
-<span class="nc" id="L425">        Roster newRoster = selection.select(selectionMode, changes);</span>
+<span class="nc" id="L419">        Roster newRoster = selection.select(selectionMode, changes);</span>
 
-<span class="nc" id="L427">        newRoster.setTargetMinimum(minRosterSize);</span>
-<span class="nc" id="L428">        newRoster.setTargetMaximum(maxRosterSize);</span>
+<span class="nc" id="L421">        newRoster.setTargetMinimum(minRosterSize);</span>
+<span class="nc" id="L422">        newRoster.setTargetMaximum(maxRosterSize);</span>
 
-<span class="nc" id="L430">        selection.printBattingSelectionTable(out, newRoster, site.getTeamBatting());</span>
-<span class="nc" id="L431">        selection.printPitchingSelectionTable(out, newRoster, site.getTeamPitching());</span>
+<span class="nc" id="L424">        selection.printBattingSelectionTable(out, newRoster, site.getTeamBatting());</span>
+<span class="nc" id="L425">        selection.printPitchingSelectionTable(out, newRoster, site.getTeamPitching());</span>
 
-<span class="nc" id="L433">        Printables.print(newRoster).to(out);</span>
+<span class="nc" id="L427">        Printables.print(newRoster).to(out);</span>
 
-<span class="nc" id="L435">        LOG.info(&quot;Calculating roster changes...&quot;);</span>
+<span class="nc" id="L429">        LOG.info(&quot;Calculating roster changes...&quot;);</span>
 
-<span class="nc" id="L437">        Printables.print(newRoster.getChangesFrom(oldRoster)).to(out);</span>
+<span class="nc" id="L431">        Printables.print(newRoster.getChangesFrom(oldRoster)).to(out);</span>
 
-<span class="nc bnc" id="L439" title="All 2 branches missed.">        for (FreeAgentAcquisition faa : faas) {</span>
-<span class="nc" id="L440">            Player player = faa.getFreeAgent();</span>
-<span class="nc" id="L441">            out.write(</span>
-<span class="nc" id="L442">                String.format(</span>
+<span class="nc bnc" id="L433" title="All 2 branches missed.">        for (FreeAgentAcquisition faa : faas) {</span>
+<span class="nc" id="L434">            Player player = faa.getFreeAgent();</span>
+<span class="nc" id="L435">            out.write(</span>
+<span class="nc" id="L436">                String.format(</span>
                     &quot;%4s -&gt; %-4s %2s %s%n&quot;,
                     &quot;FA&quot;,
                     &quot;&quot;,
-<span class="nc" id="L446">                    player.getPosition(),</span>
-<span class="nc" id="L447">                    player.getShortName())</span>
-<span class="nc" id="L448">                .getBytes(Charsets.ISO_8859_1));</span>
-<span class="nc" id="L449">        }</span>
+<span class="nc" id="L440">                    player.getPosition(),</span>
+<span class="nc" id="L441">                    player.getShortName())</span>
+<span class="nc" id="L442">                .getBytes(Charsets.ISO_8859_1));</span>
+<span class="nc" id="L443">        }</span>
 
-<span class="nc" id="L451">        LOG.log(Level.INFO, &quot;Choosing rotation...&quot;);</span>
+<span class="nc" id="L445">        LOG.log(Level.INFO, &quot;Choosing rotation...&quot;);</span>
 
-<span class="nc" id="L453">        Rotation rotation =</span>
+<span class="nc" id="L447">        Rotation rotation =</span>
             RotationSelection
-<span class="nc" id="L455">                .forMode(</span>
+<span class="nc" id="L449">                .forMode(</span>
                     selectionMode,
-<span class="nc" id="L457">                    pitchingRegression.predict(team),</span>
-<span class="nc" id="L458">                    site.getPitcherSelectionMethod())</span>
-<span class="nc" id="L459">                .selectRotation(ImmutableSet.&lt;Player&gt;of(), Selections.onlyPitchers(newRoster.getPlayers(Status.ML)));</span>
+<span class="nc" id="L451">                    pitchingRegression.predict(team),</span>
+<span class="nc" id="L452">                    site.getPitcherSelectionMethod())</span>
+<span class="nc" id="L453">                .selectRotation(ImmutableSet.&lt;Player&gt;of(), Selections.onlyPitchers(newRoster.getPlayers(Status.ML)));</span>
 
-<span class="nc" id="L461">        Printables.print(rotation).to(out);</span>
+<span class="nc" id="L455">        Printables.print(rotation).to(out);</span>
 
-<span class="nc" id="L463">        LOG.log(Level.INFO, &quot;Choosing lineups...&quot;);</span>
+<span class="nc" id="L457">        LOG.log(Level.INFO, &quot;Choosing lineups...&quot;);</span>
 
-<span class="nc" id="L465">        AllLineups lineups =</span>
-<span class="nc" id="L466">            new LineupSelection(battingRegression.predict(newRoster.getAllPlayers()))</span>
-<span class="nc" id="L467">                .select(Selections.onlyHitters(newRoster.getPlayers(Status.ML)));</span>
+<span class="nc" id="L459">        AllLineups lineups =</span>
+<span class="nc" id="L460">            new LineupSelection(battingRegression.predict(newRoster.getAllPlayers()))</span>
+<span class="nc" id="L461">                .select(Selections.onlyHitters(newRoster.getPlayers(Status.ML)));</span>
 
-<span class="nc" id="L469">        LOG.log(Level.INFO, &quot;Choosing Depth Charts...&quot;);</span>
+<span class="nc" id="L463">        LOG.log(Level.INFO, &quot;Choosing Depth Charts...&quot;);</span>
 
-<span class="nc" id="L471">        AllDepthCharts depthCharts = DepthChartSelection</span>
-<span class="nc" id="L472">            .create(battingRegression.predict(newRoster.getAllPlayers()))</span>
-<span class="nc" id="L473">            .select(lineups, Selections.onlyHitters(newRoster.getPlayers(Status.ML)));</span>
+<span class="nc" id="L465">        AllDepthCharts depthCharts = DepthChartSelection</span>
+<span class="nc" id="L466">            .create(battingRegression.predict(newRoster.getAllPlayers()))</span>
+<span class="nc" id="L467">            .select(lineups, Selections.onlyHitters(newRoster.getPlayers(Status.ML)));</span>
 
-<span class="nc" id="L475">        Printables.print(depthCharts).to(out);</span>
+<span class="nc" id="L469">        Printables.print(depthCharts).to(out);</span>
 
-<span class="nc" id="L477">        Printables.print(lineups).to(out);</span>
+<span class="nc" id="L471">        Printables.print(lineups).to(out);</span>
 
-<span class="nc bnc" id="L479" title="All 2 branches missed.">        if (site.getDate().getMonthOfYear() == DateTimeConstants.MARCH) {</span>
-<span class="nc" id="L480">            LOG.log(Level.INFO, &quot;Spring training...&quot;);</span>
-<span class="nc" id="L481">            Printables</span>
-<span class="nc" id="L482">                .print(SpringTraining.create(</span>
-<span class="nc" id="L483">                    site.getType(), newRoster.getAllPlayers()))</span>
-<span class="nc" id="L484">                .to(out);</span>
+<span class="nc bnc" id="L473" title="All 2 branches missed.">        if (site.getDate().getMonthOfYear() == DateTimeConstants.MARCH) {</span>
+<span class="nc" id="L474">            LOG.log(Level.INFO, &quot;Spring training...&quot;);</span>
+<span class="nc" id="L475">            Printables</span>
+<span class="nc" id="L476">                .print(SpringTraining.create(</span>
+<span class="nc" id="L477">                    site.getType(), newRoster.getAllPlayers()))</span>
+<span class="nc" id="L478">                .to(out);</span>
         }
 
-<span class="nc" id="L487">        LOG.log(Level.INFO, &quot;Salary Regression...&quot;);</span>
+<span class="nc" id="L481">        LOG.log(Level.INFO, &quot;Salary Regression...&quot;);</span>
 
-<span class="nc" id="L489">        SalaryRegression salaryRegression = new SalaryRegression(tv, site);</span>
+<span class="nc" id="L483">        SalaryRegression salaryRegression = new SalaryRegression(tv, site);</span>
 
-<span class="nc" id="L491">        Integer n = Iterables.size(site.getTeamIds());</span>
-<span class="nc" id="L492">        int count = 1;</span>
-<span class="nc bnc" id="L493" title="All 2 branches missed.">        for (Id&lt;Team&gt; id : site.getTeamIds()) {</span>
-<span class="nc" id="L494">            LOG.log(Level.INFO, &quot;{0}/{1}...&quot;, new Object[] { count, n });</span>
+<span class="nc" id="L485">        Integer n = Iterables.size(site.getTeamIds());</span>
+<span class="nc" id="L486">        int count = 1;</span>
+<span class="nc bnc" id="L487" title="All 2 branches missed.">        for (Id&lt;Team&gt; id : site.getTeamIds()) {</span>
+<span class="nc" id="L488">            LOG.log(Level.INFO, &quot;{0}/{1}...&quot;, new Object[] { count, n });</span>
 
-<span class="nc" id="L496">            salaryRegression.add(site.getSalariedPlayers(id));</span>
-<span class="nc" id="L497">            count++;</span>
-<span class="nc" id="L498">        }</span>
+<span class="nc" id="L490">            salaryRegression.add(site.getSalariedPlayers(id));</span>
+<span class="nc" id="L491">            count++;</span>
+<span class="nc" id="L492">        }</span>
 
-<span class="nc" id="L500">        Printables.print(salaryRegression).to(out);</span>
+<span class="nc" id="L494">        Printables.print(salaryRegression).to(out);</span>
 
-<span class="nc" id="L502">        final GenericValueReport generic = new GenericValueReport(team, ps, battingRegression, pitchingRegression, salaryRegression);</span>
+<span class="nc" id="L496">        final GenericValueReport generic = new GenericValueReport(team, ps, battingRegression, pitchingRegression, salaryRegression);</span>
 
-<span class="nc" id="L504">        generic.printReplacementLevelReport(out);</span>
+<span class="nc" id="L498">        generic.printReplacementLevelReport(out);</span>
 
-<span class="nc" id="L506">        RosterReport rosterReport = RosterReport.create(site, newRoster);</span>
+<span class="nc" id="L500">        RosterReport rosterReport = RosterReport.create(site, newRoster);</span>
 
-<span class="nc" id="L508">        Printables.print(rosterReport).to(out);</span>
+<span class="nc" id="L502">        Printables.print(rosterReport).to(out);</span>
 
-<span class="nc" id="L510">        generic.setCustomValueFunction(tv.getTradeTargetValue());</span>
+<span class="nc" id="L504">        generic.setCustomValueFunction(tv.getTradeTargetValue());</span>
 
-<span class="nc" id="L512">        generic.setReverse(false);</span>
+<span class="nc" id="L506">        generic.setReverse(false);</span>
 
-<span class="nc" id="L514">        LOG.info(&quot;Draft...&quot;);</span>
-<span class="nc" id="L515">        ImmutableSet&lt;Player&gt; drafted = ImmutableSet.copyOf(changes.get(Changes.ChangeType.PICKED));</span>
-<span class="nc" id="L516">        Iterable&lt;Player&gt; remaining =</span>
-<span class="nc" id="L517">          Sets.difference(</span>
-<span class="nc" id="L518">              ImmutableSet.copyOf(FluentIterable.from(site.getDraft()).filter(Predicates.notNull())),</span>
+<span class="nc" id="L508">        LOG.info(&quot;Draft...&quot;);</span>
+<span class="nc" id="L509">        ImmutableSet&lt;Player&gt; drafted = ImmutableSet.copyOf(changes.get(Changes.ChangeType.PICKED));</span>
+<span class="nc" id="L510">        Iterable&lt;Player&gt; remaining =</span>
+<span class="nc" id="L511">          Sets.difference(</span>
+<span class="nc" id="L512">              ImmutableSet.copyOf(FluentIterable.from(site.getDraft()).filter(Predicates.notNull())),</span>
               drafted);
 
 
-<span class="nc bnc" id="L522" title="All 2 branches missed.">        if (!Iterables.isEmpty(remaining)) {</span>
-<span class="nc" id="L523">            generic.setTitle(&quot;Drafted&quot;);</span>
-<span class="nc" id="L524">            generic.setPlayers(drafted);</span>
-<span class="nc" id="L525">            generic.print(out);</span>
+<span class="nc bnc" id="L516" title="All 2 branches missed.">        if (!Iterables.isEmpty(remaining)) {</span>
+<span class="nc" id="L517">            generic.setTitle(&quot;Drafted&quot;);</span>
+<span class="nc" id="L518">            generic.setPlayers(drafted);</span>
+<span class="nc" id="L519">            generic.print(out);</span>
 
-<span class="nc" id="L527">            generic.setTitle(&quot;Remaining&quot;);</span>
-<span class="nc" id="L528">            generic.setPlayers(remaining);</span>
-<span class="nc" id="L529">            generic.print(out);</span>
+<span class="nc" id="L521">            generic.setTitle(&quot;Remaining&quot;);</span>
+<span class="nc" id="L522">            generic.setPlayers(remaining);</span>
+<span class="nc" id="L523">            generic.print(out);</span>
         }
 
-<span class="nc" id="L532">        DraftReport.create(site, tv).print(out);</span>
+<span class="nc" id="L526">        DraftReport.create(site, tv).print(out);</span>
 
-<span class="nc" id="L534">        LOG.info(&quot;Extensions report...&quot;);</span>
-<span class="nc" id="L535">        generic.setTitle(&quot;Extensions&quot;);</span>
-<span class="nc" id="L536">        generic.setPlayers(</span>
-<span class="nc" id="L537">            Iterables.concat(</span>
-<span class="nc" id="L538">                Iterables.filter(newRoster.getAllPlayers(), site.isFutureFreeAgent()),</span>
+<span class="nc" id="L528">        LOG.info(&quot;Extensions report...&quot;);</span>
+<span class="nc" id="L529">        generic.setTitle(&quot;Extensions&quot;);</span>
+<span class="nc" id="L530">        generic.setPlayers(</span>
+<span class="nc" id="L531">            Iterables.concat(</span>
+<span class="nc" id="L532">                Iterables.filter(newRoster.getAllPlayers(), site.isFutureFreeAgent()),</span>
                 futureFas));
-<span class="nc" id="L540">        generic.print(out);</span>
+<span class="nc" id="L534">        generic.print(out);</span>
 
-<span class="nc" id="L542">        LOG.info(&quot;Arbitration report...&quot;);</span>
-<span class="nc" id="L543">        generic.setTitle(&quot;Arbitration&quot;);</span>
-<span class="nc" id="L544">        generic.setPlayers(Iterables.filter(newRoster.getAllPlayers(), new Predicate&lt;Player&gt;() {</span>
+<span class="nc" id="L536">        LOG.info(&quot;Arbitration report...&quot;);</span>
+<span class="nc" id="L537">        generic.setTitle(&quot;Arbitration&quot;);</span>
+<span class="nc" id="L538">        generic.setPlayers(Iterables.filter(newRoster.getAllPlayers(), new Predicate&lt;Player&gt;() {</span>
             public boolean apply(Player p) {
-<span class="nc" id="L546">                return p.getSalary().endsWith(&quot;a&quot;);</span>
+<span class="nc" id="L540">                return p.getSalary().endsWith(&quot;a&quot;);</span>
             }
         }));
-<span class="nc" id="L549">        generic.print(out);</span>
+<span class="nc" id="L543">        generic.print(out);</span>
 
-<span class="nc" id="L551">        LOG.info(&quot;Salary report...&quot;);</span>
-<span class="nc" id="L552">        SalaryReport salary = new SalaryReport(team, site);</span>
-<span class="nc" id="L553">        Printables.print(salary).to(out);</span>
+<span class="nc" id="L545">        LOG.info(&quot;Salary report...&quot;);</span>
+<span class="nc" id="L546">        SalaryReport salary = new SalaryReport(team, site);</span>
+<span class="nc" id="L547">        Printables.print(salary).to(out);</span>
 
-<span class="nc bnc" id="L555" title="All 2 branches missed.">        if (def.getName().equals(&quot;BTHUSTLE&quot;)) {</span>
-<span class="nc" id="L556">            LOG.info(&quot;40 man roster reports...&quot;);</span>
+<span class="nc bnc" id="L549" title="All 2 branches missed.">        if (def.getName().equals(&quot;BTHUSTLE&quot;)) {</span>
+<span class="nc" id="L550">            LOG.info(&quot;40 man roster reports...&quot;);</span>
 
-<span class="nc" id="L558">            FourtyManRoster fourtyMan = new FourtyManRoster(</span>
+<span class="nc" id="L552">            FourtyManRoster fourtyMan = new FourtyManRoster(</span>
                 newRoster,
                 Predictions
-<span class="nc" id="L561">                    .predict(newRoster.getAllPlayers())</span>
-<span class="nc" id="L562">                    .using(battingRegression, pitchingRegression, ps.getPitcherOverall()),</span>
+<span class="nc" id="L555">                    .predict(newRoster.getAllPlayers())</span>
+<span class="nc" id="L556">                    .using(battingRegression, pitchingRegression, ps.getPitcherOverall()),</span>
                 tv);
 
-<span class="nc" id="L565">            Printables.print(fourtyMan).to(out);</span>
+<span class="nc" id="L559">            Printables.print(fourtyMan).to(out);</span>
 
-<span class="nc" id="L567">            generic.setTitle(&quot;+40&quot;);</span>
-<span class="nc" id="L568">            generic.setPlayers(ImmutableSet</span>
-<span class="nc" id="L569">                .&lt;Player&gt;builder()</span>
-<span class="nc" id="L570">                .addAll(fourtyMan.getPlayersToAdd())</span>
-<span class="nc" id="L571">                .addAll(FluentIterable</span>
-<span class="nc" id="L572">                    .from(changes.get(ChangeType.FOURTY_MAN))</span>
-<span class="nc" id="L573">                    .filter(Predicates.in(newRoster.getAllPlayers())))</span>
-<span class="nc" id="L574">                .build());</span>
-<span class="nc" id="L575">            generic.print(out);</span>
+<span class="nc" id="L561">            generic.setTitle(&quot;+40&quot;);</span>
+<span class="nc" id="L562">            generic.setPlayers(ImmutableSet</span>
+<span class="nc" id="L563">                .&lt;Player&gt;builder()</span>
+<span class="nc" id="L564">                .addAll(fourtyMan.getPlayersToAdd())</span>
+<span class="nc" id="L565">                .addAll(FluentIterable</span>
+<span class="nc" id="L566">                    .from(changes.get(ChangeType.FOURTY_MAN))</span>
+<span class="nc" id="L567">                    .filter(Predicates.in(newRoster.getAllPlayers())))</span>
+<span class="nc" id="L568">                .build());</span>
+<span class="nc" id="L569">            generic.print(out);</span>
 
-<span class="nc" id="L577">            generic.setTitle(&quot;-40&quot;);</span>
-<span class="nc" id="L578">            generic.setPlayers(fourtyMan.getPlayersToRemove());</span>
-<span class="nc" id="L579">            generic.print(out);</span>
+<span class="nc" id="L571">            generic.setTitle(&quot;-40&quot;);</span>
+<span class="nc" id="L572">            generic.setPlayers(fourtyMan.getPlayersToRemove());</span>
+<span class="nc" id="L573">            generic.print(out);</span>
 
-<span class="nc" id="L581">            generic.setTitle(&quot;Waive&quot;);</span>
-<span class="nc bnc" id="L582" title="All 2 branches missed.">            generic.setPlayers(isExpandedRosters ? ImmutableSet.of() : fourtyMan.getPlayersToWaive());</span>
-<span class="nc" id="L583">            generic.print(out);</span>
+<span class="nc" id="L575">            generic.setTitle(&quot;Waive&quot;);</span>
+<span class="nc bnc" id="L576" title="All 2 branches missed.">            generic.setPlayers(isExpandedRosters ? ImmutableSet.of() : fourtyMan.getPlayersToWaive());</span>
+<span class="nc" id="L577">            generic.print(out);</span>
         }
 
-<span class="nc bnc" id="L586" title="All 4 branches missed.">        if (battingRegression.isEmpty() || pitchingRegression.isEmpty()) {</span>
-<span class="nc" id="L587">            return;</span>
+<span class="nc bnc" id="L580" title="All 4 branches missed.">        if (battingRegression.isEmpty() || pitchingRegression.isEmpty()) {</span>
+<span class="nc" id="L581">            return;</span>
         }
 
-<span class="nc bnc" id="L590" title="All 2 branches missed.">        if (def.getName().equals(&quot;BTHUSTLE&quot;)) {</span>
-<span class="nc" id="L591">            LOG.info(&quot;Waviers report...&quot;);</span>
-<span class="nc" id="L592">            generic.setTitle(&quot;Waivers&quot;);</span>
-<span class="nc" id="L593">            generic.setPlayers(site.getWaiverWire());</span>
-<span class="nc" id="L594">            generic.print(out);</span>
+<span class="nc bnc" id="L584" title="All 2 branches missed.">        if (def.getName().equals(&quot;BTHUSTLE&quot;)) {</span>
+<span class="nc" id="L585">            LOG.info(&quot;Waviers report...&quot;);</span>
+<span class="nc" id="L586">            generic.setTitle(&quot;Waivers&quot;);</span>
+<span class="nc" id="L587">            generic.setPlayers(site.getWaiverWire());</span>
+<span class="nc" id="L588">            generic.print(out);</span>
 
-<span class="nc bnc" id="L596" title="All 2 branches missed.">            if (site.getDate().getMonthOfYear() &lt; DateTimeConstants.APRIL) {</span>
-<span class="nc" id="L597">                LOG.info(&quot;Rule 5...&quot;);</span>
-<span class="nc" id="L598">                generic.setTitle(&quot;Rule 5&quot;);</span>
-<span class="nc" id="L599">                generic.setPlayers(</span>
-<span class="nc" id="L600">                    Iterables.filter(</span>
-<span class="nc" id="L601">                        site.getRuleFiveDraft(),</span>
-<span class="nc" id="L602">                        new Predicate&lt;Player&gt;() {</span>
+<span class="nc bnc" id="L590" title="All 2 branches missed.">            if (site.getDate().getMonthOfYear() &lt; DateTimeConstants.APRIL) {</span>
+<span class="nc" id="L591">                LOG.info(&quot;Rule 5...&quot;);</span>
+<span class="nc" id="L592">                generic.setTitle(&quot;Rule 5&quot;);</span>
+<span class="nc" id="L593">                generic.setPlayers(</span>
+<span class="nc" id="L594">                    Iterables.filter(</span>
+<span class="nc" id="L595">                        site.getRuleFiveDraft(),</span>
+<span class="nc" id="L596">                        new Predicate&lt;Player&gt;() {</span>
                             public boolean apply(Player p) {
-<span class="nc bnc" id="L604" title="All 2 branches missed.">                                return tv.getCurrentValueVsReplacement(p) &gt;= 0;</span>
+<span class="nc bnc" id="L598" title="All 2 branches missed.">                                return tv.getCurrentValueVsReplacement(p) &gt;= 0;</span>
                             }
                         }));
-<span class="nc" id="L607">                generic.print(out);</span>
+<span class="nc" id="L601">                generic.print(out);</span>
             }
         }
 
 
-<span class="nc" id="L612">        LOG.info(&quot;FA report...&quot;);</span>
-<span class="nc" id="L613">        generic.setTitle(&quot;Top Targets&quot;);</span>
-<span class="nc" id="L614">        generic.setPlayers(topFaTargets);</span>
-<span class="nc" id="L615">        generic.print(out);</span>
+<span class="nc" id="L606">        LOG.info(&quot;FA report...&quot;);</span>
+<span class="nc" id="L607">        generic.setTitle(&quot;Top Targets&quot;);</span>
+<span class="nc" id="L608">        generic.setPlayers(topFaTargets);</span>
+<span class="nc" id="L609">        generic.print(out);</span>
 
-<span class="nc" id="L617">        generic.setTitle(&quot;Free Agents&quot;);</span>
-<span class="nc" id="L618">        generic.setPlayers(site.getFreeAgents());</span>
-<span class="nc" id="L619">        generic.setLimit(50);</span>
-<span class="nc" id="L620">        generic.print(out);</span>
+<span class="nc" id="L611">        generic.setTitle(&quot;Free Agents&quot;);</span>
+<span class="nc" id="L612">        generic.setPlayers(site.getFreeAgents());</span>
+<span class="nc" id="L613">        generic.setLimit(50);</span>
+<span class="nc" id="L614">        generic.print(out);</span>
 
 
-<span class="nc" id="L623">        generic.setTitle(&quot;Trade Values&quot;);</span>
-<span class="nc" id="L624">        generic.setPlayers(</span>
-<span class="nc" id="L625">            Iterables.concat(</span>
-<span class="nc" id="L626">                newRoster.getAllPlayers(),</span>
+<span class="nc" id="L617">        generic.setTitle(&quot;Trade Values&quot;);</span>
+<span class="nc" id="L618">        generic.setPlayers(</span>
+<span class="nc" id="L619">            Iterables.concat(</span>
+<span class="nc" id="L620">                newRoster.getAllPlayers(),</span>
                 futureFas,
-<span class="nc" id="L628">                Iterables.transform(</span>
+<span class="nc" id="L622">                Iterables.transform(</span>
                     faas,
                     FreeAgentAcquisition::getRelease),
                 released));
-<span class="nc" id="L632">        generic.setLimit(200);</span>
-<span class="nc" id="L633">        generic.setMultiplier(1.1);</span>
-<span class="nc" id="L634">        generic.print(out);</span>
+<span class="nc" id="L626">        generic.setLimit(200);</span>
+<span class="nc" id="L627">        generic.setMultiplier(1.1);</span>
+<span class="nc" id="L628">        generic.print(out);</span>
 
-<span class="nc" id="L636">        Set&lt;Player&gt; all = Sets.newHashSet();</span>
+<span class="nc" id="L630">        Set&lt;Player&gt; all = Sets.newHashSet();</span>
 
-<span class="nc" id="L638">        Set&lt;Player&gt; minorLeaguers = Sets.newHashSet();</span>
+<span class="nc" id="L632">        Set&lt;Player&gt; minorLeaguers = Sets.newHashSet();</span>
 
-<span class="nc" id="L640">        LOG.log(Level.INFO, &quot;Team reports...&quot;);</span>
-<span class="nc" id="L641">        generic.setLimit(50);</span>
-<span class="nc" id="L642">        generic.setMultiplier(0.91);</span>
+<span class="nc" id="L634">        LOG.log(Level.INFO, &quot;Team reports...&quot;);</span>
+<span class="nc" id="L635">        generic.setLimit(50);</span>
+<span class="nc" id="L636">        generic.setMultiplier(0.91);</span>
 
-<span class="nc" id="L644">        count = 1;</span>
-<span class="nc bnc" id="L645" title="All 2 branches missed.">        for (Id&lt;Team&gt; id : site.getTeamIds()) {</span>
-<span class="nc" id="L646">            SingleTeam t = site.getSingleTeam(id);</span>
-<span class="nc" id="L647">            LOG.log(Level.INFO, &quot;{0} ({1}/{2})...&quot;, new Object[] { t.getName(), count, n });</span>
-<span class="nc" id="L648">            generic.setTitle(t.getName());</span>
+<span class="nc" id="L638">        count = 1;</span>
+<span class="nc bnc" id="L639" title="All 2 branches missed.">        for (Id&lt;Team&gt; id : site.getTeamIds()) {</span>
+<span class="nc" id="L640">            SingleTeam t = site.getSingleTeam(id);</span>
+<span class="nc" id="L641">            LOG.log(Level.INFO, &quot;{0} ({1}/{2})...&quot;, new Object[] { t.getName(), count, n });</span>
+<span class="nc" id="L642">            generic.setTitle(t.getName());</span>
 
-<span class="nc" id="L650">            Roster r = t.getRoster();</span>
+<span class="nc" id="L644">            Roster r = t.getRoster();</span>
 
-<span class="nc" id="L652">            Iterables.addAll(all, r.getAllPlayers());</span>
+<span class="nc" id="L646">            Iterables.addAll(all, r.getAllPlayers());</span>
 
-<span class="nc" id="L654">            Iterables.addAll(minorLeaguers, r.getPlayers(Status.AAA));</span>
-<span class="nc" id="L655">            Iterables.addAll(minorLeaguers, r.getPlayers(Status.AA));</span>
-<span class="nc" id="L656">            Iterables.addAll(minorLeaguers, r.getPlayers(Status.A));</span>
-<span class="nc" id="L657">            Iterables.addAll(minorLeaguers, r.getPlayers(Status.SA));</span>
-<span class="nc" id="L658">            Iterables.addAll(minorLeaguers, r.getPlayers(Status.R));</span>
+<span class="nc" id="L648">            Iterables.addAll(minorLeaguers, r.getPlayers(Status.AAA));</span>
+<span class="nc" id="L649">            Iterables.addAll(minorLeaguers, r.getPlayers(Status.AA));</span>
+<span class="nc" id="L650">            Iterables.addAll(minorLeaguers, r.getPlayers(Status.A));</span>
+<span class="nc" id="L651">            Iterables.addAll(minorLeaguers, r.getPlayers(Status.SA));</span>
+<span class="nc" id="L652">            Iterables.addAll(minorLeaguers, r.getPlayers(Status.R));</span>
 
-<span class="nc" id="L660">            generic.setPlayers(r.getAllPlayers());</span>
-<span class="nc" id="L661">            generic.print(out);</span>
-<span class="nc" id="L662">            count++;</span>
-<span class="nc" id="L663">        }</span>
+<span class="nc" id="L654">            generic.setPlayers(r.getAllPlayers());</span>
+<span class="nc" id="L655">            generic.print(out);</span>
+<span class="nc" id="L656">            count++;</span>
+<span class="nc" id="L657">        }</span>
 
-<span class="nc" id="L665">        TeamReport now = TeamReport.create(</span>
+<span class="nc" id="L659">        TeamReport now = TeamReport.create(</span>
             &quot;Now&quot;,
             ps,
             site,
             new PlayerValue(ps, battingRegression, pitchingRegression)
-<span class="nc" id="L670">                .getNowValue());</span>
+<span class="nc" id="L664">                .getNowValue());</span>
 
-<span class="nc" id="L672">        LOG.info(&quot;Power Rankings...&quot;);</span>
-<span class="nc" id="L673">        Printables.print(site.getPowerRankingsReport(now)).to(out);</span>
+<span class="nc" id="L666">        LOG.info(&quot;Power Rankings...&quot;);</span>
+<span class="nc" id="L667">        Printables.print(site.getPowerRankingsReport(now)).to(out);</span>
 
-<span class="nc" id="L675">        LOG.info(&quot;Team Now Report...&quot;);</span>
+<span class="nc" id="L669">        LOG.info(&quot;Team Now Report...&quot;);</span>
 
-<span class="nc" id="L677">        now.sortByEndOfSeason();</span>
+<span class="nc" id="L671">        now.sortByEndOfSeason();</span>
 
-<span class="nc" id="L679">        Printables.print(now).to(out);</span>
+<span class="nc" id="L673">        Printables.print(now).to(out);</span>
 
-<span class="nc" id="L681">        LOG.info(&quot;Team Medium Term Report...&quot;);</span>
-<span class="nc" id="L682">        TeamReport future = TeamReport.create(</span>
+<span class="nc" id="L675">        LOG.info(&quot;Team Medium Term Report...&quot;);</span>
+<span class="nc" id="L676">        TeamReport future = TeamReport.create(</span>
             &quot;Medium Term&quot;,
             ps,
             site,
             new PlayerValue(ps, battingRegression, pitchingRegression)
-<span class="nc" id="L687">                .getFutureValue());</span>
+<span class="nc" id="L681">                .getFutureValue());</span>
 
-<span class="nc" id="L689">        future.sortByTalentLevel();</span>
-<span class="nc" id="L690">        Printables.print(future).to(out);</span>
+<span class="nc" id="L683">        future.sortByTalentLevel();</span>
+<span class="nc" id="L684">        Printables.print(future).to(out);</span>
 
-<span class="nc" id="L692">        generic.setLimit(10);</span>
-<span class="nc" id="L693">        generic.clearMultiplier();</span>
-<span class="nc" id="L694">        generic.setCustomValueFunction(</span>
+<span class="nc" id="L686">        generic.setLimit(10);</span>
+<span class="nc" id="L687">        generic.clearMultiplier();</span>
+<span class="nc" id="L688">        generic.setCustomValueFunction(</span>
             new PlayerValue(ps, battingRegression, pitchingRegression)
-<span class="nc" id="L696">                .getFutureValue());</span>
+<span class="nc" id="L690">                .getFutureValue());</span>
 
-<span class="nc bnc" id="L698" title="All 2 branches missed.">        for (final Slot s : Slot.values()) {</span>
-<span class="nc bnc" id="L699" title="All 2 branches missed.">            if (s == Slot.P) {</span>
-<span class="nc" id="L700">                continue;</span>
+<span class="nc bnc" id="L692" title="All 2 branches missed.">        for (final Slot s : Slot.values()) {</span>
+<span class="nc bnc" id="L693" title="All 2 branches missed.">            if (s == Slot.P) {</span>
+<span class="nc" id="L694">                continue;</span>
             }
 
-<span class="nc" id="L703">            LOG.log(Level.INFO, &quot;Slot Report: {0}...&quot;, s.name());</span>
+<span class="nc" id="L697">            LOG.log(Level.INFO, &quot;Slot Report: {0}...&quot;, s.name());</span>
 
-<span class="nc" id="L705">            generic.setTitle(&quot;Top: &quot; + s.name());</span>
-<span class="nc" id="L706">            generic.setPlayers(Iterables.filter(all, new Predicate&lt;Player&gt;() {</span>
+<span class="nc" id="L699">            generic.setTitle(&quot;Top: &quot; + s.name());</span>
+<span class="nc" id="L700">            generic.setPlayers(Iterables.filter(all, new Predicate&lt;Player&gt;() {</span>
                 public boolean apply(Player p) {
-<span class="nc bnc" id="L708" title="All 2 branches missed.">                    return Slot.getPrimarySlot(p) == s;</span>
+<span class="nc bnc" id="L702" title="All 2 branches missed.">                    return Slot.getPrimarySlot(p) == s;</span>
                 }
             }));
 
-<span class="nc" id="L712">            generic.print(out);</span>
+<span class="nc" id="L706">            generic.print(out);</span>
         }
 
-<span class="nc bnc" id="L715" title="All 2 branches missed.">        for (final Position pos : ImmutableList.of(Position.SECOND_BASE, Position.THIRD_BASE)) {</span>
-<span class="nc" id="L716">            LOG.log(Level.INFO, &quot;Position Report: {0}...&quot;, pos.name());</span>
+<span class="nc bnc" id="L709" title="All 2 branches missed.">        for (final Position pos : ImmutableList.of(Position.SECOND_BASE, Position.THIRD_BASE)) {</span>
+<span class="nc" id="L710">            LOG.log(Level.INFO, &quot;Position Report: {0}...&quot;, pos.name());</span>
 
-<span class="nc" id="L718">            generic.setTitle(&quot;Top: &quot; + pos.name());</span>
-<span class="nc" id="L719">            generic.setPlayers(Iterables.filter(all, new Predicate&lt;Player&gt;() {</span>
+<span class="nc" id="L712">            generic.setTitle(&quot;Top: &quot; + pos.name());</span>
+<span class="nc" id="L713">            generic.setPlayers(Iterables.filter(all, new Predicate&lt;Player&gt;() {</span>
                 public boolean apply(Player pl) {
-<span class="nc" id="L721">                    return pl.getPosition().equals(pos.getAbbreviation());</span>
+<span class="nc" id="L715">                    return pl.getPosition().equals(pos.getAbbreviation());</span>
                 }
             }));
 
-<span class="nc" id="L725">            generic.print(out);</span>
-<span class="nc" id="L726">        }</span>
+<span class="nc" id="L719">            generic.print(out);</span>
+<span class="nc" id="L720">        }</span>
 
-<span class="nc" id="L728">        LOG.log(Level.INFO, &quot;League wide replacement Level...&quot;);</span>
+<span class="nc" id="L722">        LOG.log(Level.INFO, &quot;League wide replacement Level...&quot;);</span>
 
-<span class="nc" id="L730">        generic.setCustomValueFunction(tv.getTradeTargetValue());</span>
+<span class="nc" id="L724">        generic.setCustomValueFunction(tv.getTradeTargetValue());</span>
 
         /*LOG.log(Level.INFO, &quot;Trade target report...&quot;);
         generic.setTitle(&quot;Trade Targets&quot;);
@@ -741,41 +735,41 @@ import org.joda.time.DateTimeConstants;
         generic.setLimit(50);
         generic.print(out);*/
 
-<span class="nc" id="L744">        LOG.log(Level.INFO, &quot;Trade Bait report...&quot;);</span>
-<span class="nc" id="L745">        generic.setCustomValueFunction(tv.getTradeBaitValue(site, salaryRegression));</span>
-<span class="nc" id="L746">        generic.setTitle(&quot;Trade Bait&quot;);</span>
-<span class="nc" id="L747">        generic.setPlayers(newRoster.getAllPlayers());</span>
-<span class="nc" id="L748">        generic.setLimit(200);</span>
-<span class="nc" id="L749">        generic.clearMultiplier();</span>
-<span class="nc" id="L750">        generic.print(out);</span>
+<span class="nc" id="L738">        LOG.log(Level.INFO, &quot;Trade Bait report...&quot;);</span>
+<span class="nc" id="L739">        generic.setCustomValueFunction(tv.getTradeBaitValue(site, salaryRegression));</span>
+<span class="nc" id="L740">        generic.setTitle(&quot;Trade Bait&quot;);</span>
+<span class="nc" id="L741">        generic.setPlayers(newRoster.getAllPlayers());</span>
+<span class="nc" id="L742">        generic.setLimit(200);</span>
+<span class="nc" id="L743">        generic.clearMultiplier();</span>
+<span class="nc" id="L744">        generic.print(out);</span>
 
-<span class="nc" id="L752">        generic.setCustomValueFunction(tv.getTradeTargetValue());</span>
+<span class="nc" id="L746">        generic.setCustomValueFunction(tv.getTradeTargetValue());</span>
 
         Iterable&lt;Player&gt; topBait = Ordering
-<span class="nc" id="L755">            .natural()</span>
-<span class="nc" id="L756">            .reverse()</span>
-<span class="nc" id="L757">            .onResultOf(tv.getTradeBaitValue(site, salaryRegression))</span>
-<span class="nc" id="L758">            .sortedCopy(newRoster.getAllPlayers());</span>
+<span class="nc" id="L749">            .natural()</span>
+<span class="nc" id="L750">            .reverse()</span>
+<span class="nc" id="L751">            .onResultOf(tv.getTradeBaitValue(site, salaryRegression))</span>
+<span class="nc" id="L752">            .sortedCopy(newRoster.getAllPlayers());</span>
 
 
-<span class="nc" id="L761">        LOG.log(Level.INFO, &quot;Top Trades...&quot;);</span>
+        /*LOG.log(Level.INFO, &quot;Top Trades...&quot;);
 
-<span class="nc" id="L763">        int idx = 1;</span>
+        int idx = 1;
         for (Trade trade
-<span class="nc bnc" id="L765" title="All 2 branches missed.">            : Iterables.limit(</span>
-<span class="nc" id="L766">                Trade.getTopTrades(</span>
+            : Iterables.limit(
+                Trade.getTopTrades(
                     tv,
                     site,
                     salaryRegression,
-<span class="nc" id="L770">                    Iterables.limit(topBait, newRoster.size() / 10),</span>
+                    Iterables.limit(topBait, newRoster.size() / 10),
                     all),
                 20)) {
 
-<span class="nc" id="L774">            generic.setTitle(&quot;#&quot; + idx + &quot;-&quot; + trade.getValue(tv, site, salaryRegression));</span>
-<span class="nc" id="L775">            generic.setPlayers(trade);</span>
-<span class="nc" id="L776">            generic.print(out);</span>
-<span class="nc" id="L777">            idx++;</span>
-<span class="nc" id="L778">        }</span>
+            generic.setTitle(&quot;#&quot; + idx + &quot;-&quot; + trade.getValue(tv, site, salaryRegression));
+            generic.setPlayers(trade);
+            generic.print(out);
+            idx++;
+        }*/
 
         /*LOG.info(&quot;Below Replacement Trades...&quot;);
         ImmutableSet&lt;Player&gt; belowReplacementBait =
@@ -807,24 +801,24 @@ import org.joda.time.DateTimeConstants;
             idx++;
         }*/
 
-<span class="nc" id="L810">        LOG.log(Level.INFO, &quot;Non Top 10 prospects...&quot;);</span>
-<span class="nc" id="L811">        ImmutableSet&lt;Player&gt; nonTopTens =</span>
-<span class="nc" id="L812">            ImmutableSet.copyOf(</span>
-<span class="nc" id="L813">                Iterables.filter(</span>
+<span class="nc" id="L804">        LOG.log(Level.INFO, &quot;Non Top 10 prospects...&quot;);</span>
+<span class="nc" id="L805">        ImmutableSet&lt;Player&gt; nonTopTens =</span>
+<span class="nc" id="L806">            ImmutableSet.copyOf(</span>
+<span class="nc" id="L807">                Iterables.filter(</span>
                     all,
-<span class="nc" id="L815">                    new Predicate&lt;Player&gt;() {</span>
+<span class="nc" id="L809">                    new Predicate&lt;Player&gt;() {</span>
                         public boolean apply(Player p) {
-<span class="nc bnc" id="L817" title="All 2 branches missed.">                            return !p.getTeamTopProspectPosition().isPresent()</span>
-<span class="nc bnc" id="L818" title="All 2 branches missed.">                                &amp;&amp; p.getAge() &lt;= 25</span>
-<span class="nc bnc" id="L819" title="All 2 branches missed.">                                &amp;&amp; site.getCurrentSalary(p) == 0;</span>
+<span class="nc bnc" id="L811" title="All 2 branches missed.">                            return !p.getTeamTopProspectPosition().isPresent()</span>
+<span class="nc bnc" id="L812" title="All 2 branches missed.">                                &amp;&amp; p.getAge() &lt;= 25</span>
+<span class="nc bnc" id="L813" title="All 2 branches missed.">                                &amp;&amp; site.getCurrentSalary(p) == 0;</span>
                         }
                     }));
 
-<span class="nc" id="L823">        generic.setTitle(&quot;Non Top prospects&quot;);</span>
-<span class="nc" id="L824">        generic.setMultiplier(0.91);</span>
-<span class="nc" id="L825">        generic.setLimit(50);</span>
-<span class="nc" id="L826">        generic.setPlayers(nonTopTens);</span>
-<span class="nc" id="L827">        generic.print(out);</span>
+<span class="nc" id="L817">        generic.setTitle(&quot;Non Top prospects&quot;);</span>
+<span class="nc" id="L818">        generic.setMultiplier(0.91);</span>
+<span class="nc" id="L819">        generic.setLimit(50);</span>
+<span class="nc" id="L820">        generic.setPlayers(nonTopTens);</span>
+<span class="nc" id="L821">        generic.print(out);</span>
 
         /*idx = 1;
         for (Trade trade
@@ -844,23 +838,23 @@ import org.joda.time.DateTimeConstants;
         }*/
 
 
-<span class="nc" id="L847">        LOG.log(Level.INFO, &quot;Minor league non-prospects...&quot;);</span>
+<span class="nc" id="L841">        LOG.log(Level.INFO, &quot;Minor league non-prospects...&quot;);</span>
 
-<span class="nc" id="L849">        ImmutableSet&lt;Player&gt; mlNonProspects =</span>
-<span class="nc" id="L850">            ImmutableSet.copyOf(</span>
-<span class="nc" id="L851">                Iterables.filter(</span>
+<span class="nc" id="L843">        ImmutableSet&lt;Player&gt; mlNonProspects =</span>
+<span class="nc" id="L844">            ImmutableSet.copyOf(</span>
+<span class="nc" id="L845">                Iterables.filter(</span>
                     minorLeaguers,
-<span class="nc" id="L853">                    new Predicate&lt;Player&gt;() {</span>
+<span class="nc" id="L847">                    new Predicate&lt;Player&gt;() {</span>
                         public boolean apply(Player p) {
-<span class="nc bnc" id="L855" title="All 2 branches missed.">                            return p.getAge() &gt; 25;</span>
+<span class="nc bnc" id="L849" title="All 2 branches missed.">                            return p.getAge() &gt; 25;</span>
                         }
                     }));
 
-<span class="nc" id="L859">        generic.setTitle(&quot;ML non-prospects&quot;);</span>
-<span class="nc" id="L860">        generic.setPlayers(mlNonProspects);</span>
-<span class="nc" id="L861">        generic.print(out);</span>
+<span class="nc" id="L853">        generic.setTitle(&quot;ML non-prospects&quot;);</span>
+<span class="nc" id="L854">        generic.setPlayers(mlNonProspects);</span>
+<span class="nc" id="L855">        generic.print(out);</span>
 
-<span class="nc" id="L863">        generic.clearMultiplier();</span>
+<span class="nc" id="L857">        generic.clearMultiplier();</span>
 
         //LOG.log(Level.INFO, &quot;Top Trades for non-prospect minor leaguers...&quot;);
 
@@ -881,8 +875,8 @@ import org.joda.time.DateTimeConstants;
             idx++;
         }*/
 
-<span class="nc" id="L884">        LOG.log(Level.INFO, &quot;Done.&quot;);</span>
-<span class="nc" id="L885">    }</span>
+<span class="nc" id="L878">        LOG.log(Level.INFO, &quot;Done.&quot;);</span>
+<span class="nc" id="L879">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
