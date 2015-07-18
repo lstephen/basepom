@@ -177,717 +177,724 @@
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> run(<a href="../../../../com/ljs/ootp/ai/site/SiteDefinition.html">SiteDefinition</a> def, OutputStream out) <strong class="jxr_keyword">throws</strong> IOException {
 <a class="jxr_linenumber" name="L170" href="#L170">170</a>         LOG.log(Level.INFO, <span class="jxr_string">"Running for {0}..."</span>, def.getName());
 <a class="jxr_linenumber" name="L171" href="#L171">171</a> 
-<a class="jxr_linenumber" name="L172" href="#L172">172</a>         Boolean isLookToNextSeason = Boolean.FALSE;
-<a class="jxr_linenumber" name="L173" href="#L173">173</a>         Boolean isPlayoffs = Boolean.FALSE;
-<a class="jxr_linenumber" name="L174" href="#L174">174</a> 
-<a class="jxr_linenumber" name="L175" href="#L175">175</a>         <strong class="jxr_keyword">if</strong> (LOOK_TO_NEXT_SEASON.contains(def)) {
-<a class="jxr_linenumber" name="L176" href="#L176">176</a>             isLookToNextSeason = Boolean.TRUE;
+<a class="jxr_linenumber" name="L172" href="#L172">172</a>         String clearCache = System.getenv(<span class="jxr_string">"OOTPAI_CLEAR_CACHE"</span>);
+<a class="jxr_linenumber" name="L173" href="#L173">173</a> 
+<a class="jxr_linenumber" name="L174" href="#L174">174</a>         <strong class="jxr_keyword">if</strong> (<span class="jxr_string">"true"</span>.equals(clearCache)) {
+<a class="jxr_linenumber" name="L175" href="#L175">175</a>           LOG.log(Level.INFO, <span class="jxr_string">"Clearing cache..."</span>);
+<a class="jxr_linenumber" name="L176" href="#L176">176</a>           def.getSite().clearCache();
 <a class="jxr_linenumber" name="L177" href="#L177">177</a>         }
 <a class="jxr_linenumber" name="L178" href="#L178">178</a> 
-<a class="jxr_linenumber" name="L179" href="#L179">179</a>         <strong class="jxr_keyword">if</strong> (PLAYOFFS.contains(def)) {
-<a class="jxr_linenumber" name="L180" href="#L180">180</a>             isPlayoffs = Boolean.TRUE;
-<a class="jxr_linenumber" name="L181" href="#L181">181</a>         }
-<a class="jxr_linenumber" name="L182" href="#L182">182</a> 
-<a class="jxr_linenumber" name="L183" href="#L183">183</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/site/Site.html">Site</a> site = def.getSite();
-<a class="jxr_linenumber" name="L184" href="#L184">184</a> 
-<a class="jxr_linenumber" name="L185" href="#L185">185</a>         SiteHolder.set(site);
-<a class="jxr_linenumber" name="L186" href="#L186">186</a> 
-<a class="jxr_linenumber" name="L187" href="#L187">187</a>         Printables.print(LeagueBattingReport.create(site)).to(out);
-<a class="jxr_linenumber" name="L188" href="#L188">188</a> 
-<a class="jxr_linenumber" name="L189" href="#L189">189</a>         LOG.log(Level.INFO, <span class="jxr_string">"Extracting current roster and team..."</span>);
-<a class="jxr_linenumber" name="L190" href="#L190">190</a> 
-<a class="jxr_linenumber" name="L191" href="#L191">191</a>         <a href="../../../../com/ljs/ootp/ai/roster/Roster.html">Roster</a> oldRoster = site.extractRoster();
-<a class="jxr_linenumber" name="L192" href="#L192">192</a>         <a href="../../../../com/ljs/ootp/ai/roster/Team.html">Team</a> team = site.extractTeam();
+<a class="jxr_linenumber" name="L179" href="#L179">179</a>         Boolean isLookToNextSeason = Boolean.FALSE;
+<a class="jxr_linenumber" name="L180" href="#L180">180</a>         Boolean isPlayoffs = Boolean.FALSE;
+<a class="jxr_linenumber" name="L181" href="#L181">181</a> 
+<a class="jxr_linenumber" name="L182" href="#L182">182</a>         <strong class="jxr_keyword">if</strong> (LOOK_TO_NEXT_SEASON.contains(def)) {
+<a class="jxr_linenumber" name="L183" href="#L183">183</a>             isLookToNextSeason = Boolean.TRUE;
+<a class="jxr_linenumber" name="L184" href="#L184">184</a>         }
+<a class="jxr_linenumber" name="L185" href="#L185">185</a> 
+<a class="jxr_linenumber" name="L186" href="#L186">186</a>         <strong class="jxr_keyword">if</strong> (PLAYOFFS.contains(def)) {
+<a class="jxr_linenumber" name="L187" href="#L187">187</a>             isPlayoffs = Boolean.TRUE;
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>         }
+<a class="jxr_linenumber" name="L189" href="#L189">189</a> 
+<a class="jxr_linenumber" name="L190" href="#L190">190</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/site/Site.html">Site</a> site = def.getSite();
+<a class="jxr_linenumber" name="L191" href="#L191">191</a> 
+<a class="jxr_linenumber" name="L192" href="#L192">192</a>         SiteHolder.set(site);
 <a class="jxr_linenumber" name="L193" href="#L193">193</a> 
-<a class="jxr_linenumber" name="L194" href="#L194">194</a>         LOG.log(Level.INFO, <span class="jxr_string">"Running regressions..."</span>);
+<a class="jxr_linenumber" name="L194" href="#L194">194</a>         Printables.print(LeagueBattingReport.create(site)).to(out);
 <a class="jxr_linenumber" name="L195" href="#L195">195</a> 
-<a class="jxr_linenumber" name="L196" href="#L196">196</a>         <a href="../../../../com/ljs/ootp/ai/stats/SplitPercentages.html">SplitPercentages</a> pcts = SplitPercentages.create(site);
-<a class="jxr_linenumber" name="L197" href="#L197">197</a>         SplitPercentagesHolder.set(pcts);
-<a class="jxr_linenumber" name="L198" href="#L198">198</a> 
-<a class="jxr_linenumber" name="L199" href="#L199">199</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/regression/BattingRegression.html">BattingRegression</a> battingRegression = BattingRegression.run(site);
-<a class="jxr_linenumber" name="L200" href="#L200">200</a>         Printables.print(battingRegression.correlationReport()).to(out);
-<a class="jxr_linenumber" name="L201" href="#L201">201</a> 
-<a class="jxr_linenumber" name="L202" href="#L202">202</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/regression/PitchingRegression.html">PitchingRegression</a> pitchingRegression = PitchingRegression.run(site);
-<a class="jxr_linenumber" name="L203" href="#L203">203</a>         Printables.print(pitchingRegression.correlationReport()).to(out);
-<a class="jxr_linenumber" name="L204" href="#L204">204</a> 
-<a class="jxr_linenumber" name="L205" href="#L205">205</a>         <strong class="jxr_keyword">if</strong> (isLookToNextSeason) {
-<a class="jxr_linenumber" name="L206" href="#L206">206</a>             battingRegression.ignoreStatsInPredictions();
-<a class="jxr_linenumber" name="L207" href="#L207">207</a>             pitchingRegression.ignoreStatsInPredictions();
-<a class="jxr_linenumber" name="L208" href="#L208">208</a>         }
-<a class="jxr_linenumber" name="L209" href="#L209">209</a> 
-<a class="jxr_linenumber" name="L210" href="#L210">210</a>         pcts.print(out);
+<a class="jxr_linenumber" name="L196" href="#L196">196</a>         LOG.log(Level.INFO, <span class="jxr_string">"Extracting current roster and team..."</span>);
+<a class="jxr_linenumber" name="L197" href="#L197">197</a> 
+<a class="jxr_linenumber" name="L198" href="#L198">198</a>         <a href="../../../../com/ljs/ootp/ai/roster/Roster.html">Roster</a> oldRoster = site.extractRoster();
+<a class="jxr_linenumber" name="L199" href="#L199">199</a>         <a href="../../../../com/ljs/ootp/ai/roster/Team.html">Team</a> team = site.extractTeam();
+<a class="jxr_linenumber" name="L200" href="#L200">200</a> 
+<a class="jxr_linenumber" name="L201" href="#L201">201</a>         LOG.log(Level.INFO, <span class="jxr_string">"Running regressions..."</span>);
+<a class="jxr_linenumber" name="L202" href="#L202">202</a> 
+<a class="jxr_linenumber" name="L203" href="#L203">203</a>         <a href="../../../../com/ljs/ootp/ai/stats/SplitPercentages.html">SplitPercentages</a> pcts = SplitPercentages.create(site);
+<a class="jxr_linenumber" name="L204" href="#L204">204</a>         SplitPercentagesHolder.set(pcts);
+<a class="jxr_linenumber" name="L205" href="#L205">205</a> 
+<a class="jxr_linenumber" name="L206" href="#L206">206</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/regression/BattingRegression.html">BattingRegression</a> battingRegression = BattingRegression.run(site);
+<a class="jxr_linenumber" name="L207" href="#L207">207</a>         Printables.print(battingRegression.correlationReport()).to(out);
+<a class="jxr_linenumber" name="L208" href="#L208">208</a> 
+<a class="jxr_linenumber" name="L209" href="#L209">209</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/regression/PitchingRegression.html">PitchingRegression</a> pitchingRegression = PitchingRegression.run(site);
+<a class="jxr_linenumber" name="L210" href="#L210">210</a>         Printables.print(pitchingRegression.correlationReport()).to(out);
 <a class="jxr_linenumber" name="L211" href="#L211">211</a> 
-<a class="jxr_linenumber" name="L212" href="#L212">212</a> 
-<a class="jxr_linenumber" name="L213" href="#L213">213</a>         SplitStats.setPercentages(pcts);
-<a class="jxr_linenumber" name="L214" href="#L214">214</a>         PlayerRatings.setPercentages(pcts);
-<a class="jxr_linenumber" name="L215" href="#L215">215</a>         BestStartersSelection.setPercentages(pcts);
-<a class="jxr_linenumber" name="L216" href="#L216">216</a>         Bench.setPercentages(pcts);
-<a class="jxr_linenumber" name="L217" href="#L217">217</a> 
-<a class="jxr_linenumber" name="L218" href="#L218">218</a>         LOG.info(<span class="jxr_string">"Loading manual changes..."</span>);
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>         <a href="../../../../com/ljs/ootp/ai/roster/Changes.html">Changes</a> changes = Changes.load(site);
-<a class="jxr_linenumber" name="L220" href="#L220">220</a> 
-<a class="jxr_linenumber" name="L221" href="#L221">221</a>         team.processManualChanges(changes);
-<a class="jxr_linenumber" name="L222" href="#L222">222</a> 
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>         LOG.info(<span class="jxr_string">"Setting up Predictions..."</span>);
-<a class="jxr_linenumber" name="L224" href="#L224">224</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/regression/Predictions.html">Predictions</a> ps = Predictions.predict(team).using(battingRegression, pitchingRegression, site.getPitcherSelectionMethod());
-<a class="jxr_linenumber" name="L225" href="#L225">225</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/value/TradeValue.html">TradeValue</a> tv = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/value/TradeValue.html">TradeValue</a>(team, ps, battingRegression, pitchingRegression);
-<a class="jxr_linenumber" name="L226" href="#L226">226</a> 
-<a class="jxr_linenumber" name="L227" href="#L227">227</a>         <strong class="jxr_keyword">boolean</strong> isExpandedRosters =
-<a class="jxr_linenumber" name="L228" href="#L228">228</a>             site.getDate().getMonthOfYear() == DateTimeConstants.SEPTEMBER;
+<a class="jxr_linenumber" name="L212" href="#L212">212</a>         <strong class="jxr_keyword">if</strong> (isLookToNextSeason) {
+<a class="jxr_linenumber" name="L213" href="#L213">213</a>             battingRegression.ignoreStatsInPredictions();
+<a class="jxr_linenumber" name="L214" href="#L214">214</a>             pitchingRegression.ignoreStatsInPredictions();
+<a class="jxr_linenumber" name="L215" href="#L215">215</a>         }
+<a class="jxr_linenumber" name="L216" href="#L216">216</a> 
+<a class="jxr_linenumber" name="L217" href="#L217">217</a>         pcts.print(out);
+<a class="jxr_linenumber" name="L218" href="#L218">218</a> 
+<a class="jxr_linenumber" name="L219" href="#L219">219</a> 
+<a class="jxr_linenumber" name="L220" href="#L220">220</a>         SplitStats.setPercentages(pcts);
+<a class="jxr_linenumber" name="L221" href="#L221">221</a>         PlayerRatings.setPercentages(pcts);
+<a class="jxr_linenumber" name="L222" href="#L222">222</a>         BestStartersSelection.setPercentages(pcts);
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>         Bench.setPercentages(pcts);
+<a class="jxr_linenumber" name="L224" href="#L224">224</a> 
+<a class="jxr_linenumber" name="L225" href="#L225">225</a>         LOG.info(<span class="jxr_string">"Loading manual changes..."</span>);
+<a class="jxr_linenumber" name="L226" href="#L226">226</a>         <a href="../../../../com/ljs/ootp/ai/roster/Changes.html">Changes</a> changes = Changes.load(site);
+<a class="jxr_linenumber" name="L227" href="#L227">227</a> 
+<a class="jxr_linenumber" name="L228" href="#L228">228</a>         team.processManualChanges(changes);
 <a class="jxr_linenumber" name="L229" href="#L229">229</a> 
-<a class="jxr_linenumber" name="L230" href="#L230">230</a>         <strong class="jxr_keyword">int</strong> month = site.getDate().getMonthOfYear();
-<a class="jxr_linenumber" name="L231" href="#L231">231</a> 
-<a class="jxr_linenumber" name="L232" href="#L232">232</a>         <a href="../../../../com/ljs/ootp/ai/selection/Mode.html">Mode</a> mode = Mode.REGULAR_SEASON;
+<a class="jxr_linenumber" name="L230" href="#L230">230</a>         LOG.info(<span class="jxr_string">"Setting up Predictions..."</span>);
+<a class="jxr_linenumber" name="L231" href="#L231">231</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/regression/Predictions.html">Predictions</a> ps = Predictions.predict(team).using(battingRegression, pitchingRegression, site.getPitcherSelectionMethod());
+<a class="jxr_linenumber" name="L232" href="#L232">232</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/value/TradeValue.html">TradeValue</a> tv = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/value/TradeValue.html">TradeValue</a>(team, ps, battingRegression, pitchingRegression);
 <a class="jxr_linenumber" name="L233" href="#L233">233</a> 
-<a class="jxr_linenumber" name="L234" href="#L234">234</a>         <strong class="jxr_keyword">if</strong> (month &lt; DateTimeConstants.APRIL) {
-<a class="jxr_linenumber" name="L235" href="#L235">235</a>             mode = Mode.PRESEASON;
-<a class="jxr_linenumber" name="L236" href="#L236">236</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (isExpandedRosters) {
-<a class="jxr_linenumber" name="L237" href="#L237">237</a>             mode = Mode.EXPANDED;
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>         }
-<a class="jxr_linenumber" name="L239" href="#L239">239</a> 
-<a class="jxr_linenumber" name="L240" href="#L240">240</a>         LOG.info(<span class="jxr_string">"Loading FAS..."</span>);
-<a class="jxr_linenumber" name="L241" href="#L241">241</a>         Iterable&lt;FreeAgentAcquisition&gt; faas = Collections.emptyList();
-<a class="jxr_linenumber" name="L242" href="#L242">242</a> 
-<a class="jxr_linenumber" name="L243" href="#L243">243</a>         Set&lt;Player&gt; released = Sets.newHashSet();
-<a class="jxr_linenumber" name="L244" href="#L244">244</a> 
-<a class="jxr_linenumber" name="L245" href="#L245">245</a>         <a href="../../../../com/ljs/ootp/ai/report/FreeAgents.html">FreeAgents</a> fas = FreeAgents.create(site, changes, tv.getTradeTargetValue(), tv);
+<a class="jxr_linenumber" name="L234" href="#L234">234</a>         <strong class="jxr_keyword">boolean</strong> isExpandedRosters =
+<a class="jxr_linenumber" name="L235" href="#L235">235</a>             site.getDate().getMonthOfYear() == DateTimeConstants.SEPTEMBER;
+<a class="jxr_linenumber" name="L236" href="#L236">236</a> 
+<a class="jxr_linenumber" name="L237" href="#L237">237</a>         <strong class="jxr_keyword">int</strong> month = site.getDate().getMonthOfYear();
+<a class="jxr_linenumber" name="L238" href="#L238">238</a> 
+<a class="jxr_linenumber" name="L239" href="#L239">239</a>         <a href="../../../../com/ljs/ootp/ai/selection/Mode.html">Mode</a> mode = Mode.REGULAR_SEASON;
+<a class="jxr_linenumber" name="L240" href="#L240">240</a> 
+<a class="jxr_linenumber" name="L241" href="#L241">241</a>         <strong class="jxr_keyword">if</strong> (month &lt; DateTimeConstants.APRIL) {
+<a class="jxr_linenumber" name="L242" href="#L242">242</a>             mode = Mode.PRESEASON;
+<a class="jxr_linenumber" name="L243" href="#L243">243</a>         } <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (isExpandedRosters) {
+<a class="jxr_linenumber" name="L244" href="#L244">244</a>             mode = Mode.EXPANDED;
+<a class="jxr_linenumber" name="L245" href="#L245">245</a>         }
 <a class="jxr_linenumber" name="L246" href="#L246">246</a> 
-<a class="jxr_linenumber" name="L247" href="#L247">247</a>         <strong class="jxr_keyword">if</strong> (INAUGURAL_DRAFT.contains(def)) {
-<a class="jxr_linenumber" name="L248" href="#L248">248</a>           <a href="../../../../com/ljs/ootp/ai/report/RosterReport.html">RosterReport</a> rr = RosterReport.create(site, team);
+<a class="jxr_linenumber" name="L247" href="#L247">247</a>         LOG.info(<span class="jxr_string">"Loading FAS..."</span>);
+<a class="jxr_linenumber" name="L248" href="#L248">248</a>         Iterable&lt;FreeAgentAcquisition&gt; faas = Collections.emptyList();
 <a class="jxr_linenumber" name="L249" href="#L249">249</a> 
-<a class="jxr_linenumber" name="L250" href="#L250">250</a>           Printables.print(rr).to(out);
+<a class="jxr_linenumber" name="L250" href="#L250">250</a>         Set&lt;Player&gt; released = Sets.newHashSet();
 <a class="jxr_linenumber" name="L251" href="#L251">251</a> 
-<a class="jxr_linenumber" name="L252" href="#L252">252</a>           <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/report/GenericValueReport.html">GenericValueReport</a> <strong class="jxr_keyword">generic</strong> = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/report/GenericValueReport.html">GenericValueReport</a>(team, ps, battingRegression, pitchingRegression, <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L252" href="#L252">252</a>         <a href="../../../../com/ljs/ootp/ai/report/FreeAgents.html">FreeAgents</a> fas = FreeAgents.create(site, changes, tv.getTradeTargetValue(), tv);
 <a class="jxr_linenumber" name="L253" href="#L253">253</a> 
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>           <strong class="jxr_keyword">if</strong> (battingRegression.isEmpty() &amp;&amp; pitchingRegression.isEmpty()) {
-<a class="jxr_linenumber" name="L255" href="#L255">255</a>             <strong class="jxr_keyword">generic</strong>.setCustomValueFunction((Player p) -&gt; {
-<a class="jxr_linenumber" name="L256" href="#L256">256</a>               Double base = 0.0;
-<a class="jxr_linenumber" name="L257" href="#L257">257</a> 
-<a class="jxr_linenumber" name="L258" href="#L258">258</a>               <strong class="jxr_keyword">if</strong> (p.isPitcher()) {
-<a class="jxr_linenumber" name="L259" href="#L259">259</a>                 Splits&lt;PitchingRatings&lt;?&gt;&gt; rs = p.getPitchingRatings();
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>         <strong class="jxr_keyword">if</strong> (INAUGURAL_DRAFT.contains(def)) {
+<a class="jxr_linenumber" name="L255" href="#L255">255</a>           <a href="../../../../com/ljs/ootp/ai/report/RosterReport.html">RosterReport</a> rr = RosterReport.create(site, team);
+<a class="jxr_linenumber" name="L256" href="#L256">256</a> 
+<a class="jxr_linenumber" name="L257" href="#L257">257</a>           Printables.print(rr).to(out);
+<a class="jxr_linenumber" name="L258" href="#L258">258</a> 
+<a class="jxr_linenumber" name="L259" href="#L259">259</a>           <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/report/GenericValueReport.html">GenericValueReport</a> <strong class="jxr_keyword">generic</strong> = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/report/GenericValueReport.html">GenericValueReport</a>(team, ps, battingRegression, pitchingRegression, <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L260" href="#L260">260</a> 
-<a class="jxr_linenumber" name="L261" href="#L261">261</a>                 PitchingRatings&lt;?&gt; vL = rs.getVsLeft();
-<a class="jxr_linenumber" name="L262" href="#L262">262</a>                 PitchingRatings&lt;?&gt; vR = rs.getVsRight();
-<a class="jxr_linenumber" name="L263" href="#L263">263</a> 
-<a class="jxr_linenumber" name="L264" href="#L264">264</a>                 base = (vL.getStuff() + vL.getMovement() + vL.getControl()
-<a class="jxr_linenumber" name="L265" href="#L265">265</a>                      + 2.0 * (vR.getStuff() + vR.getMovement() + vR.getControl())) / 3.0;
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>               } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L267" href="#L267">267</a>                 Splits&lt;BattingRatings&lt;?&gt;&gt; rs = p.getBattingRatings();
-<a class="jxr_linenumber" name="L268" href="#L268">268</a> 
-<a class="jxr_linenumber" name="L269" href="#L269">269</a>                 BattingRatings&lt;?&gt; vL = rs.getVsLeft();
-<a class="jxr_linenumber" name="L270" href="#L270">270</a>                 BattingRatings&lt;?&gt; vR = rs.getVsRight();
-<a class="jxr_linenumber" name="L271" href="#L271">271</a> 
-<a class="jxr_linenumber" name="L272" href="#L272">272</a>                 base = (vL.getContact() + vL.getPower() + vL.getEye()
-<a class="jxr_linenumber" name="L273" href="#L273">273</a>                      + 2.0 * (vR.getContact() + vR.getPower() + vR.getEye())) / 3.0;
-<a class="jxr_linenumber" name="L274" href="#L274">274</a>               }
+<a class="jxr_linenumber" name="L261" href="#L261">261</a>           <strong class="jxr_keyword">if</strong> (battingRegression.isEmpty() &amp;&amp; pitchingRegression.isEmpty()) {
+<a class="jxr_linenumber" name="L262" href="#L262">262</a>             <strong class="jxr_keyword">generic</strong>.setCustomValueFunction((Player p) -&gt; {
+<a class="jxr_linenumber" name="L263" href="#L263">263</a>               Double base = 0.0;
+<a class="jxr_linenumber" name="L264" href="#L264">264</a> 
+<a class="jxr_linenumber" name="L265" href="#L265">265</a>               <strong class="jxr_keyword">if</strong> (p.isPitcher()) {
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>                 Splits&lt;PitchingRatings&lt;?&gt;&gt; rs = p.getPitchingRatings();
+<a class="jxr_linenumber" name="L267" href="#L267">267</a> 
+<a class="jxr_linenumber" name="L268" href="#L268">268</a>                 PitchingRatings&lt;?&gt; vL = rs.getVsLeft();
+<a class="jxr_linenumber" name="L269" href="#L269">269</a>                 PitchingRatings&lt;?&gt; vR = rs.getVsRight();
+<a class="jxr_linenumber" name="L270" href="#L270">270</a> 
+<a class="jxr_linenumber" name="L271" href="#L271">271</a>                 base = (vL.getStuff() + vL.getMovement() + vL.getControl()
+<a class="jxr_linenumber" name="L272" href="#L272">272</a>                      + 2.0 * (vR.getStuff() + vR.getMovement() + vR.getControl())) / 3.0;
+<a class="jxr_linenumber" name="L273" href="#L273">273</a>               } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L274" href="#L274">274</a>                 Splits&lt;BattingRatings&lt;?&gt;&gt; rs = p.getBattingRatings();
 <a class="jxr_linenumber" name="L275" href="#L275">275</a> 
-<a class="jxr_linenumber" name="L276" href="#L276">276</a>               Integer need = Slot.getPlayerSlots(p)
-<a class="jxr_linenumber" name="L277" href="#L277">277</a>                 .stream()
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>                 .filter((s) -&gt; s != Slot.P)
-<a class="jxr_linenumber" name="L279" href="#L279">279</a>                 .filter((s) -&gt; s != Slot.H || Slot.getPrimarySlot(p) == Slot.H)
-<a class="jxr_linenumber" name="L280" href="#L280">280</a>                 .map((s) -&gt; rr.getTargetRatio() - rr.getRatio(s))
-<a class="jxr_linenumber" name="L281" href="#L281">281</a>                 .max(Integer::compare)
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>                 .orElse(0);
-<a class="jxr_linenumber" name="L283" href="#L283">283</a> 
-<a class="jxr_linenumber" name="L284" href="#L284">284</a> 
-<a class="jxr_linenumber" name="L285" href="#L285">285</a>               need = Math.max(0, need);
-<a class="jxr_linenumber" name="L286" href="#L286">286</a> 
-<a class="jxr_linenumber" name="L287" href="#L287">287</a>               <strong class="jxr_keyword">int</strong> intangibles = 0;
-<a class="jxr_linenumber" name="L288" href="#L288">288</a> 
-<a class="jxr_linenumber" name="L289" href="#L289">289</a>               <strong class="jxr_keyword">if</strong> (p.getClutch().isPresent()) {
-<a class="jxr_linenumber" name="L290" href="#L290">290</a>                 <strong class="jxr_keyword">switch</strong> (p.getClutch().get()) {
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>                   <strong class="jxr_keyword">case</strong> GREAT:
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>                     intangibles += 1;
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>                     <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L294" href="#L294">294</a>                   <strong class="jxr_keyword">case</strong> SUFFERS:
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>                     intangibles += -1;
-<a class="jxr_linenumber" name="L296" href="#L296">296</a>                     <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>                   <strong class="jxr_keyword">default</strong>:
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>                     <em class="jxr_comment">// do nothing</em>
-<a class="jxr_linenumber" name="L299" href="#L299">299</a>                 }
-<a class="jxr_linenumber" name="L300" href="#L300">300</a>               }
-<a class="jxr_linenumber" name="L301" href="#L301">301</a> 
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>               <strong class="jxr_keyword">if</strong> (p.getConsistency().isPresent()) {
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>                 <strong class="jxr_keyword">switch</strong> (p.getConsistency().get()) {
-<a class="jxr_linenumber" name="L304" href="#L304">304</a>                   <strong class="jxr_keyword">case</strong> VERY_INCONSISTENT:
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>                     intangibles -= 1;
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>                     <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>                   <strong class="jxr_keyword">case</strong> GOOD:
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>                     intangibles += 1;
-<a class="jxr_linenumber" name="L309" href="#L309">309</a>                     <strong class="jxr_keyword">break</strong>;
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>                   <strong class="jxr_keyword">default</strong>:
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>                     <em class="jxr_comment">// do nothing</em>
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>                 }
-<a class="jxr_linenumber" name="L313" href="#L313">313</a>               }
-<a class="jxr_linenumber" name="L314" href="#L314">314</a> 
-<a class="jxr_linenumber" name="L315" href="#L315">315</a>               Double mrFactor = Slot.getPrimarySlot(p) == Slot.MR ? 0.865 : 1.0;
-<a class="jxr_linenumber" name="L316" href="#L316">316</a> 
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>               <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Double(mrFactor * base - p.getAge() + need - PlayerValue.getAgingFactor(p) + intangibles).intValue();
-<a class="jxr_linenumber" name="L318" href="#L318">318</a>             });
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>           }
-<a class="jxr_linenumber" name="L320" href="#L320">320</a> 
-<a class="jxr_linenumber" name="L321" href="#L321">321</a>           <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Selected"</span>);
-<a class="jxr_linenumber" name="L322" href="#L322">322</a>           <strong class="jxr_keyword">generic</strong>.setPlayers(team);
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>           <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L324" href="#L324">324</a> 
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>           <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Free Agents"</span>);
-<a class="jxr_linenumber" name="L326" href="#L326">326</a>           <strong class="jxr_keyword">generic</strong>.setPlayers(site.getFreeAgents());
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>           <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>           <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>         }
-<a class="jxr_linenumber" name="L330" href="#L330">330</a> 
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>         LOG.info(<span class="jxr_string">"Calculating top FA targets..."</span>);
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>         Iterable&lt;Player&gt; topFaTargets = fas.getTopTargets(mode);
-<a class="jxr_linenumber" name="L333" href="#L333">333</a> 
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>         Integer minRosterSize = 90;
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>         Integer maxRosterSize = 110;
-<a class="jxr_linenumber" name="L336" href="#L336">336</a> 
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>         <strong class="jxr_keyword">if</strong> (site.getName().equals(<span class="jxr_string">"LBB"</span>)) {
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>             maxRosterSize = 100;
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>         }
-<a class="jxr_linenumber" name="L340" href="#L340">340</a>         <strong class="jxr_keyword">if</strong> (site.getName().equals(<span class="jxr_string">"PSD"</span>)) {
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>             maxRosterSize = 165;
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>             minRosterSize = 135;
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>         }
-<a class="jxr_linenumber" name="L344" href="#L344">344</a> 
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>         <strong class="jxr_keyword">if</strong> (oldRoster.size() &gt; maxRosterSize) {
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; 2; i++) {
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>                 Optional&lt;Player&gt; release = fas.getPlayerToRelease(team);
-<a class="jxr_linenumber" name="L348" href="#L348">348</a> 
-<a class="jxr_linenumber" name="L349" href="#L349">349</a>                 <strong class="jxr_keyword">if</strong> (release.isPresent()) {
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>                     team.remove(release.get());
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>                     released.add(release.get());
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>                 }
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>             }
-<a class="jxr_linenumber" name="L354" href="#L354">354</a>         }
+<a class="jxr_linenumber" name="L276" href="#L276">276</a>                 BattingRatings&lt;?&gt; vL = rs.getVsLeft();
+<a class="jxr_linenumber" name="L277" href="#L277">277</a>                 BattingRatings&lt;?&gt; vR = rs.getVsRight();
+<a class="jxr_linenumber" name="L278" href="#L278">278</a> 
+<a class="jxr_linenumber" name="L279" href="#L279">279</a>                 base = (vL.getContact() + vL.getPower() + vL.getEye()
+<a class="jxr_linenumber" name="L280" href="#L280">280</a>                      + 2.0 * (vR.getContact() + vR.getPower() + vR.getEye())) / 3.0;
+<a class="jxr_linenumber" name="L281" href="#L281">281</a>               }
+<a class="jxr_linenumber" name="L282" href="#L282">282</a> 
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>               Integer need = Slot.getPlayerSlots(p)
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>                 .stream()
+<a class="jxr_linenumber" name="L285" href="#L285">285</a>                 .filter((s) -&gt; s != Slot.P)
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>                 .filter((s) -&gt; s != Slot.H || Slot.getPrimarySlot(p) == Slot.H)
+<a class="jxr_linenumber" name="L287" href="#L287">287</a>                 .map((s) -&gt; rr.getTargetRatio() - rr.getRatio(s))
+<a class="jxr_linenumber" name="L288" href="#L288">288</a>                 .max(Integer::compare)
+<a class="jxr_linenumber" name="L289" href="#L289">289</a>                 .orElse(0);
+<a class="jxr_linenumber" name="L290" href="#L290">290</a> 
+<a class="jxr_linenumber" name="L291" href="#L291">291</a> 
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>               need = Math.max(0, need);
+<a class="jxr_linenumber" name="L293" href="#L293">293</a> 
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>               <strong class="jxr_keyword">int</strong> intangibles = 0;
+<a class="jxr_linenumber" name="L295" href="#L295">295</a> 
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>               <strong class="jxr_keyword">if</strong> (p.getClutch().isPresent()) {
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>                 <strong class="jxr_keyword">switch</strong> (p.getClutch().get()) {
+<a class="jxr_linenumber" name="L298" href="#L298">298</a>                   <strong class="jxr_keyword">case</strong> GREAT:
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>                     intangibles += 1;
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>                     <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>                   <strong class="jxr_keyword">case</strong> SUFFERS:
+<a class="jxr_linenumber" name="L302" href="#L302">302</a>                     intangibles += -1;
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>                     <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>                   <strong class="jxr_keyword">default</strong>:
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>                     <em class="jxr_comment">// do nothing</em>
+<a class="jxr_linenumber" name="L306" href="#L306">306</a>                 }
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>               }
+<a class="jxr_linenumber" name="L308" href="#L308">308</a> 
+<a class="jxr_linenumber" name="L309" href="#L309">309</a>               <strong class="jxr_keyword">if</strong> (p.getConsistency().isPresent()) {
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>                 <strong class="jxr_keyword">switch</strong> (p.getConsistency().get()) {
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>                   <strong class="jxr_keyword">case</strong> VERY_INCONSISTENT:
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>                     intangibles -= 1;
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>                     <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>                   <strong class="jxr_keyword">case</strong> GOOD:
+<a class="jxr_linenumber" name="L315" href="#L315">315</a>                     intangibles += 1;
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>                     <strong class="jxr_keyword">break</strong>;
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>                   <strong class="jxr_keyword">default</strong>:
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>                     <em class="jxr_comment">// do nothing</em>
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>                 }
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>               }
+<a class="jxr_linenumber" name="L321" href="#L321">321</a> 
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>               Double mrFactor = Slot.getPrimarySlot(p) == Slot.MR ? 0.865 : 1.0;
+<a class="jxr_linenumber" name="L323" href="#L323">323</a> 
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>               <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> Double(mrFactor * base - p.getAge() + need - PlayerValue.getAgingFactor(p) + intangibles).intValue();
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>             });
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>           }
+<a class="jxr_linenumber" name="L327" href="#L327">327</a> 
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>           <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Selected"</span>);
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>           <strong class="jxr_keyword">generic</strong>.setPlayers(team);
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>           <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L331" href="#L331">331</a> 
+<a class="jxr_linenumber" name="L332" href="#L332">332</a>           <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Free Agents"</span>);
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>           <strong class="jxr_keyword">generic</strong>.setPlayers(site.getFreeAgents());
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>           <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>           <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L336" href="#L336">336</a>         }
+<a class="jxr_linenumber" name="L337" href="#L337">337</a> 
+<a class="jxr_linenumber" name="L338" href="#L338">338</a>         LOG.info(<span class="jxr_string">"Calculating top FA targets..."</span>);
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>         Iterable&lt;Player&gt; topFaTargets = fas.getTopTargets(mode);
+<a class="jxr_linenumber" name="L340" href="#L340">340</a> 
+<a class="jxr_linenumber" name="L341" href="#L341">341</a>         Integer minRosterSize = 90;
+<a class="jxr_linenumber" name="L342" href="#L342">342</a>         Integer maxRosterSize = 110;
+<a class="jxr_linenumber" name="L343" href="#L343">343</a> 
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>         <strong class="jxr_keyword">if</strong> (site.getName().equals(<span class="jxr_string">"LBB"</span>)) {
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>             maxRosterSize = 100;
+<a class="jxr_linenumber" name="L346" href="#L346">346</a>         }
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>         <strong class="jxr_keyword">if</strong> (site.getName().equals(<span class="jxr_string">"PSD"</span>)) {
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>             maxRosterSize = 165;
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>             minRosterSize = 135;
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>         }
+<a class="jxr_linenumber" name="L351" href="#L351">351</a> 
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>         <strong class="jxr_keyword">if</strong> (oldRoster.size() &gt; maxRosterSize) {
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">int</strong> i = 0; i &lt; 2; i++) {
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>                 Optional&lt;Player&gt; release = fas.getPlayerToRelease(team);
 <a class="jxr_linenumber" name="L355" href="#L355">355</a> 
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>         <strong class="jxr_keyword">if</strong> (site.getDate().getMonthOfYear() &lt; DateTimeConstants.SEPTEMBER
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>             &amp;&amp; site.getDate().getMonthOfYear() &gt; DateTimeConstants.MARCH
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>             &amp;&amp; !battingRegression.isEmpty()
-<a class="jxr_linenumber" name="L359" href="#L359">359</a>             &amp;&amp; !pitchingRegression.isEmpty()) {
-<a class="jxr_linenumber" name="L360" href="#L360">360</a> 
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>             LOG.info(<span class="jxr_string">"Determining FA acquisition..."</span>);
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>                 <strong class="jxr_keyword">if</strong> (release.isPresent()) {
+<a class="jxr_linenumber" name="L357" href="#L357">357</a>                     team.remove(release.get());
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>                     released.add(release.get());
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>                 }
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>             }
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>         }
 <a class="jxr_linenumber" name="L362" href="#L362">362</a> 
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>             <strong class="jxr_keyword">if</strong> (oldRoster.size() &lt;= maxRosterSize) {
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>                 Integer n = 2;
-<a class="jxr_linenumber" name="L365" href="#L365">365</a> 
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>                 <strong class="jxr_keyword">if</strong> (site.getName().equals(<span class="jxr_string">"CBL"</span>) || site.getName().equals(<span class="jxr_string">"TWML"</span>) || site.getName().equals(<span class="jxr_string">"BTHUSTLE"</span>)) {
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>                     n = 1;
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>                 }
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>         <strong class="jxr_keyword">if</strong> (site.getDate().getMonthOfYear() &lt; DateTimeConstants.SEPTEMBER
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>             &amp;&amp; site.getDate().getMonthOfYear() &gt; DateTimeConstants.MARCH
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>             &amp;&amp; !battingRegression.isEmpty()
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>             &amp;&amp; !pitchingRegression.isEmpty()) {
+<a class="jxr_linenumber" name="L367" href="#L367">367</a> 
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>             LOG.info(<span class="jxr_string">"Determining FA acquisition..."</span>);
 <a class="jxr_linenumber" name="L369" href="#L369">369</a> 
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>                 <strong class="jxr_keyword">if</strong> (site.getName().equals(<span class="jxr_string">"SAVOY"</span>)
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>                   || site.getName().equals(<span class="jxr_string">"GABL"</span>)
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>                   || site.getName().equals(<span class="jxr_string">"BTH"</span>)
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>                   || site.getName().contains(<span class="jxr_string">"OLD_BTH"</span>)) {
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>                     n = 0;
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>             <strong class="jxr_keyword">if</strong> (oldRoster.size() &lt;= maxRosterSize) {
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>                 Integer n = 2;
+<a class="jxr_linenumber" name="L372" href="#L372">372</a> 
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>                 <strong class="jxr_keyword">if</strong> (site.getName().equals(<span class="jxr_string">"CBL"</span>) || site.getName().equals(<span class="jxr_string">"TWML"</span>) || site.getName().equals(<span class="jxr_string">"BTHUSTLE"</span>)) {
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>                     n = 1;
 <a class="jxr_linenumber" name="L375" href="#L375">375</a>                 }
 <a class="jxr_linenumber" name="L376" href="#L376">376</a> 
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>                 faas = FreeAgentAcquisition.select(site, changes, team, fas.all(), tv, n);
-<a class="jxr_linenumber" name="L378" href="#L378">378</a> 
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>                 <strong class="jxr_keyword">if</strong> (oldRoster.size() &gt; minRosterSize) {
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>                     <strong class="jxr_keyword">for</strong> (FreeAgentAcquisition faa : faas) {
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>                         team.remove(faa.getRelease());
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>                     }
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>                 }
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>             }
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>         }
-<a class="jxr_linenumber" name="L386" href="#L386">386</a> 
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>         ImmutableSet&lt;Player&gt; futureFas = ImmutableSet.of();
-<a class="jxr_linenumber" name="L388" href="#L388">388</a> 
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>         <strong class="jxr_keyword">if</strong> (isLookToNextSeason) {
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>             futureFas =
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>                 ImmutableSet.copyOf(
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>                     Iterables.filter(team, site.isFutureFreeAgent()));
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>                 <strong class="jxr_keyword">if</strong> (site.getName().equals(<span class="jxr_string">"SAVOY"</span>)
+<a class="jxr_linenumber" name="L378" href="#L378">378</a>                   || site.getName().equals(<span class="jxr_string">"GABL"</span>)
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>                   || site.getName().equals(<span class="jxr_string">"BTH"</span>)
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>                   || site.getName().contains(<span class="jxr_string">"OLD_BTH"</span>)) {
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>                     n = 0;
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>                 }
+<a class="jxr_linenumber" name="L383" href="#L383">383</a> 
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>                 faas = FreeAgentAcquisition.select(site, changes, team, fas.all(), tv, n);
+<a class="jxr_linenumber" name="L385" href="#L385">385</a> 
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>                 <strong class="jxr_keyword">if</strong> (oldRoster.size() &gt; minRosterSize) {
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>                     <strong class="jxr_keyword">for</strong> (FreeAgentAcquisition faa : faas) {
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>                         team.remove(faa.getRelease());
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>                     }
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>                 }
+<a class="jxr_linenumber" name="L391" href="#L391">391</a>             }
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>         }
 <a class="jxr_linenumber" name="L393" href="#L393">393</a> 
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>             System.out.print(<span class="jxr_string">"Removing (FA):"</span>);
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>             <strong class="jxr_keyword">for</strong> (Player p : Player.byShortName().immutableSortedCopy(futureFas)) {
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>                 System.out.print(p.getShortName() + <span class="jxr_string">"/"</span>);
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>             }
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>             System.out.println();
-<a class="jxr_linenumber" name="L399" href="#L399">399</a> 
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>             team.remove(futureFas);
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>         }
-<a class="jxr_linenumber" name="L402" href="#L402">402</a> 
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>         <a href="../../../../com/ljs/ootp/ai/roster/RosterSelection.html">RosterSelection</a> selection = RosterSelection.ootp6(team, battingRegression, pitchingRegression, tv);
-<a class="jxr_linenumber" name="L404" href="#L404">404</a> 
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>         <strong class="jxr_keyword">if</strong> (site.getType() == Version.OOTP5) {
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>             selection = RosterSelection.ootp5(team, battingRegression, pitchingRegression, tv);
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>         }
-<a class="jxr_linenumber" name="L408" href="#L408">408</a> 
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>         selection.setPrevious(oldRoster);
-<a class="jxr_linenumber" name="L410" href="#L410">410</a> 
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>         LOG.log(Level.INFO, <span class="jxr_string">"Selecting new rosters..."</span>);
-<a class="jxr_linenumber" name="L412" href="#L412">412</a> 
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>         <a href="../../../../com/ljs/ootp/ai/selection/Mode.html">Mode</a> selectionMode = mode;
-<a class="jxr_linenumber" name="L414" href="#L414">414</a> 
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>         <strong class="jxr_keyword">if</strong> (isPlayoffs) {
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>             selectionMode = Mode.PLAYOFFS;
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>         }
-<a class="jxr_linenumber" name="L418" href="#L418">418</a> 
-<a class="jxr_linenumber" name="L419" href="#L419">419</a>         <a href="../../../../com/ljs/ootp/ai/roster/Roster.html">Roster</a> newRoster = selection.select(selectionMode, changes);
-<a class="jxr_linenumber" name="L420" href="#L420">420</a> 
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>         newRoster.setTargetMinimum(minRosterSize);
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>         newRoster.setTargetMaximum(maxRosterSize);
-<a class="jxr_linenumber" name="L423" href="#L423">423</a> 
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>         selection.printBattingSelectionTable(out, newRoster, site.getTeamBatting());
-<a class="jxr_linenumber" name="L425" href="#L425">425</a>         selection.printPitchingSelectionTable(out, newRoster, site.getTeamPitching());
-<a class="jxr_linenumber" name="L426" href="#L426">426</a> 
-<a class="jxr_linenumber" name="L427" href="#L427">427</a>         Printables.print(newRoster).to(out);
-<a class="jxr_linenumber" name="L428" href="#L428">428</a> 
-<a class="jxr_linenumber" name="L429" href="#L429">429</a>         LOG.info(<span class="jxr_string">"Calculating roster changes..."</span>);
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>         ImmutableSet&lt;Player&gt; futureFas = ImmutableSet.of();
+<a class="jxr_linenumber" name="L395" href="#L395">395</a> 
+<a class="jxr_linenumber" name="L396" href="#L396">396</a>         <strong class="jxr_keyword">if</strong> (isLookToNextSeason) {
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>             futureFas =
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>                 ImmutableSet.copyOf(
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>                     Iterables.filter(team, site.isFutureFreeAgent()));
+<a class="jxr_linenumber" name="L400" href="#L400">400</a> 
+<a class="jxr_linenumber" name="L401" href="#L401">401</a>             System.out.print(<span class="jxr_string">"Removing (FA):"</span>);
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>             <strong class="jxr_keyword">for</strong> (Player p : Player.byShortName().immutableSortedCopy(futureFas)) {
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>                 System.out.print(p.getShortName() + <span class="jxr_string">"/"</span>);
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>             }
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>             System.out.println();
+<a class="jxr_linenumber" name="L406" href="#L406">406</a> 
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>             team.remove(futureFas);
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>         }
+<a class="jxr_linenumber" name="L409" href="#L409">409</a> 
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>         <a href="../../../../com/ljs/ootp/ai/roster/RosterSelection.html">RosterSelection</a> selection = RosterSelection.ootp6(team, battingRegression, pitchingRegression, tv);
+<a class="jxr_linenumber" name="L411" href="#L411">411</a> 
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>         <strong class="jxr_keyword">if</strong> (site.getType() == Version.OOTP5) {
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>             selection = RosterSelection.ootp5(team, battingRegression, pitchingRegression, tv);
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>         }
+<a class="jxr_linenumber" name="L415" href="#L415">415</a> 
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>         selection.setPrevious(oldRoster);
+<a class="jxr_linenumber" name="L417" href="#L417">417</a> 
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>         LOG.log(Level.INFO, <span class="jxr_string">"Selecting new rosters..."</span>);
+<a class="jxr_linenumber" name="L419" href="#L419">419</a> 
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>         <a href="../../../../com/ljs/ootp/ai/selection/Mode.html">Mode</a> selectionMode = mode;
+<a class="jxr_linenumber" name="L421" href="#L421">421</a> 
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>         <strong class="jxr_keyword">if</strong> (isPlayoffs) {
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>             selectionMode = Mode.PLAYOFFS;
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>         }
+<a class="jxr_linenumber" name="L425" href="#L425">425</a> 
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         <a href="../../../../com/ljs/ootp/ai/roster/Roster.html">Roster</a> newRoster = selection.select(selectionMode, changes);
+<a class="jxr_linenumber" name="L427" href="#L427">427</a> 
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>         newRoster.setTargetMinimum(minRosterSize);
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>         newRoster.setTargetMaximum(maxRosterSize);
 <a class="jxr_linenumber" name="L430" href="#L430">430</a> 
-<a class="jxr_linenumber" name="L431" href="#L431">431</a>         Printables.print(newRoster.getChangesFrom(oldRoster)).to(out);
-<a class="jxr_linenumber" name="L432" href="#L432">432</a> 
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>         <strong class="jxr_keyword">for</strong> (FreeAgentAcquisition faa : faas) {
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>             <a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> player = faa.getFreeAgent();
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>             out.write(
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>                 String.format(
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>                     <span class="jxr_string">"%4s -&gt; %-4s %2s %s%n"</span>,
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>                     <span class="jxr_string">"FA"</span>,
-<a class="jxr_linenumber" name="L439" href="#L439">439</a>                     <span class="jxr_string">""</span>,
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>                     player.getPosition(),
-<a class="jxr_linenumber" name="L441" href="#L441">441</a>                     player.getShortName())
-<a class="jxr_linenumber" name="L442" href="#L442">442</a>                 .getBytes(Charsets.ISO_8859_1));
-<a class="jxr_linenumber" name="L443" href="#L443">443</a>         }
-<a class="jxr_linenumber" name="L444" href="#L444">444</a> 
-<a class="jxr_linenumber" name="L445" href="#L445">445</a>         LOG.log(Level.INFO, <span class="jxr_string">"Choosing rotation..."</span>);
-<a class="jxr_linenumber" name="L446" href="#L446">446</a> 
-<a class="jxr_linenumber" name="L447" href="#L447">447</a>         <a href="../../../../com/ljs/ootp/ai/selection/rotation/Rotation.html">Rotation</a> rotation =
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>             <a href="../../../../com/ljs/ootp/ai/selection/rotation/RotationSelection.html">RotationSelection</a>
-<a class="jxr_linenumber" name="L449" href="#L449">449</a>                 .forMode(
-<a class="jxr_linenumber" name="L450" href="#L450">450</a>                     selectionMode,
-<a class="jxr_linenumber" name="L451" href="#L451">451</a>                     pitchingRegression.predict(team),
-<a class="jxr_linenumber" name="L452" href="#L452">452</a>                     site.getPitcherSelectionMethod())
-<a class="jxr_linenumber" name="L453" href="#L453">453</a>                 .selectRotation(ImmutableSet.&lt;Player&gt;of(), Selections.onlyPitchers(newRoster.getPlayers(Status.ML)));
-<a class="jxr_linenumber" name="L454" href="#L454">454</a> 
-<a class="jxr_linenumber" name="L455" href="#L455">455</a>         Printables.print(rotation).to(out);
-<a class="jxr_linenumber" name="L456" href="#L456">456</a> 
-<a class="jxr_linenumber" name="L457" href="#L457">457</a>         LOG.log(Level.INFO, <span class="jxr_string">"Choosing lineups..."</span>);
-<a class="jxr_linenumber" name="L458" href="#L458">458</a> 
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>         <a href="../../../../com/ljs/ootp/ai/selection/lineup/AllLineups.html">AllLineups</a> lineups =
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>             <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/selection/lineup/LineupSelection.html">LineupSelection</a>(battingRegression.predict(newRoster.getAllPlayers()))
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>                 .select(Selections.onlyHitters(newRoster.getPlayers(Status.ML)));
-<a class="jxr_linenumber" name="L462" href="#L462">462</a> 
-<a class="jxr_linenumber" name="L463" href="#L463">463</a>         LOG.log(Level.INFO, <span class="jxr_string">"Choosing Depth Charts..."</span>);
-<a class="jxr_linenumber" name="L464" href="#L464">464</a> 
-<a class="jxr_linenumber" name="L465" href="#L465">465</a>         <a href="../../../../com/ljs/ootp/ai/selection/depthchart/AllDepthCharts.html">AllDepthCharts</a> depthCharts = <a href="../../../../com/ljs/ootp/ai/selection/depthchart/DepthChartSelection.html">DepthChartSelection</a>
-<a class="jxr_linenumber" name="L466" href="#L466">466</a>             .create(battingRegression.predict(newRoster.getAllPlayers()))
-<a class="jxr_linenumber" name="L467" href="#L467">467</a>             .select(lineups, Selections.onlyHitters(newRoster.getPlayers(Status.ML)));
-<a class="jxr_linenumber" name="L468" href="#L468">468</a> 
-<a class="jxr_linenumber" name="L469" href="#L469">469</a>         Printables.print(depthCharts).to(out);
-<a class="jxr_linenumber" name="L470" href="#L470">470</a> 
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>         Printables.print(lineups).to(out);
-<a class="jxr_linenumber" name="L472" href="#L472">472</a> 
-<a class="jxr_linenumber" name="L473" href="#L473">473</a>         <strong class="jxr_keyword">if</strong> (site.getDate().getMonthOfYear() == DateTimeConstants.MARCH) {
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>             LOG.log(Level.INFO, <span class="jxr_string">"Spring training..."</span>);
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>             <a href="../../../../com/ljs/ootp/ai/io/Printables.html">Printables</a>
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>                 .print(SpringTraining.create(
-<a class="jxr_linenumber" name="L477" href="#L477">477</a>                     site.getType(), newRoster.getAllPlayers()))
-<a class="jxr_linenumber" name="L478" href="#L478">478</a>                 .to(out);
-<a class="jxr_linenumber" name="L479" href="#L479">479</a>         }
-<a class="jxr_linenumber" name="L480" href="#L480">480</a> 
-<a class="jxr_linenumber" name="L481" href="#L481">481</a>         LOG.log(Level.INFO, <span class="jxr_string">"Salary Regression..."</span>);
-<a class="jxr_linenumber" name="L482" href="#L482">482</a> 
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>         <a href="../../../../com/ljs/ootp/ai/report/SalaryRegression.html">SalaryRegression</a> salaryRegression = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/report/SalaryRegression.html">SalaryRegression</a>(tv, site);
-<a class="jxr_linenumber" name="L484" href="#L484">484</a> 
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>         Integer n = Iterables.size(site.getTeamIds());
-<a class="jxr_linenumber" name="L486" href="#L486">486</a>         <strong class="jxr_keyword">int</strong> count = 1;
-<a class="jxr_linenumber" name="L487" href="#L487">487</a>         <strong class="jxr_keyword">for</strong> (Id&lt;Team&gt; id : site.getTeamIds()) {
-<a class="jxr_linenumber" name="L488" href="#L488">488</a>             LOG.log(Level.INFO, <span class="jxr_string">"{0}/{1}..."</span>, <strong class="jxr_keyword">new</strong> Object[] { count, n });
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>         selection.printBattingSelectionTable(out, newRoster, site.getTeamBatting());
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>         selection.printPitchingSelectionTable(out, newRoster, site.getTeamPitching());
+<a class="jxr_linenumber" name="L433" href="#L433">433</a> 
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>         Printables.print(newRoster).to(out);
+<a class="jxr_linenumber" name="L435" href="#L435">435</a> 
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>         LOG.info(<span class="jxr_string">"Calculating roster changes..."</span>);
+<a class="jxr_linenumber" name="L437" href="#L437">437</a> 
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>         Printables.print(newRoster.getChangesFrom(oldRoster)).to(out);
+<a class="jxr_linenumber" name="L439" href="#L439">439</a> 
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>         <strong class="jxr_keyword">for</strong> (FreeAgentAcquisition faa : faas) {
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>             <a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> player = faa.getFreeAgent();
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>             out.write(
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>                 String.format(
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>                     <span class="jxr_string">"%4s -&gt; %-4s %2s %s%n"</span>,
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>                     <span class="jxr_string">"FA"</span>,
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>                     <span class="jxr_string">""</span>,
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>                     player.getPosition(),
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>                     player.getShortName())
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>                 .getBytes(Charsets.ISO_8859_1));
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>         }
+<a class="jxr_linenumber" name="L451" href="#L451">451</a> 
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>         LOG.log(Level.INFO, <span class="jxr_string">"Choosing rotation..."</span>);
+<a class="jxr_linenumber" name="L453" href="#L453">453</a> 
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>         <a href="../../../../com/ljs/ootp/ai/selection/rotation/Rotation.html">Rotation</a> rotation =
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>             <a href="../../../../com/ljs/ootp/ai/selection/rotation/RotationSelection.html">RotationSelection</a>
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>                 .forMode(
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>                     selectionMode,
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>                     pitchingRegression.predict(team),
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>                     site.getPitcherSelectionMethod())
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>                 .selectRotation(ImmutableSet.&lt;Player&gt;of(), Selections.onlyPitchers(newRoster.getPlayers(Status.ML)));
+<a class="jxr_linenumber" name="L461" href="#L461">461</a> 
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>         Printables.print(rotation).to(out);
+<a class="jxr_linenumber" name="L463" href="#L463">463</a> 
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>         LOG.log(Level.INFO, <span class="jxr_string">"Choosing lineups..."</span>);
+<a class="jxr_linenumber" name="L465" href="#L465">465</a> 
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>         <a href="../../../../com/ljs/ootp/ai/selection/lineup/AllLineups.html">AllLineups</a> lineups =
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>             <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/selection/lineup/LineupSelection.html">LineupSelection</a>(battingRegression.predict(newRoster.getAllPlayers()))
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>                 .select(Selections.onlyHitters(newRoster.getPlayers(Status.ML)));
+<a class="jxr_linenumber" name="L469" href="#L469">469</a> 
+<a class="jxr_linenumber" name="L470" href="#L470">470</a>         LOG.log(Level.INFO, <span class="jxr_string">"Choosing Depth Charts..."</span>);
+<a class="jxr_linenumber" name="L471" href="#L471">471</a> 
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>         <a href="../../../../com/ljs/ootp/ai/selection/depthchart/AllDepthCharts.html">AllDepthCharts</a> depthCharts = <a href="../../../../com/ljs/ootp/ai/selection/depthchart/DepthChartSelection.html">DepthChartSelection</a>
+<a class="jxr_linenumber" name="L473" href="#L473">473</a>             .create(battingRegression.predict(newRoster.getAllPlayers()))
+<a class="jxr_linenumber" name="L474" href="#L474">474</a>             .select(lineups, Selections.onlyHitters(newRoster.getPlayers(Status.ML)));
+<a class="jxr_linenumber" name="L475" href="#L475">475</a> 
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>         Printables.print(depthCharts).to(out);
+<a class="jxr_linenumber" name="L477" href="#L477">477</a> 
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>         Printables.print(lineups).to(out);
+<a class="jxr_linenumber" name="L479" href="#L479">479</a> 
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>         <strong class="jxr_keyword">if</strong> (site.getDate().getMonthOfYear() == DateTimeConstants.MARCH) {
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>             LOG.log(Level.INFO, <span class="jxr_string">"Spring training..."</span>);
+<a class="jxr_linenumber" name="L482" href="#L482">482</a>             <a href="../../../../com/ljs/ootp/ai/io/Printables.html">Printables</a>
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>                 .print(SpringTraining.create(
+<a class="jxr_linenumber" name="L484" href="#L484">484</a>                     site.getType(), newRoster.getAllPlayers()))
+<a class="jxr_linenumber" name="L485" href="#L485">485</a>                 .to(out);
+<a class="jxr_linenumber" name="L486" href="#L486">486</a>         }
+<a class="jxr_linenumber" name="L487" href="#L487">487</a> 
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>         LOG.log(Level.INFO, <span class="jxr_string">"Salary Regression..."</span>);
 <a class="jxr_linenumber" name="L489" href="#L489">489</a> 
-<a class="jxr_linenumber" name="L490" href="#L490">490</a>             salaryRegression.add(site.getSalariedPlayers(id));
-<a class="jxr_linenumber" name="L491" href="#L491">491</a>             count++;
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>         }
-<a class="jxr_linenumber" name="L493" href="#L493">493</a> 
-<a class="jxr_linenumber" name="L494" href="#L494">494</a>         Printables.print(salaryRegression).to(out);
-<a class="jxr_linenumber" name="L495" href="#L495">495</a> 
-<a class="jxr_linenumber" name="L496" href="#L496">496</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/report/GenericValueReport.html">GenericValueReport</a> <strong class="jxr_keyword">generic</strong> = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/report/GenericValueReport.html">GenericValueReport</a>(team, ps, battingRegression, pitchingRegression, salaryRegression);
-<a class="jxr_linenumber" name="L497" href="#L497">497</a> 
-<a class="jxr_linenumber" name="L498" href="#L498">498</a>         <strong class="jxr_keyword">generic</strong>.printReplacementLevelReport(out);
-<a class="jxr_linenumber" name="L499" href="#L499">499</a> 
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>         <a href="../../../../com/ljs/ootp/ai/report/RosterReport.html">RosterReport</a> rosterReport = RosterReport.create(site, newRoster);
-<a class="jxr_linenumber" name="L501" href="#L501">501</a> 
-<a class="jxr_linenumber" name="L502" href="#L502">502</a>         Printables.print(rosterReport).to(out);
-<a class="jxr_linenumber" name="L503" href="#L503">503</a> 
-<a class="jxr_linenumber" name="L504" href="#L504">504</a>         <strong class="jxr_keyword">generic</strong>.setCustomValueFunction(tv.getTradeTargetValue());
-<a class="jxr_linenumber" name="L505" href="#L505">505</a> 
-<a class="jxr_linenumber" name="L506" href="#L506">506</a>         <strong class="jxr_keyword">generic</strong>.setReverse(false);
-<a class="jxr_linenumber" name="L507" href="#L507">507</a> 
-<a class="jxr_linenumber" name="L508" href="#L508">508</a>         LOG.info(<span class="jxr_string">"Draft..."</span>);
-<a class="jxr_linenumber" name="L509" href="#L509">509</a>         ImmutableSet&lt;Player&gt; drafted = ImmutableSet.copyOf(changes.get(Changes.ChangeType.PICKED));
-<a class="jxr_linenumber" name="L510" href="#L510">510</a>         Iterable&lt;Player&gt; remaining =
-<a class="jxr_linenumber" name="L511" href="#L511">511</a>           Sets.difference(
-<a class="jxr_linenumber" name="L512" href="#L512">512</a>               ImmutableSet.copyOf(FluentIterable.from(site.getDraft()).filter(Predicates.notNull())),
-<a class="jxr_linenumber" name="L513" href="#L513">513</a>               drafted);
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>         <a href="../../../../com/ljs/ootp/ai/report/SalaryRegression.html">SalaryRegression</a> salaryRegression = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/report/SalaryRegression.html">SalaryRegression</a>(tv, site);
+<a class="jxr_linenumber" name="L491" href="#L491">491</a> 
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>         Integer n = Iterables.size(site.getTeamIds());
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>         <strong class="jxr_keyword">int</strong> count = 1;
+<a class="jxr_linenumber" name="L494" href="#L494">494</a>         <strong class="jxr_keyword">for</strong> (Id&lt;Team&gt; id : site.getTeamIds()) {
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>             LOG.log(Level.INFO, <span class="jxr_string">"{0}/{1}..."</span>, <strong class="jxr_keyword">new</strong> Object[] { count, n });
+<a class="jxr_linenumber" name="L496" href="#L496">496</a> 
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>             salaryRegression.add(site.getSalariedPlayers(id));
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>             count++;
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>         }
+<a class="jxr_linenumber" name="L500" href="#L500">500</a> 
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>         Printables.print(salaryRegression).to(out);
+<a class="jxr_linenumber" name="L502" href="#L502">502</a> 
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../com/ljs/ootp/ai/report/GenericValueReport.html">GenericValueReport</a> <strong class="jxr_keyword">generic</strong> = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/report/GenericValueReport.html">GenericValueReport</a>(team, ps, battingRegression, pitchingRegression, salaryRegression);
+<a class="jxr_linenumber" name="L504" href="#L504">504</a> 
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>         <strong class="jxr_keyword">generic</strong>.printReplacementLevelReport(out);
+<a class="jxr_linenumber" name="L506" href="#L506">506</a> 
+<a class="jxr_linenumber" name="L507" href="#L507">507</a>         <a href="../../../../com/ljs/ootp/ai/report/RosterReport.html">RosterReport</a> rosterReport = RosterReport.create(site, newRoster);
+<a class="jxr_linenumber" name="L508" href="#L508">508</a> 
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>         Printables.print(rosterReport).to(out);
+<a class="jxr_linenumber" name="L510" href="#L510">510</a> 
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>         <strong class="jxr_keyword">generic</strong>.setCustomValueFunction(tv.getTradeTargetValue());
+<a class="jxr_linenumber" name="L512" href="#L512">512</a> 
+<a class="jxr_linenumber" name="L513" href="#L513">513</a>         <strong class="jxr_keyword">generic</strong>.setReverse(false);
 <a class="jxr_linenumber" name="L514" href="#L514">514</a> 
-<a class="jxr_linenumber" name="L515" href="#L515">515</a> 
-<a class="jxr_linenumber" name="L516" href="#L516">516</a>         <strong class="jxr_keyword">if</strong> (!Iterables.isEmpty(remaining)) {
-<a class="jxr_linenumber" name="L517" href="#L517">517</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Drafted"</span>);
-<a class="jxr_linenumber" name="L518" href="#L518">518</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(drafted);
-<a class="jxr_linenumber" name="L519" href="#L519">519</a>             <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L520" href="#L520">520</a> 
-<a class="jxr_linenumber" name="L521" href="#L521">521</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Remaining"</span>);
-<a class="jxr_linenumber" name="L522" href="#L522">522</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(remaining);
-<a class="jxr_linenumber" name="L523" href="#L523">523</a>             <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L524" href="#L524">524</a>         }
-<a class="jxr_linenumber" name="L525" href="#L525">525</a> 
-<a class="jxr_linenumber" name="L526" href="#L526">526</a>         DraftReport.create(site, tv).print(out);
+<a class="jxr_linenumber" name="L515" href="#L515">515</a>         LOG.info(<span class="jxr_string">"Draft..."</span>);
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>         ImmutableSet&lt;Player&gt; drafted = ImmutableSet.copyOf(changes.get(Changes.ChangeType.PICKED));
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>         Iterable&lt;Player&gt; remaining =
+<a class="jxr_linenumber" name="L518" href="#L518">518</a>           Sets.difference(
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>               ImmutableSet.copyOf(FluentIterable.from(site.getDraft()).filter(Predicates.notNull())),
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>               drafted);
+<a class="jxr_linenumber" name="L521" href="#L521">521</a> 
+<a class="jxr_linenumber" name="L522" href="#L522">522</a> 
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>         <strong class="jxr_keyword">if</strong> (!Iterables.isEmpty(remaining)) {
+<a class="jxr_linenumber" name="L524" href="#L524">524</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Drafted"</span>);
+<a class="jxr_linenumber" name="L525" href="#L525">525</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(drafted);
+<a class="jxr_linenumber" name="L526" href="#L526">526</a>             <strong class="jxr_keyword">generic</strong>.print(out);
 <a class="jxr_linenumber" name="L527" href="#L527">527</a> 
-<a class="jxr_linenumber" name="L528" href="#L528">528</a>         LOG.info(<span class="jxr_string">"Extensions report..."</span>);
-<a class="jxr_linenumber" name="L529" href="#L529">529</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Extensions"</span>);
-<a class="jxr_linenumber" name="L530" href="#L530">530</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(
-<a class="jxr_linenumber" name="L531" href="#L531">531</a>             Iterables.concat(
-<a class="jxr_linenumber" name="L532" href="#L532">532</a>                 Iterables.filter(newRoster.getAllPlayers(), site.isFutureFreeAgent()),
-<a class="jxr_linenumber" name="L533" href="#L533">533</a>                 futureFas));
-<a class="jxr_linenumber" name="L534" href="#L534">534</a>         <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L535" href="#L535">535</a> 
-<a class="jxr_linenumber" name="L536" href="#L536">536</a>         LOG.info(<span class="jxr_string">"Arbitration report..."</span>);
-<a class="jxr_linenumber" name="L537" href="#L537">537</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Arbitration"</span>);
-<a class="jxr_linenumber" name="L538" href="#L538">538</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(Iterables.filter(newRoster.getAllPlayers(), <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
-<a class="jxr_linenumber" name="L539" href="#L539">539</a>             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> p) {
-<a class="jxr_linenumber" name="L540" href="#L540">540</a>                 <strong class="jxr_keyword">return</strong> p.getSalary().endsWith(<span class="jxr_string">"a"</span>);
-<a class="jxr_linenumber" name="L541" href="#L541">541</a>             }
-<a class="jxr_linenumber" name="L542" href="#L542">542</a>         }));
-<a class="jxr_linenumber" name="L543" href="#L543">543</a>         <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L544" href="#L544">544</a> 
-<a class="jxr_linenumber" name="L545" href="#L545">545</a>         LOG.info(<span class="jxr_string">"Salary report..."</span>);
-<a class="jxr_linenumber" name="L546" href="#L546">546</a>         <a href="../../../../com/ljs/ootp/ai/report/SalaryReport.html">SalaryReport</a> salary = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/report/SalaryReport.html">SalaryReport</a>(team, site);
-<a class="jxr_linenumber" name="L547" href="#L547">547</a>         Printables.print(salary).to(out);
-<a class="jxr_linenumber" name="L548" href="#L548">548</a> 
-<a class="jxr_linenumber" name="L549" href="#L549">549</a>         <strong class="jxr_keyword">if</strong> (def.getName().equals(<span class="jxr_string">"BTHUSTLE"</span>)) {
-<a class="jxr_linenumber" name="L550" href="#L550">550</a>             LOG.info(<span class="jxr_string">"40 man roster reports..."</span>);
+<a class="jxr_linenumber" name="L528" href="#L528">528</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Remaining"</span>);
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(remaining);
+<a class="jxr_linenumber" name="L530" href="#L530">530</a>             <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L531" href="#L531">531</a>         }
+<a class="jxr_linenumber" name="L532" href="#L532">532</a> 
+<a class="jxr_linenumber" name="L533" href="#L533">533</a>         DraftReport.create(site, tv).print(out);
+<a class="jxr_linenumber" name="L534" href="#L534">534</a> 
+<a class="jxr_linenumber" name="L535" href="#L535">535</a>         LOG.info(<span class="jxr_string">"Extensions report..."</span>);
+<a class="jxr_linenumber" name="L536" href="#L536">536</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Extensions"</span>);
+<a class="jxr_linenumber" name="L537" href="#L537">537</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(
+<a class="jxr_linenumber" name="L538" href="#L538">538</a>             Iterables.concat(
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>                 Iterables.filter(newRoster.getAllPlayers(), site.isFutureFreeAgent()),
+<a class="jxr_linenumber" name="L540" href="#L540">540</a>                 futureFas));
+<a class="jxr_linenumber" name="L541" href="#L541">541</a>         <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L542" href="#L542">542</a> 
+<a class="jxr_linenumber" name="L543" href="#L543">543</a>         LOG.info(<span class="jxr_string">"Arbitration report..."</span>);
+<a class="jxr_linenumber" name="L544" href="#L544">544</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Arbitration"</span>);
+<a class="jxr_linenumber" name="L545" href="#L545">545</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(Iterables.filter(newRoster.getAllPlayers(), <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
+<a class="jxr_linenumber" name="L546" href="#L546">546</a>             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> p) {
+<a class="jxr_linenumber" name="L547" href="#L547">547</a>                 <strong class="jxr_keyword">return</strong> p.getSalary().endsWith(<span class="jxr_string">"a"</span>);
+<a class="jxr_linenumber" name="L548" href="#L548">548</a>             }
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>         }));
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>         <strong class="jxr_keyword">generic</strong>.print(out);
 <a class="jxr_linenumber" name="L551" href="#L551">551</a> 
-<a class="jxr_linenumber" name="L552" href="#L552">552</a>             <a href="../../../../com/ljs/ootp/ai/roster/FourtyManRoster.html">FourtyManRoster</a> fourtyMan = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/roster/FourtyManRoster.html">FourtyManRoster</a>(
-<a class="jxr_linenumber" name="L553" href="#L553">553</a>                 newRoster,
-<a class="jxr_linenumber" name="L554" href="#L554">554</a>                 <a href="../../../../com/ljs/ootp/ai/regression/Predictions.html">Predictions</a>
-<a class="jxr_linenumber" name="L555" href="#L555">555</a>                     .predict(newRoster.getAllPlayers())
-<a class="jxr_linenumber" name="L556" href="#L556">556</a>                     .using(battingRegression, pitchingRegression, ps.getPitcherOverall()),
-<a class="jxr_linenumber" name="L557" href="#L557">557</a>                 tv);
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>         LOG.info(<span class="jxr_string">"Salary report..."</span>);
+<a class="jxr_linenumber" name="L553" href="#L553">553</a>         <a href="../../../../com/ljs/ootp/ai/report/SalaryReport.html">SalaryReport</a> salary = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/report/SalaryReport.html">SalaryReport</a>(team, site);
+<a class="jxr_linenumber" name="L554" href="#L554">554</a>         Printables.print(salary).to(out);
+<a class="jxr_linenumber" name="L555" href="#L555">555</a> 
+<a class="jxr_linenumber" name="L556" href="#L556">556</a>         <strong class="jxr_keyword">if</strong> (def.getName().equals(<span class="jxr_string">"BTHUSTLE"</span>)) {
+<a class="jxr_linenumber" name="L557" href="#L557">557</a>             LOG.info(<span class="jxr_string">"40 man roster reports..."</span>);
 <a class="jxr_linenumber" name="L558" href="#L558">558</a> 
-<a class="jxr_linenumber" name="L559" href="#L559">559</a>             Printables.print(fourtyMan).to(out);
-<a class="jxr_linenumber" name="L560" href="#L560">560</a> 
-<a class="jxr_linenumber" name="L561" href="#L561">561</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"+40"</span>);
-<a class="jxr_linenumber" name="L562" href="#L562">562</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(ImmutableSet
-<a class="jxr_linenumber" name="L563" href="#L563">563</a>                 .&lt;Player&gt;builder()
-<a class="jxr_linenumber" name="L564" href="#L564">564</a>                 .addAll(fourtyMan.getPlayersToAdd())
-<a class="jxr_linenumber" name="L565" href="#L565">565</a>                 .addAll(FluentIterable
-<a class="jxr_linenumber" name="L566" href="#L566">566</a>                     .from(changes.get(ChangeType.FOURTY_MAN))
-<a class="jxr_linenumber" name="L567" href="#L567">567</a>                     .filter(Predicates.in(newRoster.getAllPlayers())))
-<a class="jxr_linenumber" name="L568" href="#L568">568</a>                 .build());
-<a class="jxr_linenumber" name="L569" href="#L569">569</a>             <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L570" href="#L570">570</a> 
-<a class="jxr_linenumber" name="L571" href="#L571">571</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"-40"</span>);
-<a class="jxr_linenumber" name="L572" href="#L572">572</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(fourtyMan.getPlayersToRemove());
-<a class="jxr_linenumber" name="L573" href="#L573">573</a>             <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L574" href="#L574">574</a> 
-<a class="jxr_linenumber" name="L575" href="#L575">575</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Waive"</span>);
-<a class="jxr_linenumber" name="L576" href="#L576">576</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(isExpandedRosters ? ImmutableSet.of() : fourtyMan.getPlayersToWaive());
-<a class="jxr_linenumber" name="L577" href="#L577">577</a>             <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L578" href="#L578">578</a>         }
-<a class="jxr_linenumber" name="L579" href="#L579">579</a> 
-<a class="jxr_linenumber" name="L580" href="#L580">580</a>         <strong class="jxr_keyword">if</strong> (battingRegression.isEmpty() || pitchingRegression.isEmpty()) {
-<a class="jxr_linenumber" name="L581" href="#L581">581</a>             <strong class="jxr_keyword">return</strong>;
-<a class="jxr_linenumber" name="L582" href="#L582">582</a>         }
-<a class="jxr_linenumber" name="L583" href="#L583">583</a> 
-<a class="jxr_linenumber" name="L584" href="#L584">584</a>         <strong class="jxr_keyword">if</strong> (def.getName().equals(<span class="jxr_string">"BTHUSTLE"</span>)) {
-<a class="jxr_linenumber" name="L585" href="#L585">585</a>             LOG.info(<span class="jxr_string">"Waviers report..."</span>);
-<a class="jxr_linenumber" name="L586" href="#L586">586</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Waivers"</span>);
-<a class="jxr_linenumber" name="L587" href="#L587">587</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(site.getWaiverWire());
-<a class="jxr_linenumber" name="L588" href="#L588">588</a>             <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L589" href="#L589">589</a> 
-<a class="jxr_linenumber" name="L590" href="#L590">590</a>             <strong class="jxr_keyword">if</strong> (site.getDate().getMonthOfYear() &lt; DateTimeConstants.APRIL) {
-<a class="jxr_linenumber" name="L591" href="#L591">591</a>                 LOG.info(<span class="jxr_string">"Rule 5..."</span>);
-<a class="jxr_linenumber" name="L592" href="#L592">592</a>                 <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Rule 5"</span>);
-<a class="jxr_linenumber" name="L593" href="#L593">593</a>                 <strong class="jxr_keyword">generic</strong>.setPlayers(
-<a class="jxr_linenumber" name="L594" href="#L594">594</a>                     Iterables.filter(
-<a class="jxr_linenumber" name="L595" href="#L595">595</a>                         site.getRuleFiveDraft(),
-<a class="jxr_linenumber" name="L596" href="#L596">596</a>                         <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
-<a class="jxr_linenumber" name="L597" href="#L597">597</a>                             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> p) {
-<a class="jxr_linenumber" name="L598" href="#L598">598</a>                                 <strong class="jxr_keyword">return</strong> tv.getCurrentValueVsReplacement(p) &gt;= 0;
-<a class="jxr_linenumber" name="L599" href="#L599">599</a>                             }
-<a class="jxr_linenumber" name="L600" href="#L600">600</a>                         }));
-<a class="jxr_linenumber" name="L601" href="#L601">601</a>                 <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L602" href="#L602">602</a>             }
-<a class="jxr_linenumber" name="L603" href="#L603">603</a>         }
-<a class="jxr_linenumber" name="L604" href="#L604">604</a> 
-<a class="jxr_linenumber" name="L605" href="#L605">605</a> 
-<a class="jxr_linenumber" name="L606" href="#L606">606</a>         LOG.info(<span class="jxr_string">"FA report..."</span>);
-<a class="jxr_linenumber" name="L607" href="#L607">607</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Top Targets"</span>);
-<a class="jxr_linenumber" name="L608" href="#L608">608</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(topFaTargets);
-<a class="jxr_linenumber" name="L609" href="#L609">609</a>         <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L610" href="#L610">610</a> 
-<a class="jxr_linenumber" name="L611" href="#L611">611</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Free Agents"</span>);
-<a class="jxr_linenumber" name="L612" href="#L612">612</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(site.getFreeAgents());
-<a class="jxr_linenumber" name="L613" href="#L613">613</a>         <strong class="jxr_keyword">generic</strong>.setLimit(50);
-<a class="jxr_linenumber" name="L614" href="#L614">614</a>         <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L615" href="#L615">615</a> 
-<a class="jxr_linenumber" name="L616" href="#L616">616</a> 
-<a class="jxr_linenumber" name="L617" href="#L617">617</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Trade Values"</span>);
-<a class="jxr_linenumber" name="L618" href="#L618">618</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(
-<a class="jxr_linenumber" name="L619" href="#L619">619</a>             Iterables.concat(
-<a class="jxr_linenumber" name="L620" href="#L620">620</a>                 newRoster.getAllPlayers(),
-<a class="jxr_linenumber" name="L621" href="#L621">621</a>                 futureFas,
-<a class="jxr_linenumber" name="L622" href="#L622">622</a>                 Iterables.transform(
-<a class="jxr_linenumber" name="L623" href="#L623">623</a>                     faas,
-<a class="jxr_linenumber" name="L624" href="#L624">624</a>                     FreeAgentAcquisition::getRelease),
-<a class="jxr_linenumber" name="L625" href="#L625">625</a>                 released));
-<a class="jxr_linenumber" name="L626" href="#L626">626</a>         <strong class="jxr_keyword">generic</strong>.setLimit(200);
-<a class="jxr_linenumber" name="L627" href="#L627">627</a>         <strong class="jxr_keyword">generic</strong>.setMultiplier(1.1);
-<a class="jxr_linenumber" name="L628" href="#L628">628</a>         <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L629" href="#L629">629</a> 
-<a class="jxr_linenumber" name="L630" href="#L630">630</a>         Set&lt;Player&gt; all = Sets.newHashSet();
-<a class="jxr_linenumber" name="L631" href="#L631">631</a> 
-<a class="jxr_linenumber" name="L632" href="#L632">632</a>         Set&lt;Player&gt; minorLeaguers = Sets.newHashSet();
-<a class="jxr_linenumber" name="L633" href="#L633">633</a> 
-<a class="jxr_linenumber" name="L634" href="#L634">634</a>         LOG.log(Level.INFO, <span class="jxr_string">"Team reports..."</span>);
-<a class="jxr_linenumber" name="L635" href="#L635">635</a>         <strong class="jxr_keyword">generic</strong>.setLimit(50);
-<a class="jxr_linenumber" name="L636" href="#L636">636</a>         <strong class="jxr_keyword">generic</strong>.setMultiplier(0.91);
-<a class="jxr_linenumber" name="L637" href="#L637">637</a> 
-<a class="jxr_linenumber" name="L638" href="#L638">638</a>         count = 1;
-<a class="jxr_linenumber" name="L639" href="#L639">639</a>         <strong class="jxr_keyword">for</strong> (Id&lt;Team&gt; id : site.getTeamIds()) {
-<a class="jxr_linenumber" name="L640" href="#L640">640</a>             <a href="../../../../com/ljs/ootp/ai/site/SingleTeam.html">SingleTeam</a> t = site.getSingleTeam(id);
-<a class="jxr_linenumber" name="L641" href="#L641">641</a>             LOG.log(Level.INFO, <span class="jxr_string">"{0} ({1}/{2})..."</span>, <strong class="jxr_keyword">new</strong> Object[] { t.getName(), count, n });
-<a class="jxr_linenumber" name="L642" href="#L642">642</a>             <strong class="jxr_keyword">generic</strong>.setTitle(t.getName());
-<a class="jxr_linenumber" name="L643" href="#L643">643</a> 
-<a class="jxr_linenumber" name="L644" href="#L644">644</a>             <a href="../../../../com/ljs/ootp/ai/roster/Roster.html">Roster</a> r = t.getRoster();
-<a class="jxr_linenumber" name="L645" href="#L645">645</a> 
-<a class="jxr_linenumber" name="L646" href="#L646">646</a>             Iterables.addAll(all, r.getAllPlayers());
-<a class="jxr_linenumber" name="L647" href="#L647">647</a> 
-<a class="jxr_linenumber" name="L648" href="#L648">648</a>             Iterables.addAll(minorLeaguers, r.getPlayers(Status.AAA));
-<a class="jxr_linenumber" name="L649" href="#L649">649</a>             Iterables.addAll(minorLeaguers, r.getPlayers(Status.AA));
-<a class="jxr_linenumber" name="L650" href="#L650">650</a>             Iterables.addAll(minorLeaguers, r.getPlayers(Status.A));
-<a class="jxr_linenumber" name="L651" href="#L651">651</a>             Iterables.addAll(minorLeaguers, r.getPlayers(Status.SA));
-<a class="jxr_linenumber" name="L652" href="#L652">652</a>             Iterables.addAll(minorLeaguers, r.getPlayers(Status.R));
-<a class="jxr_linenumber" name="L653" href="#L653">653</a> 
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(r.getAllPlayers());
-<a class="jxr_linenumber" name="L655" href="#L655">655</a>             <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L656" href="#L656">656</a>             count++;
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>         }
-<a class="jxr_linenumber" name="L658" href="#L658">658</a> 
-<a class="jxr_linenumber" name="L659" href="#L659">659</a>         <a href="../../../../com/ljs/ootp/ai/report/TeamReport.html">TeamReport</a> now = TeamReport.create(
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>             <span class="jxr_string">"Now"</span>,
-<a class="jxr_linenumber" name="L661" href="#L661">661</a>             ps,
-<a class="jxr_linenumber" name="L662" href="#L662">662</a>             site,
-<a class="jxr_linenumber" name="L663" href="#L663">663</a>             <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/value/PlayerValue.html">PlayerValue</a>(ps, battingRegression, pitchingRegression)
-<a class="jxr_linenumber" name="L664" href="#L664">664</a>                 .getNowValue());
-<a class="jxr_linenumber" name="L665" href="#L665">665</a>         <strong class="jxr_keyword">if</strong> (!site.getName().contains(<span class="jxr_string">"OLD_BTH"</span>)) {
-<a class="jxr_linenumber" name="L666" href="#L666">666</a>           LOG.info(<span class="jxr_string">"Power Rankings..."</span>);
-<a class="jxr_linenumber" name="L667" href="#L667">667</a>           Printables.print(site.getPowerRankingsReport(now)).to(out);
-<a class="jxr_linenumber" name="L668" href="#L668">668</a>         }
-<a class="jxr_linenumber" name="L669" href="#L669">669</a> 
-<a class="jxr_linenumber" name="L670" href="#L670">670</a>         LOG.info(<span class="jxr_string">"Team Now Report..."</span>);
-<a class="jxr_linenumber" name="L671" href="#L671">671</a> 
-<a class="jxr_linenumber" name="L672" href="#L672">672</a>         now.sortByEndOfSeason();
-<a class="jxr_linenumber" name="L673" href="#L673">673</a> 
-<a class="jxr_linenumber" name="L674" href="#L674">674</a>         Printables.print(now).to(out);
-<a class="jxr_linenumber" name="L675" href="#L675">675</a> 
-<a class="jxr_linenumber" name="L676" href="#L676">676</a>         LOG.info(<span class="jxr_string">"Team Medium Term Report..."</span>);
-<a class="jxr_linenumber" name="L677" href="#L677">677</a>         <a href="../../../../com/ljs/ootp/ai/report/TeamReport.html">TeamReport</a> future = TeamReport.create(
-<a class="jxr_linenumber" name="L678" href="#L678">678</a>             <span class="jxr_string">"Medium Term"</span>,
-<a class="jxr_linenumber" name="L679" href="#L679">679</a>             ps,
-<a class="jxr_linenumber" name="L680" href="#L680">680</a>             site,
-<a class="jxr_linenumber" name="L681" href="#L681">681</a>             <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/value/PlayerValue.html">PlayerValue</a>(ps, battingRegression, pitchingRegression)
-<a class="jxr_linenumber" name="L682" href="#L682">682</a>                 .getFutureValue());
-<a class="jxr_linenumber" name="L683" href="#L683">683</a> 
-<a class="jxr_linenumber" name="L684" href="#L684">684</a>         future.sortByTalentLevel();
-<a class="jxr_linenumber" name="L685" href="#L685">685</a>         Printables.print(future).to(out);
-<a class="jxr_linenumber" name="L686" href="#L686">686</a> 
-<a class="jxr_linenumber" name="L687" href="#L687">687</a>         <strong class="jxr_keyword">generic</strong>.setLimit(10);
-<a class="jxr_linenumber" name="L688" href="#L688">688</a>         <strong class="jxr_keyword">generic</strong>.clearMultiplier();
-<a class="jxr_linenumber" name="L689" href="#L689">689</a>         <strong class="jxr_keyword">generic</strong>.setCustomValueFunction(
-<a class="jxr_linenumber" name="L690" href="#L690">690</a>             <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/value/PlayerValue.html">PlayerValue</a>(ps, battingRegression, pitchingRegression)
-<a class="jxr_linenumber" name="L691" href="#L691">691</a>                 .getFutureValue());
-<a class="jxr_linenumber" name="L692" href="#L692">692</a> 
-<a class="jxr_linenumber" name="L693" href="#L693">693</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Slot s : Slot.values()) {
-<a class="jxr_linenumber" name="L694" href="#L694">694</a>             <strong class="jxr_keyword">if</strong> (s == Slot.P) {
-<a class="jxr_linenumber" name="L695" href="#L695">695</a>                 <strong class="jxr_keyword">continue</strong>;
-<a class="jxr_linenumber" name="L696" href="#L696">696</a>             }
-<a class="jxr_linenumber" name="L697" href="#L697">697</a> 
-<a class="jxr_linenumber" name="L698" href="#L698">698</a>             LOG.log(Level.INFO, <span class="jxr_string">"Slot Report: {0}..."</span>, s.name());
+<a class="jxr_linenumber" name="L559" href="#L559">559</a>             <a href="../../../../com/ljs/ootp/ai/roster/FourtyManRoster.html">FourtyManRoster</a> fourtyMan = <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/roster/FourtyManRoster.html">FourtyManRoster</a>(
+<a class="jxr_linenumber" name="L560" href="#L560">560</a>                 newRoster,
+<a class="jxr_linenumber" name="L561" href="#L561">561</a>                 <a href="../../../../com/ljs/ootp/ai/regression/Predictions.html">Predictions</a>
+<a class="jxr_linenumber" name="L562" href="#L562">562</a>                     .predict(newRoster.getAllPlayers())
+<a class="jxr_linenumber" name="L563" href="#L563">563</a>                     .using(battingRegression, pitchingRegression, ps.getPitcherOverall()),
+<a class="jxr_linenumber" name="L564" href="#L564">564</a>                 tv);
+<a class="jxr_linenumber" name="L565" href="#L565">565</a> 
+<a class="jxr_linenumber" name="L566" href="#L566">566</a>             Printables.print(fourtyMan).to(out);
+<a class="jxr_linenumber" name="L567" href="#L567">567</a> 
+<a class="jxr_linenumber" name="L568" href="#L568">568</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"+40"</span>);
+<a class="jxr_linenumber" name="L569" href="#L569">569</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(ImmutableSet
+<a class="jxr_linenumber" name="L570" href="#L570">570</a>                 .&lt;Player&gt;builder()
+<a class="jxr_linenumber" name="L571" href="#L571">571</a>                 .addAll(fourtyMan.getPlayersToAdd())
+<a class="jxr_linenumber" name="L572" href="#L572">572</a>                 .addAll(FluentIterable
+<a class="jxr_linenumber" name="L573" href="#L573">573</a>                     .from(changes.get(ChangeType.FOURTY_MAN))
+<a class="jxr_linenumber" name="L574" href="#L574">574</a>                     .filter(Predicates.in(newRoster.getAllPlayers())))
+<a class="jxr_linenumber" name="L575" href="#L575">575</a>                 .build());
+<a class="jxr_linenumber" name="L576" href="#L576">576</a>             <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L577" href="#L577">577</a> 
+<a class="jxr_linenumber" name="L578" href="#L578">578</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"-40"</span>);
+<a class="jxr_linenumber" name="L579" href="#L579">579</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(fourtyMan.getPlayersToRemove());
+<a class="jxr_linenumber" name="L580" href="#L580">580</a>             <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L581" href="#L581">581</a> 
+<a class="jxr_linenumber" name="L582" href="#L582">582</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Waive"</span>);
+<a class="jxr_linenumber" name="L583" href="#L583">583</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(isExpandedRosters ? ImmutableSet.of() : fourtyMan.getPlayersToWaive());
+<a class="jxr_linenumber" name="L584" href="#L584">584</a>             <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L585" href="#L585">585</a>         }
+<a class="jxr_linenumber" name="L586" href="#L586">586</a> 
+<a class="jxr_linenumber" name="L587" href="#L587">587</a>         <strong class="jxr_keyword">if</strong> (battingRegression.isEmpty() || pitchingRegression.isEmpty()) {
+<a class="jxr_linenumber" name="L588" href="#L588">588</a>             <strong class="jxr_keyword">return</strong>;
+<a class="jxr_linenumber" name="L589" href="#L589">589</a>         }
+<a class="jxr_linenumber" name="L590" href="#L590">590</a> 
+<a class="jxr_linenumber" name="L591" href="#L591">591</a>         <strong class="jxr_keyword">if</strong> (def.getName().equals(<span class="jxr_string">"BTHUSTLE"</span>)) {
+<a class="jxr_linenumber" name="L592" href="#L592">592</a>             LOG.info(<span class="jxr_string">"Waviers report..."</span>);
+<a class="jxr_linenumber" name="L593" href="#L593">593</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Waivers"</span>);
+<a class="jxr_linenumber" name="L594" href="#L594">594</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(site.getWaiverWire());
+<a class="jxr_linenumber" name="L595" href="#L595">595</a>             <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L596" href="#L596">596</a> 
+<a class="jxr_linenumber" name="L597" href="#L597">597</a>             <strong class="jxr_keyword">if</strong> (site.getDate().getMonthOfYear() &lt; DateTimeConstants.APRIL) {
+<a class="jxr_linenumber" name="L598" href="#L598">598</a>                 LOG.info(<span class="jxr_string">"Rule 5..."</span>);
+<a class="jxr_linenumber" name="L599" href="#L599">599</a>                 <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Rule 5"</span>);
+<a class="jxr_linenumber" name="L600" href="#L600">600</a>                 <strong class="jxr_keyword">generic</strong>.setPlayers(
+<a class="jxr_linenumber" name="L601" href="#L601">601</a>                     Iterables.filter(
+<a class="jxr_linenumber" name="L602" href="#L602">602</a>                         site.getRuleFiveDraft(),
+<a class="jxr_linenumber" name="L603" href="#L603">603</a>                         <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
+<a class="jxr_linenumber" name="L604" href="#L604">604</a>                             <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> p) {
+<a class="jxr_linenumber" name="L605" href="#L605">605</a>                                 <strong class="jxr_keyword">return</strong> tv.getCurrentValueVsReplacement(p) &gt;= 0;
+<a class="jxr_linenumber" name="L606" href="#L606">606</a>                             }
+<a class="jxr_linenumber" name="L607" href="#L607">607</a>                         }));
+<a class="jxr_linenumber" name="L608" href="#L608">608</a>                 <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L609" href="#L609">609</a>             }
+<a class="jxr_linenumber" name="L610" href="#L610">610</a>         }
+<a class="jxr_linenumber" name="L611" href="#L611">611</a> 
+<a class="jxr_linenumber" name="L612" href="#L612">612</a> 
+<a class="jxr_linenumber" name="L613" href="#L613">613</a>         LOG.info(<span class="jxr_string">"FA report..."</span>);
+<a class="jxr_linenumber" name="L614" href="#L614">614</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Top Targets"</span>);
+<a class="jxr_linenumber" name="L615" href="#L615">615</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(topFaTargets);
+<a class="jxr_linenumber" name="L616" href="#L616">616</a>         <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L617" href="#L617">617</a> 
+<a class="jxr_linenumber" name="L618" href="#L618">618</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Free Agents"</span>);
+<a class="jxr_linenumber" name="L619" href="#L619">619</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(site.getFreeAgents());
+<a class="jxr_linenumber" name="L620" href="#L620">620</a>         <strong class="jxr_keyword">generic</strong>.setLimit(50);
+<a class="jxr_linenumber" name="L621" href="#L621">621</a>         <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L622" href="#L622">622</a> 
+<a class="jxr_linenumber" name="L623" href="#L623">623</a> 
+<a class="jxr_linenumber" name="L624" href="#L624">624</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Trade Values"</span>);
+<a class="jxr_linenumber" name="L625" href="#L625">625</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(
+<a class="jxr_linenumber" name="L626" href="#L626">626</a>             Iterables.concat(
+<a class="jxr_linenumber" name="L627" href="#L627">627</a>                 newRoster.getAllPlayers(),
+<a class="jxr_linenumber" name="L628" href="#L628">628</a>                 futureFas,
+<a class="jxr_linenumber" name="L629" href="#L629">629</a>                 Iterables.transform(
+<a class="jxr_linenumber" name="L630" href="#L630">630</a>                     faas,
+<a class="jxr_linenumber" name="L631" href="#L631">631</a>                     FreeAgentAcquisition::getRelease),
+<a class="jxr_linenumber" name="L632" href="#L632">632</a>                 released));
+<a class="jxr_linenumber" name="L633" href="#L633">633</a>         <strong class="jxr_keyword">generic</strong>.setLimit(200);
+<a class="jxr_linenumber" name="L634" href="#L634">634</a>         <strong class="jxr_keyword">generic</strong>.setMultiplier(1.1);
+<a class="jxr_linenumber" name="L635" href="#L635">635</a>         <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L636" href="#L636">636</a> 
+<a class="jxr_linenumber" name="L637" href="#L637">637</a>         Set&lt;Player&gt; all = Sets.newHashSet();
+<a class="jxr_linenumber" name="L638" href="#L638">638</a> 
+<a class="jxr_linenumber" name="L639" href="#L639">639</a>         Set&lt;Player&gt; minorLeaguers = Sets.newHashSet();
+<a class="jxr_linenumber" name="L640" href="#L640">640</a> 
+<a class="jxr_linenumber" name="L641" href="#L641">641</a>         LOG.log(Level.INFO, <span class="jxr_string">"Team reports..."</span>);
+<a class="jxr_linenumber" name="L642" href="#L642">642</a>         <strong class="jxr_keyword">generic</strong>.setLimit(50);
+<a class="jxr_linenumber" name="L643" href="#L643">643</a>         <strong class="jxr_keyword">generic</strong>.setMultiplier(0.91);
+<a class="jxr_linenumber" name="L644" href="#L644">644</a> 
+<a class="jxr_linenumber" name="L645" href="#L645">645</a>         count = 1;
+<a class="jxr_linenumber" name="L646" href="#L646">646</a>         <strong class="jxr_keyword">for</strong> (Id&lt;Team&gt; id : site.getTeamIds()) {
+<a class="jxr_linenumber" name="L647" href="#L647">647</a>             <a href="../../../../com/ljs/ootp/ai/site/SingleTeam.html">SingleTeam</a> t = site.getSingleTeam(id);
+<a class="jxr_linenumber" name="L648" href="#L648">648</a>             LOG.log(Level.INFO, <span class="jxr_string">"{0} ({1}/{2})..."</span>, <strong class="jxr_keyword">new</strong> Object[] { t.getName(), count, n });
+<a class="jxr_linenumber" name="L649" href="#L649">649</a>             <strong class="jxr_keyword">generic</strong>.setTitle(t.getName());
+<a class="jxr_linenumber" name="L650" href="#L650">650</a> 
+<a class="jxr_linenumber" name="L651" href="#L651">651</a>             <a href="../../../../com/ljs/ootp/ai/roster/Roster.html">Roster</a> r = t.getRoster();
+<a class="jxr_linenumber" name="L652" href="#L652">652</a> 
+<a class="jxr_linenumber" name="L653" href="#L653">653</a>             Iterables.addAll(all, r.getAllPlayers());
+<a class="jxr_linenumber" name="L654" href="#L654">654</a> 
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>             Iterables.addAll(minorLeaguers, r.getPlayers(Status.AAA));
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>             Iterables.addAll(minorLeaguers, r.getPlayers(Status.AA));
+<a class="jxr_linenumber" name="L657" href="#L657">657</a>             Iterables.addAll(minorLeaguers, r.getPlayers(Status.A));
+<a class="jxr_linenumber" name="L658" href="#L658">658</a>             Iterables.addAll(minorLeaguers, r.getPlayers(Status.SA));
+<a class="jxr_linenumber" name="L659" href="#L659">659</a>             Iterables.addAll(minorLeaguers, r.getPlayers(Status.R));
+<a class="jxr_linenumber" name="L660" href="#L660">660</a> 
+<a class="jxr_linenumber" name="L661" href="#L661">661</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(r.getAllPlayers());
+<a class="jxr_linenumber" name="L662" href="#L662">662</a>             <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L663" href="#L663">663</a>             count++;
+<a class="jxr_linenumber" name="L664" href="#L664">664</a>         }
+<a class="jxr_linenumber" name="L665" href="#L665">665</a> 
+<a class="jxr_linenumber" name="L666" href="#L666">666</a>         <a href="../../../../com/ljs/ootp/ai/report/TeamReport.html">TeamReport</a> now = TeamReport.create(
+<a class="jxr_linenumber" name="L667" href="#L667">667</a>             <span class="jxr_string">"Now"</span>,
+<a class="jxr_linenumber" name="L668" href="#L668">668</a>             ps,
+<a class="jxr_linenumber" name="L669" href="#L669">669</a>             site,
+<a class="jxr_linenumber" name="L670" href="#L670">670</a>             <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/value/PlayerValue.html">PlayerValue</a>(ps, battingRegression, pitchingRegression)
+<a class="jxr_linenumber" name="L671" href="#L671">671</a>                 .getNowValue());
+<a class="jxr_linenumber" name="L672" href="#L672">672</a>         <strong class="jxr_keyword">if</strong> (!site.getName().contains(<span class="jxr_string">"OLD_BTH"</span>) &amp;&amp; !site.getName().equals(<span class="jxr_string">"BTH"</span>)) {
+<a class="jxr_linenumber" name="L673" href="#L673">673</a>           LOG.info(<span class="jxr_string">"Power Rankings..."</span>);
+<a class="jxr_linenumber" name="L674" href="#L674">674</a>           Printables.print(site.getPowerRankingsReport(now)).to(out);
+<a class="jxr_linenumber" name="L675" href="#L675">675</a>         }
+<a class="jxr_linenumber" name="L676" href="#L676">676</a> 
+<a class="jxr_linenumber" name="L677" href="#L677">677</a>         LOG.info(<span class="jxr_string">"Team Now Report..."</span>);
+<a class="jxr_linenumber" name="L678" href="#L678">678</a> 
+<a class="jxr_linenumber" name="L679" href="#L679">679</a>         now.sortByEndOfSeason();
+<a class="jxr_linenumber" name="L680" href="#L680">680</a> 
+<a class="jxr_linenumber" name="L681" href="#L681">681</a>         Printables.print(now).to(out);
+<a class="jxr_linenumber" name="L682" href="#L682">682</a> 
+<a class="jxr_linenumber" name="L683" href="#L683">683</a>         LOG.info(<span class="jxr_string">"Team Medium Term Report..."</span>);
+<a class="jxr_linenumber" name="L684" href="#L684">684</a>         <a href="../../../../com/ljs/ootp/ai/report/TeamReport.html">TeamReport</a> future = TeamReport.create(
+<a class="jxr_linenumber" name="L685" href="#L685">685</a>             <span class="jxr_string">"Medium Term"</span>,
+<a class="jxr_linenumber" name="L686" href="#L686">686</a>             ps,
+<a class="jxr_linenumber" name="L687" href="#L687">687</a>             site,
+<a class="jxr_linenumber" name="L688" href="#L688">688</a>             <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/value/PlayerValue.html">PlayerValue</a>(ps, battingRegression, pitchingRegression)
+<a class="jxr_linenumber" name="L689" href="#L689">689</a>                 .getFutureValue());
+<a class="jxr_linenumber" name="L690" href="#L690">690</a> 
+<a class="jxr_linenumber" name="L691" href="#L691">691</a>         future.sortByTalentLevel();
+<a class="jxr_linenumber" name="L692" href="#L692">692</a>         Printables.print(future).to(out);
+<a class="jxr_linenumber" name="L693" href="#L693">693</a> 
+<a class="jxr_linenumber" name="L694" href="#L694">694</a>         <strong class="jxr_keyword">generic</strong>.setLimit(10);
+<a class="jxr_linenumber" name="L695" href="#L695">695</a>         <strong class="jxr_keyword">generic</strong>.clearMultiplier();
+<a class="jxr_linenumber" name="L696" href="#L696">696</a>         <strong class="jxr_keyword">generic</strong>.setCustomValueFunction(
+<a class="jxr_linenumber" name="L697" href="#L697">697</a>             <strong class="jxr_keyword">new</strong> <a href="../../../../com/ljs/ootp/ai/value/PlayerValue.html">PlayerValue</a>(ps, battingRegression, pitchingRegression)
+<a class="jxr_linenumber" name="L698" href="#L698">698</a>                 .getFutureValue());
 <a class="jxr_linenumber" name="L699" href="#L699">699</a> 
-<a class="jxr_linenumber" name="L700" href="#L700">700</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Top: "</span> + s.name());
-<a class="jxr_linenumber" name="L701" href="#L701">701</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(Iterables.filter(all, <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
-<a class="jxr_linenumber" name="L702" href="#L702">702</a>                 <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> p) {
-<a class="jxr_linenumber" name="L703" href="#L703">703</a>                     <strong class="jxr_keyword">return</strong> Slot.getPrimarySlot(p) == s;
-<a class="jxr_linenumber" name="L704" href="#L704">704</a>                 }
-<a class="jxr_linenumber" name="L705" href="#L705">705</a>             }));
+<a class="jxr_linenumber" name="L700" href="#L700">700</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Slot s : Slot.values()) {
+<a class="jxr_linenumber" name="L701" href="#L701">701</a>             <strong class="jxr_keyword">if</strong> (s == Slot.P) {
+<a class="jxr_linenumber" name="L702" href="#L702">702</a>                 <strong class="jxr_keyword">continue</strong>;
+<a class="jxr_linenumber" name="L703" href="#L703">703</a>             }
+<a class="jxr_linenumber" name="L704" href="#L704">704</a> 
+<a class="jxr_linenumber" name="L705" href="#L705">705</a>             LOG.log(Level.INFO, <span class="jxr_string">"Slot Report: {0}..."</span>, s.name());
 <a class="jxr_linenumber" name="L706" href="#L706">706</a> 
-<a class="jxr_linenumber" name="L707" href="#L707">707</a>             <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L708" href="#L708">708</a>         }
-<a class="jxr_linenumber" name="L709" href="#L709">709</a> 
-<a class="jxr_linenumber" name="L710" href="#L710">710</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Position pos : ImmutableList.of(Position.SECOND_BASE, Position.THIRD_BASE)) {
-<a class="jxr_linenumber" name="L711" href="#L711">711</a>             LOG.log(Level.INFO, <span class="jxr_string">"Position Report: {0}..."</span>, pos.name());
-<a class="jxr_linenumber" name="L712" href="#L712">712</a> 
-<a class="jxr_linenumber" name="L713" href="#L713">713</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Top: "</span> + pos.name());
-<a class="jxr_linenumber" name="L714" href="#L714">714</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(Iterables.filter(all, <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
-<a class="jxr_linenumber" name="L715" href="#L715">715</a>                 <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> pl) {
-<a class="jxr_linenumber" name="L716" href="#L716">716</a>                     <strong class="jxr_keyword">return</strong> pl.getPosition().equals(pos.getAbbreviation());
-<a class="jxr_linenumber" name="L717" href="#L717">717</a>                 }
-<a class="jxr_linenumber" name="L718" href="#L718">718</a>             }));
+<a class="jxr_linenumber" name="L707" href="#L707">707</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Top: "</span> + s.name());
+<a class="jxr_linenumber" name="L708" href="#L708">708</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(Iterables.filter(all, <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
+<a class="jxr_linenumber" name="L709" href="#L709">709</a>                 <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> p) {
+<a class="jxr_linenumber" name="L710" href="#L710">710</a>                     <strong class="jxr_keyword">return</strong> Slot.getPrimarySlot(p) == s;
+<a class="jxr_linenumber" name="L711" href="#L711">711</a>                 }
+<a class="jxr_linenumber" name="L712" href="#L712">712</a>             }));
+<a class="jxr_linenumber" name="L713" href="#L713">713</a> 
+<a class="jxr_linenumber" name="L714" href="#L714">714</a>             <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L715" href="#L715">715</a>         }
+<a class="jxr_linenumber" name="L716" href="#L716">716</a> 
+<a class="jxr_linenumber" name="L717" href="#L717">717</a>         <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> Position pos : ImmutableList.of(Position.SECOND_BASE, Position.THIRD_BASE)) {
+<a class="jxr_linenumber" name="L718" href="#L718">718</a>             LOG.log(Level.INFO, <span class="jxr_string">"Position Report: {0}..."</span>, pos.name());
 <a class="jxr_linenumber" name="L719" href="#L719">719</a> 
-<a class="jxr_linenumber" name="L720" href="#L720">720</a>             <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L721" href="#L721">721</a>         }
-<a class="jxr_linenumber" name="L722" href="#L722">722</a> 
-<a class="jxr_linenumber" name="L723" href="#L723">723</a>         LOG.log(Level.INFO, <span class="jxr_string">"League wide replacement Level..."</span>);
-<a class="jxr_linenumber" name="L724" href="#L724">724</a> 
-<a class="jxr_linenumber" name="L725" href="#L725">725</a>         <strong class="jxr_keyword">generic</strong>.setCustomValueFunction(tv.getTradeTargetValue());
+<a class="jxr_linenumber" name="L720" href="#L720">720</a>             <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Top: "</span> + pos.name());
+<a class="jxr_linenumber" name="L721" href="#L721">721</a>             <strong class="jxr_keyword">generic</strong>.setPlayers(Iterables.filter(all, <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
+<a class="jxr_linenumber" name="L722" href="#L722">722</a>                 <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> pl) {
+<a class="jxr_linenumber" name="L723" href="#L723">723</a>                     <strong class="jxr_keyword">return</strong> pl.getPosition().equals(pos.getAbbreviation());
+<a class="jxr_linenumber" name="L724" href="#L724">724</a>                 }
+<a class="jxr_linenumber" name="L725" href="#L725">725</a>             }));
 <a class="jxr_linenumber" name="L726" href="#L726">726</a> 
-<a class="jxr_linenumber" name="L727" href="#L727">727</a>         <em class="jxr_comment">/*LOG.log(Level.INFO, "Trade target report...");</em>
-<a class="jxr_linenumber" name="L728" href="#L728">728</a> <em class="jxr_comment">        generic.setTitle("Trade Targets");</em>
-<a class="jxr_linenumber" name="L729" href="#L729">729</a> <em class="jxr_comment">        generic.setLimit(50);</em>
-<a class="jxr_linenumber" name="L730" href="#L730">730</a> <em class="jxr_comment">        generic.setPlayers(all);</em>
-<a class="jxr_linenumber" name="L731" href="#L731">731</a> <em class="jxr_comment">        generic.print(out);*/</em>
-<a class="jxr_linenumber" name="L732" href="#L732">732</a> 
-<a class="jxr_linenumber" name="L733" href="#L733">733</a>         <em class="jxr_comment">/*LOG.log(Level.INFO, "Minor league report...");</em>
-<a class="jxr_linenumber" name="L734" href="#L734">734</a> <em class="jxr_comment">        generic.setTitle("Minor Leagues");</em>
-<a class="jxr_linenumber" name="L735" href="#L735">735</a> <em class="jxr_comment">        generic.setPlayers(minorLeaguers);</em>
+<a class="jxr_linenumber" name="L727" href="#L727">727</a>             <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L728" href="#L728">728</a>         }
+<a class="jxr_linenumber" name="L729" href="#L729">729</a> 
+<a class="jxr_linenumber" name="L730" href="#L730">730</a>         LOG.log(Level.INFO, <span class="jxr_string">"League wide replacement Level..."</span>);
+<a class="jxr_linenumber" name="L731" href="#L731">731</a> 
+<a class="jxr_linenumber" name="L732" href="#L732">732</a>         <strong class="jxr_keyword">generic</strong>.setCustomValueFunction(tv.getTradeTargetValue());
+<a class="jxr_linenumber" name="L733" href="#L733">733</a> 
+<a class="jxr_linenumber" name="L734" href="#L734">734</a>         <em class="jxr_comment">/*LOG.log(Level.INFO, "Trade target report...");</em>
+<a class="jxr_linenumber" name="L735" href="#L735">735</a> <em class="jxr_comment">        generic.setTitle("Trade Targets");</em>
 <a class="jxr_linenumber" name="L736" href="#L736">736</a> <em class="jxr_comment">        generic.setLimit(50);</em>
-<a class="jxr_linenumber" name="L737" href="#L737">737</a> <em class="jxr_comment">        generic.print(out);*/</em>
-<a class="jxr_linenumber" name="L738" href="#L738">738</a> 
-<a class="jxr_linenumber" name="L739" href="#L739">739</a>         LOG.log(Level.INFO, <span class="jxr_string">"Trade Bait report..."</span>);
-<a class="jxr_linenumber" name="L740" href="#L740">740</a>         <strong class="jxr_keyword">generic</strong>.setCustomValueFunction(tv.getTradeBaitValue(site, salaryRegression));
-<a class="jxr_linenumber" name="L741" href="#L741">741</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Trade Bait"</span>);
-<a class="jxr_linenumber" name="L742" href="#L742">742</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(newRoster.getAllPlayers());
-<a class="jxr_linenumber" name="L743" href="#L743">743</a>         <strong class="jxr_keyword">generic</strong>.setLimit(200);
-<a class="jxr_linenumber" name="L744" href="#L744">744</a>         <strong class="jxr_keyword">generic</strong>.clearMultiplier();
-<a class="jxr_linenumber" name="L745" href="#L745">745</a>         <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L746" href="#L746">746</a> 
-<a class="jxr_linenumber" name="L747" href="#L747">747</a>         <strong class="jxr_keyword">generic</strong>.setCustomValueFunction(tv.getTradeTargetValue());
-<a class="jxr_linenumber" name="L748" href="#L748">748</a> 
-<a class="jxr_linenumber" name="L749" href="#L749">749</a>         Iterable&lt;Player&gt; topBait = Ordering
-<a class="jxr_linenumber" name="L750" href="#L750">750</a>             .natural()
-<a class="jxr_linenumber" name="L751" href="#L751">751</a>             .reverse()
-<a class="jxr_linenumber" name="L752" href="#L752">752</a>             .onResultOf(tv.getTradeBaitValue(site, salaryRegression))
-<a class="jxr_linenumber" name="L753" href="#L753">753</a>             .sortedCopy(newRoster.getAllPlayers());
-<a class="jxr_linenumber" name="L754" href="#L754">754</a> 
+<a class="jxr_linenumber" name="L737" href="#L737">737</a> <em class="jxr_comment">        generic.setPlayers(all);</em>
+<a class="jxr_linenumber" name="L738" href="#L738">738</a> <em class="jxr_comment">        generic.print(out);*/</em>
+<a class="jxr_linenumber" name="L739" href="#L739">739</a> 
+<a class="jxr_linenumber" name="L740" href="#L740">740</a>         <em class="jxr_comment">/*LOG.log(Level.INFO, "Minor league report...");</em>
+<a class="jxr_linenumber" name="L741" href="#L741">741</a> <em class="jxr_comment">        generic.setTitle("Minor Leagues");</em>
+<a class="jxr_linenumber" name="L742" href="#L742">742</a> <em class="jxr_comment">        generic.setPlayers(minorLeaguers);</em>
+<a class="jxr_linenumber" name="L743" href="#L743">743</a> <em class="jxr_comment">        generic.setLimit(50);</em>
+<a class="jxr_linenumber" name="L744" href="#L744">744</a> <em class="jxr_comment">        generic.print(out);*/</em>
+<a class="jxr_linenumber" name="L745" href="#L745">745</a> 
+<a class="jxr_linenumber" name="L746" href="#L746">746</a>         LOG.log(Level.INFO, <span class="jxr_string">"Trade Bait report..."</span>);
+<a class="jxr_linenumber" name="L747" href="#L747">747</a>         <strong class="jxr_keyword">generic</strong>.setCustomValueFunction(tv.getTradeBaitValue(site, salaryRegression));
+<a class="jxr_linenumber" name="L748" href="#L748">748</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Trade Bait"</span>);
+<a class="jxr_linenumber" name="L749" href="#L749">749</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(newRoster.getAllPlayers());
+<a class="jxr_linenumber" name="L750" href="#L750">750</a>         <strong class="jxr_keyword">generic</strong>.setLimit(200);
+<a class="jxr_linenumber" name="L751" href="#L751">751</a>         <strong class="jxr_keyword">generic</strong>.clearMultiplier();
+<a class="jxr_linenumber" name="L752" href="#L752">752</a>         <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L753" href="#L753">753</a> 
+<a class="jxr_linenumber" name="L754" href="#L754">754</a>         <strong class="jxr_keyword">generic</strong>.setCustomValueFunction(tv.getTradeTargetValue());
 <a class="jxr_linenumber" name="L755" href="#L755">755</a> 
-<a class="jxr_linenumber" name="L756" href="#L756">756</a>         <em class="jxr_comment">/*LOG.log(Level.INFO, "Top Trades...");</em>
-<a class="jxr_linenumber" name="L757" href="#L757">757</a> 
-<a class="jxr_linenumber" name="L758" href="#L758">758</a> <em class="jxr_comment">        int idx = 1;</em>
-<a class="jxr_linenumber" name="L759" href="#L759">759</a> <em class="jxr_comment">        for (Trade trade</em>
-<a class="jxr_linenumber" name="L760" href="#L760">760</a> <em class="jxr_comment">            : Iterables.limit(</em>
-<a class="jxr_linenumber" name="L761" href="#L761">761</a> <em class="jxr_comment">                Trade.getTopTrades(</em>
-<a class="jxr_linenumber" name="L762" href="#L762">762</a> <em class="jxr_comment">                    tv,</em>
-<a class="jxr_linenumber" name="L763" href="#L763">763</a> <em class="jxr_comment">                    site,</em>
-<a class="jxr_linenumber" name="L764" href="#L764">764</a> <em class="jxr_comment">                    salaryRegression,</em>
-<a class="jxr_linenumber" name="L765" href="#L765">765</a> <em class="jxr_comment">                    Iterables.limit(topBait, newRoster.size() / 10),</em>
-<a class="jxr_linenumber" name="L766" href="#L766">766</a> <em class="jxr_comment">                    all),</em>
-<a class="jxr_linenumber" name="L767" href="#L767">767</a> <em class="jxr_comment">                20)) {</em>
-<a class="jxr_linenumber" name="L768" href="#L768">768</a> 
-<a class="jxr_linenumber" name="L769" href="#L769">769</a> <em class="jxr_comment">            generic.setTitle("#" + idx + "-" + trade.getValue(tv, site, salaryRegression));</em>
-<a class="jxr_linenumber" name="L770" href="#L770">770</a> <em class="jxr_comment">            generic.setPlayers(trade);</em>
-<a class="jxr_linenumber" name="L771" href="#L771">771</a> <em class="jxr_comment">            generic.print(out);</em>
-<a class="jxr_linenumber" name="L772" href="#L772">772</a> <em class="jxr_comment">            idx++;</em>
-<a class="jxr_linenumber" name="L773" href="#L773">773</a> <em class="jxr_comment">        }*/</em>
-<a class="jxr_linenumber" name="L774" href="#L774">774</a> 
-<a class="jxr_linenumber" name="L775" href="#L775">775</a>         <em class="jxr_comment">/*LOG.info("Below Replacement Trades...");</em>
-<a class="jxr_linenumber" name="L776" href="#L776">776</a> <em class="jxr_comment">        ImmutableSet&lt;Player&gt; belowReplacementBait =</em>
-<a class="jxr_linenumber" name="L777" href="#L777">777</a> <em class="jxr_comment">            ImmutableSet.copyOf(</em>
-<a class="jxr_linenumber" name="L778" href="#L778">778</a> <em class="jxr_comment">                Iterables.filter(</em>
-<a class="jxr_linenumber" name="L779" href="#L779">779</a> <em class="jxr_comment">                    Iterables.limit(topBait, newRoster.size() / 10),</em>
-<a class="jxr_linenumber" name="L780" href="#L780">780</a> <em class="jxr_comment">                    new Predicate&lt;Player&gt;() {</em>
-<a class="jxr_linenumber" name="L781" href="#L781">781</a> <em class="jxr_comment">                        @Override</em>
-<a class="jxr_linenumber" name="L782" href="#L782">782</a> <em class="jxr_comment">                        public boolean apply(Player p) {</em>
-<a class="jxr_linenumber" name="L783" href="#L783">783</a> <em class="jxr_comment">                            return tv.getCurrentValueVsReplacement(p) &lt; 0</em>
-<a class="jxr_linenumber" name="L784" href="#L784">784</a> <em class="jxr_comment">                                &amp;&amp; tv.getFutureValueVsReplacement(p) &lt; 0;</em>
-<a class="jxr_linenumber" name="L785" href="#L785">785</a> <em class="jxr_comment">                        }</em>
-<a class="jxr_linenumber" name="L786" href="#L786">786</a> <em class="jxr_comment">                    }));</em>
-<a class="jxr_linenumber" name="L787" href="#L787">787</a> 
-<a class="jxr_linenumber" name="L788" href="#L788">788</a> <em class="jxr_comment">        idx = 1;</em>
-<a class="jxr_linenumber" name="L789" href="#L789">789</a> <em class="jxr_comment">        for (Trade trade</em>
-<a class="jxr_linenumber" name="L790" href="#L790">790</a> <em class="jxr_comment">            : Iterables.limit(</em>
-<a class="jxr_linenumber" name="L791" href="#L791">791</a> <em class="jxr_comment">                Trade.getTopTrades(</em>
-<a class="jxr_linenumber" name="L792" href="#L792">792</a> <em class="jxr_comment">                    tv,</em>
-<a class="jxr_linenumber" name="L793" href="#L793">793</a> <em class="jxr_comment">                    site,</em>
-<a class="jxr_linenumber" name="L794" href="#L794">794</a> <em class="jxr_comment">                    salaryRegression,</em>
-<a class="jxr_linenumber" name="L795" href="#L795">795</a> <em class="jxr_comment">                    belowReplacementBait,</em>
-<a class="jxr_linenumber" name="L796" href="#L796">796</a> <em class="jxr_comment">                    all),</em>
-<a class="jxr_linenumber" name="L797" href="#L797">797</a> <em class="jxr_comment">                20)) {</em>
-<a class="jxr_linenumber" name="L798" href="#L798">798</a> 
-<a class="jxr_linenumber" name="L799" href="#L799">799</a> <em class="jxr_comment">            generic.setTitle("BR #" + idx + "-" + trade.getValue(tv, site, salaryRegression));</em>
-<a class="jxr_linenumber" name="L800" href="#L800">800</a> <em class="jxr_comment">            generic.setPlayers(trade);</em>
-<a class="jxr_linenumber" name="L801" href="#L801">801</a> <em class="jxr_comment">            generic.print(out);</em>
-<a class="jxr_linenumber" name="L802" href="#L802">802</a> <em class="jxr_comment">            idx++;</em>
-<a class="jxr_linenumber" name="L803" href="#L803">803</a> <em class="jxr_comment">        }*/</em>
-<a class="jxr_linenumber" name="L804" href="#L804">804</a> 
-<a class="jxr_linenumber" name="L805" href="#L805">805</a>         LOG.log(Level.INFO, <span class="jxr_string">"Non Top 10 prospects..."</span>);
-<a class="jxr_linenumber" name="L806" href="#L806">806</a>         ImmutableSet&lt;Player&gt; nonTopTens =
-<a class="jxr_linenumber" name="L807" href="#L807">807</a>             ImmutableSet.copyOf(
-<a class="jxr_linenumber" name="L808" href="#L808">808</a>                 Iterables.filter(
-<a class="jxr_linenumber" name="L809" href="#L809">809</a>                     all,
-<a class="jxr_linenumber" name="L810" href="#L810">810</a>                     <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
-<a class="jxr_linenumber" name="L811" href="#L811">811</a>                         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> p) {
-<a class="jxr_linenumber" name="L812" href="#L812">812</a>                             <strong class="jxr_keyword">return</strong> !p.getTeamTopProspectPosition().isPresent()
-<a class="jxr_linenumber" name="L813" href="#L813">813</a>                                 &amp;&amp; p.getAge() &lt;= 25
-<a class="jxr_linenumber" name="L814" href="#L814">814</a>                                 &amp;&amp; site.getCurrentSalary(p) == 0;
-<a class="jxr_linenumber" name="L815" href="#L815">815</a>                         }
-<a class="jxr_linenumber" name="L816" href="#L816">816</a>                     }));
-<a class="jxr_linenumber" name="L817" href="#L817">817</a> 
-<a class="jxr_linenumber" name="L818" href="#L818">818</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Non Top prospects"</span>);
-<a class="jxr_linenumber" name="L819" href="#L819">819</a>         <strong class="jxr_keyword">generic</strong>.setMultiplier(0.91);
-<a class="jxr_linenumber" name="L820" href="#L820">820</a>         <strong class="jxr_keyword">generic</strong>.setLimit(50);
-<a class="jxr_linenumber" name="L821" href="#L821">821</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(nonTopTens);
-<a class="jxr_linenumber" name="L822" href="#L822">822</a>         <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L823" href="#L823">823</a> 
-<a class="jxr_linenumber" name="L824" href="#L824">824</a>         <em class="jxr_comment">/*idx = 1;</em>
-<a class="jxr_linenumber" name="L825" href="#L825">825</a> <em class="jxr_comment">        for (Trade trade</em>
-<a class="jxr_linenumber" name="L826" href="#L826">826</a> <em class="jxr_comment">            : Iterables.limit(</em>
-<a class="jxr_linenumber" name="L827" href="#L827">827</a> <em class="jxr_comment">                Trade.getTopTrades(</em>
-<a class="jxr_linenumber" name="L828" href="#L828">828</a> <em class="jxr_comment">                    tv,</em>
-<a class="jxr_linenumber" name="L829" href="#L829">829</a> <em class="jxr_comment">                    site,</em>
-<a class="jxr_linenumber" name="L830" href="#L830">830</a> <em class="jxr_comment">                    salaryRegression,</em>
-<a class="jxr_linenumber" name="L831" href="#L831">831</a> <em class="jxr_comment">                    belowReplacementBait,</em>
-<a class="jxr_linenumber" name="L832" href="#L832">832</a> <em class="jxr_comment">                    nonTopTens),</em>
-<a class="jxr_linenumber" name="L833" href="#L833">833</a> <em class="jxr_comment">                20)) {</em>
-<a class="jxr_linenumber" name="L834" href="#L834">834</a> 
-<a class="jxr_linenumber" name="L835" href="#L835">835</a> <em class="jxr_comment">            generic.setTitle("NTT #" + idx + "-" + trade.getValue(tv, site, salaryRegression));</em>
-<a class="jxr_linenumber" name="L836" href="#L836">836</a> <em class="jxr_comment">            generic.setPlayers(trade);</em>
-<a class="jxr_linenumber" name="L837" href="#L837">837</a> <em class="jxr_comment">            generic.print(out);</em>
-<a class="jxr_linenumber" name="L838" href="#L838">838</a> <em class="jxr_comment">            idx++;</em>
-<a class="jxr_linenumber" name="L839" href="#L839">839</a> <em class="jxr_comment">        }*/</em>
-<a class="jxr_linenumber" name="L840" href="#L840">840</a> 
+<a class="jxr_linenumber" name="L756" href="#L756">756</a>         Iterable&lt;Player&gt; topBait = Ordering
+<a class="jxr_linenumber" name="L757" href="#L757">757</a>             .natural()
+<a class="jxr_linenumber" name="L758" href="#L758">758</a>             .reverse()
+<a class="jxr_linenumber" name="L759" href="#L759">759</a>             .onResultOf(tv.getTradeBaitValue(site, salaryRegression))
+<a class="jxr_linenumber" name="L760" href="#L760">760</a>             .sortedCopy(newRoster.getAllPlayers());
+<a class="jxr_linenumber" name="L761" href="#L761">761</a> 
+<a class="jxr_linenumber" name="L762" href="#L762">762</a> 
+<a class="jxr_linenumber" name="L763" href="#L763">763</a>         <em class="jxr_comment">/*LOG.log(Level.INFO, "Top Trades...");</em>
+<a class="jxr_linenumber" name="L764" href="#L764">764</a> 
+<a class="jxr_linenumber" name="L765" href="#L765">765</a> <em class="jxr_comment">        int idx = 1;</em>
+<a class="jxr_linenumber" name="L766" href="#L766">766</a> <em class="jxr_comment">        for (Trade trade</em>
+<a class="jxr_linenumber" name="L767" href="#L767">767</a> <em class="jxr_comment">            : Iterables.limit(</em>
+<a class="jxr_linenumber" name="L768" href="#L768">768</a> <em class="jxr_comment">                Trade.getTopTrades(</em>
+<a class="jxr_linenumber" name="L769" href="#L769">769</a> <em class="jxr_comment">                    tv,</em>
+<a class="jxr_linenumber" name="L770" href="#L770">770</a> <em class="jxr_comment">                    site,</em>
+<a class="jxr_linenumber" name="L771" href="#L771">771</a> <em class="jxr_comment">                    salaryRegression,</em>
+<a class="jxr_linenumber" name="L772" href="#L772">772</a> <em class="jxr_comment">                    Iterables.limit(topBait, newRoster.size() / 10),</em>
+<a class="jxr_linenumber" name="L773" href="#L773">773</a> <em class="jxr_comment">                    all),</em>
+<a class="jxr_linenumber" name="L774" href="#L774">774</a> <em class="jxr_comment">                20)) {</em>
+<a class="jxr_linenumber" name="L775" href="#L775">775</a> 
+<a class="jxr_linenumber" name="L776" href="#L776">776</a> <em class="jxr_comment">            generic.setTitle("#" + idx + "-" + trade.getValue(tv, site, salaryRegression));</em>
+<a class="jxr_linenumber" name="L777" href="#L777">777</a> <em class="jxr_comment">            generic.setPlayers(trade);</em>
+<a class="jxr_linenumber" name="L778" href="#L778">778</a> <em class="jxr_comment">            generic.print(out);</em>
+<a class="jxr_linenumber" name="L779" href="#L779">779</a> <em class="jxr_comment">            idx++;</em>
+<a class="jxr_linenumber" name="L780" href="#L780">780</a> <em class="jxr_comment">        }*/</em>
+<a class="jxr_linenumber" name="L781" href="#L781">781</a> 
+<a class="jxr_linenumber" name="L782" href="#L782">782</a>         <em class="jxr_comment">/*LOG.info("Below Replacement Trades...");</em>
+<a class="jxr_linenumber" name="L783" href="#L783">783</a> <em class="jxr_comment">        ImmutableSet&lt;Player&gt; belowReplacementBait =</em>
+<a class="jxr_linenumber" name="L784" href="#L784">784</a> <em class="jxr_comment">            ImmutableSet.copyOf(</em>
+<a class="jxr_linenumber" name="L785" href="#L785">785</a> <em class="jxr_comment">                Iterables.filter(</em>
+<a class="jxr_linenumber" name="L786" href="#L786">786</a> <em class="jxr_comment">                    Iterables.limit(topBait, newRoster.size() / 10),</em>
+<a class="jxr_linenumber" name="L787" href="#L787">787</a> <em class="jxr_comment">                    new Predicate&lt;Player&gt;() {</em>
+<a class="jxr_linenumber" name="L788" href="#L788">788</a> <em class="jxr_comment">                        @Override</em>
+<a class="jxr_linenumber" name="L789" href="#L789">789</a> <em class="jxr_comment">                        public boolean apply(Player p) {</em>
+<a class="jxr_linenumber" name="L790" href="#L790">790</a> <em class="jxr_comment">                            return tv.getCurrentValueVsReplacement(p) &lt; 0</em>
+<a class="jxr_linenumber" name="L791" href="#L791">791</a> <em class="jxr_comment">                                &amp;&amp; tv.getFutureValueVsReplacement(p) &lt; 0;</em>
+<a class="jxr_linenumber" name="L792" href="#L792">792</a> <em class="jxr_comment">                        }</em>
+<a class="jxr_linenumber" name="L793" href="#L793">793</a> <em class="jxr_comment">                    }));</em>
+<a class="jxr_linenumber" name="L794" href="#L794">794</a> 
+<a class="jxr_linenumber" name="L795" href="#L795">795</a> <em class="jxr_comment">        idx = 1;</em>
+<a class="jxr_linenumber" name="L796" href="#L796">796</a> <em class="jxr_comment">        for (Trade trade</em>
+<a class="jxr_linenumber" name="L797" href="#L797">797</a> <em class="jxr_comment">            : Iterables.limit(</em>
+<a class="jxr_linenumber" name="L798" href="#L798">798</a> <em class="jxr_comment">                Trade.getTopTrades(</em>
+<a class="jxr_linenumber" name="L799" href="#L799">799</a> <em class="jxr_comment">                    tv,</em>
+<a class="jxr_linenumber" name="L800" href="#L800">800</a> <em class="jxr_comment">                    site,</em>
+<a class="jxr_linenumber" name="L801" href="#L801">801</a> <em class="jxr_comment">                    salaryRegression,</em>
+<a class="jxr_linenumber" name="L802" href="#L802">802</a> <em class="jxr_comment">                    belowReplacementBait,</em>
+<a class="jxr_linenumber" name="L803" href="#L803">803</a> <em class="jxr_comment">                    all),</em>
+<a class="jxr_linenumber" name="L804" href="#L804">804</a> <em class="jxr_comment">                20)) {</em>
+<a class="jxr_linenumber" name="L805" href="#L805">805</a> 
+<a class="jxr_linenumber" name="L806" href="#L806">806</a> <em class="jxr_comment">            generic.setTitle("BR #" + idx + "-" + trade.getValue(tv, site, salaryRegression));</em>
+<a class="jxr_linenumber" name="L807" href="#L807">807</a> <em class="jxr_comment">            generic.setPlayers(trade);</em>
+<a class="jxr_linenumber" name="L808" href="#L808">808</a> <em class="jxr_comment">            generic.print(out);</em>
+<a class="jxr_linenumber" name="L809" href="#L809">809</a> <em class="jxr_comment">            idx++;</em>
+<a class="jxr_linenumber" name="L810" href="#L810">810</a> <em class="jxr_comment">        }*/</em>
+<a class="jxr_linenumber" name="L811" href="#L811">811</a> 
+<a class="jxr_linenumber" name="L812" href="#L812">812</a>         LOG.log(Level.INFO, <span class="jxr_string">"Non Top 10 prospects..."</span>);
+<a class="jxr_linenumber" name="L813" href="#L813">813</a>         ImmutableSet&lt;Player&gt; nonTopTens =
+<a class="jxr_linenumber" name="L814" href="#L814">814</a>             ImmutableSet.copyOf(
+<a class="jxr_linenumber" name="L815" href="#L815">815</a>                 Iterables.filter(
+<a class="jxr_linenumber" name="L816" href="#L816">816</a>                     all,
+<a class="jxr_linenumber" name="L817" href="#L817">817</a>                     <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
+<a class="jxr_linenumber" name="L818" href="#L818">818</a>                         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> p) {
+<a class="jxr_linenumber" name="L819" href="#L819">819</a>                             <strong class="jxr_keyword">return</strong> !p.getTeamTopProspectPosition().isPresent()
+<a class="jxr_linenumber" name="L820" href="#L820">820</a>                                 &amp;&amp; p.getAge() &lt;= 25
+<a class="jxr_linenumber" name="L821" href="#L821">821</a>                                 &amp;&amp; site.getCurrentSalary(p) == 0;
+<a class="jxr_linenumber" name="L822" href="#L822">822</a>                         }
+<a class="jxr_linenumber" name="L823" href="#L823">823</a>                     }));
+<a class="jxr_linenumber" name="L824" href="#L824">824</a> 
+<a class="jxr_linenumber" name="L825" href="#L825">825</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"Non Top prospects"</span>);
+<a class="jxr_linenumber" name="L826" href="#L826">826</a>         <strong class="jxr_keyword">generic</strong>.setMultiplier(0.91);
+<a class="jxr_linenumber" name="L827" href="#L827">827</a>         <strong class="jxr_keyword">generic</strong>.setLimit(50);
+<a class="jxr_linenumber" name="L828" href="#L828">828</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(nonTopTens);
+<a class="jxr_linenumber" name="L829" href="#L829">829</a>         <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L830" href="#L830">830</a> 
+<a class="jxr_linenumber" name="L831" href="#L831">831</a>         <em class="jxr_comment">/*idx = 1;</em>
+<a class="jxr_linenumber" name="L832" href="#L832">832</a> <em class="jxr_comment">        for (Trade trade</em>
+<a class="jxr_linenumber" name="L833" href="#L833">833</a> <em class="jxr_comment">            : Iterables.limit(</em>
+<a class="jxr_linenumber" name="L834" href="#L834">834</a> <em class="jxr_comment">                Trade.getTopTrades(</em>
+<a class="jxr_linenumber" name="L835" href="#L835">835</a> <em class="jxr_comment">                    tv,</em>
+<a class="jxr_linenumber" name="L836" href="#L836">836</a> <em class="jxr_comment">                    site,</em>
+<a class="jxr_linenumber" name="L837" href="#L837">837</a> <em class="jxr_comment">                    salaryRegression,</em>
+<a class="jxr_linenumber" name="L838" href="#L838">838</a> <em class="jxr_comment">                    belowReplacementBait,</em>
+<a class="jxr_linenumber" name="L839" href="#L839">839</a> <em class="jxr_comment">                    nonTopTens),</em>
+<a class="jxr_linenumber" name="L840" href="#L840">840</a> <em class="jxr_comment">                20)) {</em>
 <a class="jxr_linenumber" name="L841" href="#L841">841</a> 
-<a class="jxr_linenumber" name="L842" href="#L842">842</a>         LOG.log(Level.INFO, <span class="jxr_string">"Minor league non-prospects..."</span>);
-<a class="jxr_linenumber" name="L843" href="#L843">843</a> 
-<a class="jxr_linenumber" name="L844" href="#L844">844</a>         ImmutableSet&lt;Player&gt; mlNonProspects =
-<a class="jxr_linenumber" name="L845" href="#L845">845</a>             ImmutableSet.copyOf(
-<a class="jxr_linenumber" name="L846" href="#L846">846</a>                 Iterables.filter(
-<a class="jxr_linenumber" name="L847" href="#L847">847</a>                     minorLeaguers,
-<a class="jxr_linenumber" name="L848" href="#L848">848</a>                     <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
-<a class="jxr_linenumber" name="L849" href="#L849">849</a>                         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> p) {
-<a class="jxr_linenumber" name="L850" href="#L850">850</a>                             <strong class="jxr_keyword">return</strong> p.getAge() &gt; 25;
-<a class="jxr_linenumber" name="L851" href="#L851">851</a>                         }
-<a class="jxr_linenumber" name="L852" href="#L852">852</a>                     }));
-<a class="jxr_linenumber" name="L853" href="#L853">853</a> 
-<a class="jxr_linenumber" name="L854" href="#L854">854</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"ML non-prospects"</span>);
-<a class="jxr_linenumber" name="L855" href="#L855">855</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(mlNonProspects);
-<a class="jxr_linenumber" name="L856" href="#L856">856</a>         <strong class="jxr_keyword">generic</strong>.print(out);
-<a class="jxr_linenumber" name="L857" href="#L857">857</a> 
-<a class="jxr_linenumber" name="L858" href="#L858">858</a>         <strong class="jxr_keyword">generic</strong>.clearMultiplier();
-<a class="jxr_linenumber" name="L859" href="#L859">859</a> 
-<a class="jxr_linenumber" name="L860" href="#L860">860</a>         <em class="jxr_comment">//LOG.log(Level.INFO, "Top Trades for non-prospect minor leaguers...");</em>
-<a class="jxr_linenumber" name="L861" href="#L861">861</a> 
-<a class="jxr_linenumber" name="L862" href="#L862">862</a>         <em class="jxr_comment">/*idx = 1;</em>
-<a class="jxr_linenumber" name="L863" href="#L863">863</a> <em class="jxr_comment">        for (Trade trade</em>
-<a class="jxr_linenumber" name="L864" href="#L864">864</a> <em class="jxr_comment">            : Iterables.limit(</em>
-<a class="jxr_linenumber" name="L865" href="#L865">865</a> <em class="jxr_comment">                Trade.getTopTrades(</em>
-<a class="jxr_linenumber" name="L866" href="#L866">866</a> <em class="jxr_comment">                    tv,</em>
-<a class="jxr_linenumber" name="L867" href="#L867">867</a> <em class="jxr_comment">                    site,</em>
-<a class="jxr_linenumber" name="L868" href="#L868">868</a> <em class="jxr_comment">                    salaryRegression,</em>
-<a class="jxr_linenumber" name="L869" href="#L869">869</a> <em class="jxr_comment">                    belowReplacementBait,</em>
-<a class="jxr_linenumber" name="L870" href="#L870">870</a> <em class="jxr_comment">                    mlNonProspects),</em>
-<a class="jxr_linenumber" name="L871" href="#L871">871</a> <em class="jxr_comment">                20)) {</em>
-<a class="jxr_linenumber" name="L872" href="#L872">872</a> 
-<a class="jxr_linenumber" name="L873" href="#L873">873</a> <em class="jxr_comment">            generic.setTitle("NP-ML #" + idx + "-" + trade.getValue(tv, site, salaryRegression));</em>
-<a class="jxr_linenumber" name="L874" href="#L874">874</a> <em class="jxr_comment">            generic.setPlayers(trade);</em>
-<a class="jxr_linenumber" name="L875" href="#L875">875</a> <em class="jxr_comment">            generic.print(out);</em>
-<a class="jxr_linenumber" name="L876" href="#L876">876</a> <em class="jxr_comment">            idx++;</em>
-<a class="jxr_linenumber" name="L877" href="#L877">877</a> <em class="jxr_comment">        }*/</em>
-<a class="jxr_linenumber" name="L878" href="#L878">878</a> 
-<a class="jxr_linenumber" name="L879" href="#L879">879</a>         LOG.log(Level.INFO, <span class="jxr_string">"Done."</span>);
-<a class="jxr_linenumber" name="L880" href="#L880">880</a>     }
-<a class="jxr_linenumber" name="L881" href="#L881">881</a> 
-<a class="jxr_linenumber" name="L882" href="#L882">882</a> }
+<a class="jxr_linenumber" name="L842" href="#L842">842</a> <em class="jxr_comment">            generic.setTitle("NTT #" + idx + "-" + trade.getValue(tv, site, salaryRegression));</em>
+<a class="jxr_linenumber" name="L843" href="#L843">843</a> <em class="jxr_comment">            generic.setPlayers(trade);</em>
+<a class="jxr_linenumber" name="L844" href="#L844">844</a> <em class="jxr_comment">            generic.print(out);</em>
+<a class="jxr_linenumber" name="L845" href="#L845">845</a> <em class="jxr_comment">            idx++;</em>
+<a class="jxr_linenumber" name="L846" href="#L846">846</a> <em class="jxr_comment">        }*/</em>
+<a class="jxr_linenumber" name="L847" href="#L847">847</a> 
+<a class="jxr_linenumber" name="L848" href="#L848">848</a> 
+<a class="jxr_linenumber" name="L849" href="#L849">849</a>         LOG.log(Level.INFO, <span class="jxr_string">"Minor league non-prospects..."</span>);
+<a class="jxr_linenumber" name="L850" href="#L850">850</a> 
+<a class="jxr_linenumber" name="L851" href="#L851">851</a>         ImmutableSet&lt;Player&gt; mlNonProspects =
+<a class="jxr_linenumber" name="L852" href="#L852">852</a>             ImmutableSet.copyOf(
+<a class="jxr_linenumber" name="L853" href="#L853">853</a>                 Iterables.filter(
+<a class="jxr_linenumber" name="L854" href="#L854">854</a>                     minorLeaguers,
+<a class="jxr_linenumber" name="L855" href="#L855">855</a>                     <strong class="jxr_keyword">new</strong> Predicate&lt;Player&gt;() {
+<a class="jxr_linenumber" name="L856" href="#L856">856</a>                         <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">boolean</strong> apply(<a href="../../../../com/ljs/ootp/ai/player/Player.html">Player</a> p) {
+<a class="jxr_linenumber" name="L857" href="#L857">857</a>                             <strong class="jxr_keyword">return</strong> p.getAge() &gt; 25;
+<a class="jxr_linenumber" name="L858" href="#L858">858</a>                         }
+<a class="jxr_linenumber" name="L859" href="#L859">859</a>                     }));
+<a class="jxr_linenumber" name="L860" href="#L860">860</a> 
+<a class="jxr_linenumber" name="L861" href="#L861">861</a>         <strong class="jxr_keyword">generic</strong>.setTitle(<span class="jxr_string">"ML non-prospects"</span>);
+<a class="jxr_linenumber" name="L862" href="#L862">862</a>         <strong class="jxr_keyword">generic</strong>.setPlayers(mlNonProspects);
+<a class="jxr_linenumber" name="L863" href="#L863">863</a>         <strong class="jxr_keyword">generic</strong>.print(out);
+<a class="jxr_linenumber" name="L864" href="#L864">864</a> 
+<a class="jxr_linenumber" name="L865" href="#L865">865</a>         <strong class="jxr_keyword">generic</strong>.clearMultiplier();
+<a class="jxr_linenumber" name="L866" href="#L866">866</a> 
+<a class="jxr_linenumber" name="L867" href="#L867">867</a>         <em class="jxr_comment">//LOG.log(Level.INFO, "Top Trades for non-prospect minor leaguers...");</em>
+<a class="jxr_linenumber" name="L868" href="#L868">868</a> 
+<a class="jxr_linenumber" name="L869" href="#L869">869</a>         <em class="jxr_comment">/*idx = 1;</em>
+<a class="jxr_linenumber" name="L870" href="#L870">870</a> <em class="jxr_comment">        for (Trade trade</em>
+<a class="jxr_linenumber" name="L871" href="#L871">871</a> <em class="jxr_comment">            : Iterables.limit(</em>
+<a class="jxr_linenumber" name="L872" href="#L872">872</a> <em class="jxr_comment">                Trade.getTopTrades(</em>
+<a class="jxr_linenumber" name="L873" href="#L873">873</a> <em class="jxr_comment">                    tv,</em>
+<a class="jxr_linenumber" name="L874" href="#L874">874</a> <em class="jxr_comment">                    site,</em>
+<a class="jxr_linenumber" name="L875" href="#L875">875</a> <em class="jxr_comment">                    salaryRegression,</em>
+<a class="jxr_linenumber" name="L876" href="#L876">876</a> <em class="jxr_comment">                    belowReplacementBait,</em>
+<a class="jxr_linenumber" name="L877" href="#L877">877</a> <em class="jxr_comment">                    mlNonProspects),</em>
+<a class="jxr_linenumber" name="L878" href="#L878">878</a> <em class="jxr_comment">                20)) {</em>
+<a class="jxr_linenumber" name="L879" href="#L879">879</a> 
+<a class="jxr_linenumber" name="L880" href="#L880">880</a> <em class="jxr_comment">            generic.setTitle("NP-ML #" + idx + "-" + trade.getValue(tv, site, salaryRegression));</em>
+<a class="jxr_linenumber" name="L881" href="#L881">881</a> <em class="jxr_comment">            generic.setPlayers(trade);</em>
+<a class="jxr_linenumber" name="L882" href="#L882">882</a> <em class="jxr_comment">            generic.print(out);</em>
+<a class="jxr_linenumber" name="L883" href="#L883">883</a> <em class="jxr_comment">            idx++;</em>
+<a class="jxr_linenumber" name="L884" href="#L884">884</a> <em class="jxr_comment">        }*/</em>
+<a class="jxr_linenumber" name="L885" href="#L885">885</a> 
+<a class="jxr_linenumber" name="L886" href="#L886">886</a>         LOG.log(Level.INFO, <span class="jxr_string">"Done."</span>);
+<a class="jxr_linenumber" name="L887" href="#L887">887</a>     }
+<a class="jxr_linenumber" name="L888" href="#L888">888</a> 
+<a class="jxr_linenumber" name="L889" href="#L889">889</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015. All rights reserved.</div>
