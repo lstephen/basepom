@@ -75,6 +75,13 @@ ootp-ai,com.ljs.ootp.ai.ootp5.site,LeagueBatting,242,0,8,0,49,0,12,0,8,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,BoxScores,119,0,10,0,28,0,10,0,5,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,SalaryImpl,394,0,36,0,73,0,26,0,8,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,TeamRatings,106,0,6,0,21,0,6,0,3,0
+ootp-ai,com.ljs.ootp.extract.html,Pages.new Callable() {...},10,0,0,0,2,0,2,0,2,0
+ootp-ai,com.ljs.ootp.extract.html,Documents,38,0,0,0,13,0,3,0,3,0
+ootp-ai,com.ljs.ootp.extract.html,UrlLoadingPage.new UrlLoadingPage.Loading() {...},14,0,0,0,2,0,2,0,2,0
+ootp-ai,com.ljs.ootp.extract.html,Pages,8,0,0,0,2,0,2,0,2,0
+ootp-ai,com.ljs.ootp.extract.html,UrlLoadingPage,23,0,0,0,7,0,4,0,4,0
+ootp-ai,com.ljs.ootp.extract.html,Documents.new Callable() {...},59,0,8,0,5,0,6,0,2,0
+ootp-ai,com.ljs.ootp.extract.html,PageFactory,34,0,0,0,9,0,5,0,5,0
 ootp-ai,com.ljs.ootp.ai.selection.bench,BenchScorer,195,0,19,0,40,0,17,0,6,0
 ootp-ai,com.ljs.ootp.ai.selection.bench,BenchScorer.new Function() {...},19,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.bench,Bench.Remove,11,0,0,0,4,0,2,0,2,0
@@ -99,6 +106,9 @@ ootp-ai,com.ljs.ootp.ai.roster,Changes,183,0,24,0,51,0,19,0,6,0
 ootp-ai,com.ljs.ootp.ai.roster,FourtyManRoster.new Predicate() {...},36,0,8,0,5,0,6,0,2,0
 ootp-ai,com.ljs.ootp.ai.roster,Changes.ChangeType,126,0,4,0,9,0,7,0,5,0
 ootp-ai,com.ljs.ootp.ai.roster,FourtyManRoster.new Predicate() {...},40,0,8,0,4,0,6,0,2,0
+ootp-ai,com.ljs.ootp.extract.html.ootp6.rating,OneToTen,22,0,0,0,6,0,5,0,5,0
+ootp-ai,com.ljs.ootp.extract.html.ootp6.rating,OneToTwenty,16,0,0,0,5,0,4,0,4,0
+ootp-ai,com.ljs.ootp.extract.html.ootp6.rating,TwoToEight,23,0,0,0,5,0,4,0,4,0
 ootp-ai,com.ljs.ootp.ai.regression,BattingRegression,658,0,36,0,128,0,38,0,20,0
 ootp-ai,com.ljs.ootp.ai.regression,BattingRegression.CorrelationReport,90,0,2,0,17,0,5,0,4,0
 ootp-ai,com.ljs.ootp.ai.regression,PitchingRegression.new Object() {...},58,0,0,0,2,0,1,0,1,0
@@ -124,6 +134,17 @@ ootp-ai,com.ljs.ootp.ai.player.ratings,FieldingRatings.Weighting,45,52,0,0,8,17,
 ootp-ai,com.ljs.ootp.ai.player.ratings,PlayerRatings,774,41,13,1,101,14,21,6,14,6
 ootp-ai,com.ljs.ootp.ai.player.ratings,StarRating.Type,9,29,0,0,0,1,2,2,2,2
 ootp-ai,com.ljs.ootp.ai.player.ratings,Position,5,129,0,0,0,15,1,4,1,4
+ootp-ai,com.ljs.ootp.extract.html.ootp5.rating,ZeroToTen,6,10,0,0,1,4,1,3,1,3
+ootp-ai,com.ljs.ootp.extract.html.ootp5.rating,PotentialRating.RatingScale,4,11,0,0,1,3,1,3,1,3
+ootp-ai,com.ljs.ootp.extract.html.ootp5.rating,PotentialRating,0,95,0,0,0,10,0,7,0,7
+ootp-ai,com.ljs.ootp.extract.html.loader,PageLoaderBuilder,37,0,0,0,10,0,6,0,6,0
+ootp-ai,com.ljs.ootp.extract.html.loader,JsoupLoader,6,0,0,0,2,0,2,0,2,0
+ootp-ai,com.ljs.ootp.extract.html.loader,DiskCachingLoader,29,0,0,0,7,0,4,0,4,0
+ootp-ai,com.ljs.ootp.extract.html.loader,DiskCachingLoader.DiskCache,105,0,4,0,36,0,9,0,7,0
+ootp-ai,com.ljs.ootp.extract.html.loader,InMemoryCachedLoader.new CacheLoader() {...},14,0,0,0,2,0,2,0,2,0
+ootp-ai,com.ljs.ootp.extract.html.loader,PageLoaders.new Callable() {...},15,0,0,0,2,0,2,0,2,0
+ootp-ai,com.ljs.ootp.extract.html.loader,InMemoryCachedLoader,38,0,0,0,12,0,4,0,4,0
+ootp-ai,com.ljs.ootp.extract.html.loader,PageLoaders,9,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.ootp5.report,PowerRankingsReport,241,0,6,0,52,0,10,0,7,0
 ootp-ai,com.ljs.ootp.ai.ootp5.report,SpringTraining.HitterSkills,58,0,0,0,1,0,4,0,4,0
 ootp-ai,com.ljs.ootp.ai.ootp5.report,SpringTraining,389,0,48,0,76,0,33,0,9,0
@@ -190,6 +211,9 @@ ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},18,0,2,0,2,0,3,0,2,0
 ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},14,0,2,0,2,0,3,0,2,0
 ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},27,0,6,0,4,0,5,0,2,0
 ootp-ai,com.ljs.ootp.ai.player.ratings.json,BattingPotentialSerializer,10,0,0,0,5,0,3,0,3,0
+ootp-ai,com.ljs.ootp.extract.html.rating,OneToOneHundred,16,0,0,0,6,0,5,0,5,0
+ootp-ai,com.ljs.ootp.extract.html.rating,Rating,98,25,11,1,20,8,11,2,5,2
+ootp-ai,com.ljs.ootp.extract.html.rating,IntegerScale,5,9,0,0,1,2,1,2,1,2
 ootp-ai,com.ljs.ootp.ai.ootp5,SiteImpl.new Predicate() {...},11,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.ootp5,SiteImpl.new Function() {...},11,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.ootp5,SiteImpl,393,0,14,0,88,0,57,0,50,0

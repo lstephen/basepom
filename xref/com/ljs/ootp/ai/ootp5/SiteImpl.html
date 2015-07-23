@@ -138,14 +138,14 @@
 <a class="jxr_linenumber" name="L130" href="#L130">130</a>   }
 <a class="jxr_linenumber" name="L131" href="#L131">131</a> 
 <a class="jxr_linenumber" name="L132" href="#L132">132</a>   @Override
-<a class="jxr_linenumber" name="L133" href="#L133">133</a>   <strong class="jxr_keyword">public</strong> Page getPage(String url, Object... args) {
-<a class="jxr_linenumber" name="L134" href="#L134">134</a>     PageLoader loader = PageLoaderBuilder
+<a class="jxr_linenumber" name="L133" href="#L133">133</a>   <strong class="jxr_keyword">public</strong> <a href="../../../../../com/ljs/ootp/extract/html/Page.html">Page</a> getPage(String url, Object... args) {
+<a class="jxr_linenumber" name="L134" href="#L134">134</a>     <a href="../../../../../com/ljs/ootp/extract/html/loader/PageLoader.html">PageLoader</a> loader = <a href="../../../../../com/ljs/ootp/extract/html/loader/PageLoaderBuilder.html">PageLoaderBuilder</a>
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>       .create()
 <a class="jxr_linenumber" name="L136" href="#L136">136</a>       .diskCache(getCacheDirectory())
 <a class="jxr_linenumber" name="L137" href="#L137">137</a>       .inMemoryCache()
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>       .build();
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> 
-<a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">return</strong> PageFactory
+<a class="jxr_linenumber" name="L140" href="#L140">140</a>     <strong class="jxr_keyword">return</strong> <a href="../../../../../com/ljs/ootp/extract/html/PageFactory.html">PageFactory</a>
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>       .create(loader)
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>       .getPage(definition.getSiteRoot(), String.format(url, args));
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>   }
