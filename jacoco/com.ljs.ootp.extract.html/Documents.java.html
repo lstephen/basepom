@@ -23,10 +23,10 @@ import org.jsoup.nodes.Document;
  */
 public final class Documents {
 
-<span class="nc" id="L26">    private static final Integer NUMBER_OF_RETRIES = 3;</span>
+<span class="fc" id="L26">    private static final Integer NUMBER_OF_RETRIES = 3;</span>
 
-<span class="nc" id="L28">    private static final Logger LOGGER =</span>
-<span class="nc" id="L29">        Logger.getLogger(Documents.class.getName());</span>
+<span class="fc" id="L28">    private static final Logger LOGGER =</span>
+<span class="fc" id="L29">        Logger.getLogger(Documents.class.getName());</span>
 
 <span class="nc" id="L31">    private Documents() { }</span>
 
@@ -47,13 +47,21 @@ public final class Documents {
 <span class="nc" id="L47">                    try (</span>
 <span class="nc" id="L48">                        InputStream in = new URL(url).openStream()) {</span>
 
-<span class="nc" id="L50">                        return Jsoup.parse(in, Charsets.ISO_8859_1.name(), &quot;&quot;);</span>
+<span class="nc" id="L50">                      return load(in);</span>
 <span class="nc bnc" id="L51" title="All 8 branches missed.">                    }</span>
                 }
             });
 <span class="nc" id="L54">        } catch (RetryException | ExecutionException e) {</span>
 <span class="nc" id="L55">            throw Throwables.propagate(e);</span>
         }
+    }
+
+    public static Document load(InputStream is) throws IOException {
+<span class="fc" id="L60">      Document doc = Jsoup.parse(is, Charsets.ISO_8859_1.name(), &quot;&quot;);</span>
+
+<span class="fc" id="L62">      doc.outputSettings().syntax(Document.OutputSettings.Syntax.xml);</span>
+
+<span class="fc" id="L64">      return doc;</span>
     }
 
 }

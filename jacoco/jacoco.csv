@@ -23,13 +23,12 @@ ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.Move,22,0,0,0,6,0,2
 ootp-ai,com.ljs.ootp.ai.selection.rotation,Rotation.new Object() {...},51,0,0,0,2,0,1,0,1,0
 ootp-ai,com.ljs.ootp.ai.selection.rotation,Rotation,1002,0,90,0,152,0,64,0,17,0
 ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.Substitute,16,0,0,0,5,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new Validator() {...},30,0,4,0,2,0,4,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new Function() {...},15,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new Function() {...},40,0,2,0,6,0,3,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new ActionGenerator() {...},163,0,16,0,30,0,13,0,5,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new Callable() {...},188,0,16,0,38,0,10,0,2,0
+ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new Supplier() {...},188,0,16,0,38,0,10,0,2,0
+ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new Function() {...},15,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new Object() {...},33,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection,217,0,10,0,48,0,16,0,10,0
+ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new ActionGenerator() {...},176,0,16,0,30,0,13,0,5,0
+ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection,238,0,14,0,49,0,19,0,11,0
 ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.RotationDefinition,37,0,0,0,12,0,6,0,6,0
 ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.Swap,16,0,0,0,5,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.rotation,Rotation.BullpenOption,48,0,0,0,1,0,4,0,4,0
@@ -54,44 +53,44 @@ ootp-ai,com.ljs.ootp.ai.selection,PitcherSelectionFactory.new Function() {...},2
 ootp-ai,com.ljs.ootp.ai.ootp5.site,PlayerPage.BattingRatingsType,9,59,0,0,0,1,2,2,2,2
 ootp-ai,com.ljs.ootp.ai.ootp5.site,LeagueStructureImpl.new LeagueStructure.League() {...},18,0,0,0,3,0,3,0,3,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,LeagueStructureImpl.new LeagueStructure.Division() {...},23,0,0,0,3,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,PlayerPage,22,194,4,3,5,52,6,6,2,6
+ootp-ai,com.ljs.ootp.ai.ootp5.site,PlayerPage,23,199,4,3,5,52,6,6,2,6
 ootp-ai,com.ljs.ootp.ai.ootp5.site,PlayerList,95,0,2,0,20,0,11,0,10,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,SingleTeamImpl,244,0,16,0,51,0,14,0,6,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,PlayerPage.new Object() {...},2,17,0,0,0,1,0,1,0,1
-ootp-ai,com.ljs.ootp.ai.ootp5.site,TopProspects,70,0,4,0,12,0,6,0,4,0
+ootp-ai,com.ljs.ootp.ai.ootp5.site,TopProspects,71,0,4,0,12,0,6,0,4,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,SinglePlayer.PitchingRatingsType,9,69,0,0,0,1,2,2,2,2
 ootp-ai,com.ljs.ootp.ai.ootp5.site,LeagueStructureImpl,161,0,10,0,37,0,11,0,6,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,MinorLeagues,138,0,6,0,29,0,8,0,5,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,StandingsImpl,74,0,0,0,11,0,5,0,5,0
+ootp-ai,com.ljs.ootp.ai.ootp5.site,StandingsImpl,76,0,0,0,11,0,5,0,5,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,SinglePlayer.BattingRatingsType,58,0,0,0,1,0,4,0,4,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,TeamBattingImpl,103,0,0,0,19,0,5,0,5,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,SingleTeamStats,149,0,10,0,35,0,11,0,6,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,SinglePlayer,458,899,78,47,85,175,66,27,5,19
+ootp-ai,com.ljs.ootp.ai.ootp5.site,SingleTeamStats,150,0,10,0,35,0,11,0,6,0
+ootp-ai,com.ljs.ootp.ai.ootp5.site,SinglePlayer,466,899,78,47,85,175,66,27,5,19
 ootp-ai,com.ljs.ootp.ai.ootp5.site,TeamPitchingImpl,103,0,0,0,19,0,5,0,5,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,SinglePlayer.new Object() {...},2,17,0,0,0,1,0,1,0,1
 ootp-ai,com.ljs.ootp.ai.ootp5.site,Pages,9,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,LeaguePitching,259,0,8,0,52,0,13,0,9,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,LeagueBatting,242,0,8,0,49,0,12,0,8,0
+ootp-ai,com.ljs.ootp.ai.ootp5.site,LeaguePitching,261,0,8,0,52,0,13,0,9,0
+ootp-ai,com.ljs.ootp.ai.ootp5.site,LeagueBatting,243,0,8,0,49,0,12,0,8,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,BoxScores,119,0,10,0,28,0,10,0,5,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,SalaryImpl,394,0,36,0,73,0,26,0,8,0
+ootp-ai,com.ljs.ootp.ai.ootp5.site,SalaryImpl,404,0,36,0,73,0,26,0,8,0
 ootp-ai,com.ljs.ootp.ai.ootp5.site,TeamRatings,106,0,6,0,21,0,6,0,3,0
 ootp-ai,com.ljs.ootp.extract.html,Pages.new Callable() {...},10,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.extract.html,Documents,38,0,0,0,13,0,3,0,3,0
+ootp-ai,com.ljs.ootp.extract.html,Documents,30,21,0,0,10,6,2,2,2,2
 ootp-ai,com.ljs.ootp.extract.html,UrlLoadingPage.new UrlLoadingPage.Loading() {...},14,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.extract.html,Pages,8,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.extract.html,UrlLoadingPage,23,0,0,0,7,0,4,0,4,0
-ootp-ai,com.ljs.ootp.extract.html,Documents.new Callable() {...},59,0,8,0,5,0,6,0,2,0
+ootp-ai,com.ljs.ootp.extract.html,Documents.new Callable() {...},56,0,8,0,5,0,6,0,2,0
 ootp-ai,com.ljs.ootp.extract.html,PageFactory,34,0,0,0,9,0,5,0,5,0
 ootp-ai,com.ljs.ootp.ai.selection.bench,BenchScorer,195,0,19,0,40,0,17,0,6,0
 ootp-ai,com.ljs.ootp.ai.selection.bench,BenchScorer.new Function() {...},19,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.bench,Bench.Remove,11,0,0,0,4,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.bench,Bench,510,0,12,0,91,0,34,0,28,0
+ootp-ai,com.ljs.ootp.ai.selection.bench,Bench,501,0,12,0,88,0,34,0,28,0
 ootp-ai,com.ljs.ootp.ai.selection.bench,Bench.new Function() {...},15,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.bench,Bench.Add,11,0,0,0,4,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.bench,BenchScorer.new Object() {...},54,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.selection.bench,Bench.new Callable() {...},53,0,0,0,7,0,2,0,2,0
+ootp-ai,com.ljs.ootp.ai.selection.bench,Bench.new Supplier() {...},53,0,0,0,7,0,2,0,2,0
 ootp-ai,com.ljs.scratch.util,Wrapped,33,12,6,0,6,5,6,2,3,2
-ootp-ai,com.ljs.scratch.util,ElementsUtil,15,0,0,0,3,0,3,0,3,0
+ootp-ai,com.ljs.scratch.util,ElementsUtil,17,0,0,0,3,0,3,0,3,0
 ootp-ai,com.ljs.scratch.util,Jackson,43,0,0,0,15,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.roster,Team,188,0,22,0,45,0,23,0,12,0
 ootp-ai,com.ljs.ootp.ai.roster,Changes.new Object() {...},47,0,0,0,1,0,1,0,1,0
@@ -165,14 +164,14 @@ ootp-ai,com.ljs.ootp.ai.player,PlayerId,4,4,0,0,1,2,1,1,1,1
 ootp-ai,com.ljs.ootp.ai.player,Clutch,29,65,4,2,4,8,5,3,2,3
 ootp-ai,com.ljs.ootp.ai.player,Player,477,74,58,0,106,30,80,11,50,11
 ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup.Entry,55,0,4,0,12,0,8,0,6,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering,942,0,30,0,71,0,27,0,11,0
+ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering,943,0,30,0,72,0,27,0,11,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.RandomGenerator,14,0,0,0,5,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.Order,47,0,4,0,12,0,8,0,6,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.Swap,16,0,0,0,5,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup.VsHand.new Lineup.VsHand() {...},19,0,0,0,4,0,4,0,4,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup.VsHand.new Lineup.VsHand() {...},32,0,0,0,6,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.new Validator() {...},41,0,6,0,7,0,5,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.new ActionGenerator() {...},72,0,6,0,13,0,5,0,2,0
+ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.new Validator() {...},39,0,6,0,7,0,5,0,2,0
+ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.new ActionGenerator() {...},75,0,6,0,12,0,5,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.new Function() {...},19,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,All,65,0,0,0,19,0,8,0,8,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.new Function() {...},48,0,2,0,8,0,3,0,2,0
@@ -180,19 +179,18 @@ ootp-ai,com.ljs.ootp.ai.selection.lineup,AllLineups,189,0,10,0,36,0,16,0,11,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.new Function() {...},65,0,0,0,9,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.new Object() {...},37,0,0,0,2,0,1,0,1,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,All.Builder,30,0,0,0,11,0,7,0,7,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection,222,0,20,0,57,0,21,0,11,0
+ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection,223,0,20,0,58,0,21,0,11,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.Swap,22,0,0,0,7,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup.new Function() {...},12,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,Defense.new Object() {...},54,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,Defense.new Callable() {...},69,0,4,0,8,0,4,0,2,0
+ootp-ai,com.ljs.ootp.ai.selection.lineup,Defense.new Supplier() {...},69,0,4,0,8,0,4,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup,142,0,10,0,26,0,14,0,9,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,DefenseSelection,88,0,6,0,21,0,9,0,6,0
+ootp-ai,com.ljs.ootp.ai.selection.lineup,DefenseSelection,92,0,6,0,22,0,10,0,7,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,Defense,418,0,33,0,76,0,39,0,21,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup.VsHand,38,0,0,0,3,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,DefenseSelection.new ActionGenerator() {...},16,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupSelection,109,0,4,0,29,0,8,0,6,0
 ootp-ai,com.ljs.ootp.ai.selection.lineup,DefenseSelection.Swap,16,0,0,0,5,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.OrderActions,36,0,4,0,6,0,4,0,2,0
+ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.OrderActions,37,0,4,0,6,0,4,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChart.Backup.new Function() {...},25,0,0,0,5,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChartSelection,444,0,44,0,88,0,34,0,11,0
 ootp-ai,com.ljs.ootp.ai.selection.depthchart,AllDepthCharts,61,0,0,0,19,0,3,0,3,0
@@ -249,7 +247,7 @@ ootp-ai,com.ljs.ootp.ai.elo,EloRatings,153,0,6,0,21,0,10,0,7,0
 ootp-ai,com.ljs.ootp.ai.elo,GameResult,74,0,0,0,21,0,8,0,8,0
 ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Object() {...},37,0,0,0,2,0,1,0,1,0
 ootp-ai,com.ljs.ootp.ai.value,FreeAgentAcquisition.ChangeRelease,11,0,0,0,4,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,FreeAgentAcquisition,266,0,16,0,55,0,21,0,13,0
+ootp-ai,com.ljs.ootp.ai.value,FreeAgentAcquisition,269,0,16,0,54,0,22,0,14,0
 ootp-ai,com.ljs.ootp.ai.value,TradeValue,235,0,4,0,44,0,18,0,16,0
 ootp-ai,com.ljs.ootp.ai.value,PlayerValue,248,0,18,0,45,0,22,0,12,0
 ootp-ai,com.ljs.ootp.ai.value,ReplacementValue.new Function() {...},60,0,8,0,6,0,6,0,2,0
@@ -269,6 +267,5 @@ ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2
 ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,FreeAgentAcquisition.new Callable() {...},34,0,0,0,6,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,FreeAgentAcquisition.new ActionGenerator() {...},9,0,0,0,2,0,2,0,2,0
+ootp-ai,com.ljs.ootp.ai.value,FreeAgentAcquisition.new Supplier() {...},34,0,0,0,6,0,2,0,2,0
 ootp-ai,com.ljs.ootp.ai.value,ReplacementValue,168,0,13,0,36,0,11,0,4,0
