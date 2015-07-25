@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>PowerRankingsReport.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.ootp5.report</a> &gt; <span class="el_source">PowerRankingsReport.java</span></div><h1>PowerRankingsReport.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.ootp5.report;
+
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Multiset;
+import com.google.common.collect.Ordering;
+import com.github.lstephen.ootp.ai.data.Id;
+import com.github.lstephen.ootp.ai.elo.EloRatings;
+import com.github.lstephen.ootp.ai.elo.GameResult;
+import com.github.lstephen.ootp.ai.io.Printable;
+import com.github.lstephen.ootp.ai.ootp5.site.BoxScores;
+import com.github.lstephen.ootp.ai.roster.Team;
+import com.github.lstephen.ootp.ai.site.Record;
+import com.github.lstephen.ootp.ai.site.RecordPredictor;
+import com.github.lstephen.ootp.ai.site.Site;
+import java.io.PrintWriter;
+import org.apache.commons.lang3.StringUtils;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class PowerRankingsReport implements Printable {
+
+  private final Site site;
+
+  private final RecordPredictor recordPredictor;
+
+<span class="nc" id="L29">  private final EloRatings ratings = EloRatings.create();</span>
+
+<span class="nc" id="L31">  private final Multiset&lt;Id&lt;Team&gt;&gt; wins = HashMultiset.create();</span>
+
+<span class="nc" id="L33">  private final Multiset&lt;Id&lt;Team&gt;&gt; losses = HashMultiset.create();</span>
+
+<span class="nc" id="L35">  private PowerRankingsReport(Site site, RecordPredictor recordPredictor) {</span>
+<span class="nc" id="L36">    this.site = site;</span>
+<span class="nc" id="L37">    this.recordPredictor = recordPredictor;</span>
+<span class="nc" id="L38">  }</span>
+
+  @Override
+  public void print(PrintWriter w) {
+<span class="nc" id="L42">    w.println();</span>
+
+<span class="nc" id="L44">    populateInitialRatings();</span>
+
+<span class="nc" id="L46">    BoxScores scores = BoxScores.create(site);</span>
+
+
+<span class="nc" id="L49">    Integer numberOfResults = Iterables.size(scores.getResults());</span>
+
+<span class="nc" id="L51">    Double resultsPerTeam = (double) numberOfResults / Iterables.size(site.getTeamIds());</span>
+
+<span class="nc" id="L53">    ratings.setKFactor((162.0 / resultsPerTeam) / 2);</span>
+
+<span class="nc" id="L55">    scores.getResults().forEach(this::updateRating);</span>
+
+    Iterable&lt;Id&lt;Team&gt;&gt; ids = Ordering
+<span class="nc" id="L58">      .natural()</span>
+<span class="nc" id="L59">      .reverse()</span>
+<span class="nc" id="L60">      .onResultOf(ratings::get)</span>
+<span class="nc" id="L61">      .sortedCopy(site.getTeamIds());</span>
+
+<span class="nc" id="L63">    w.println(&quot;** Power Rankings **&quot;);</span>
+
+<span class="nc" id="L65">    ids.forEach(id -&gt; {</span>
+<span class="nc" id="L66">      Record current = site.getStandings().getRecord(id);</span>
+
+<span class="nc" id="L68">      w.println(</span>
+<span class="nc" id="L69">        String.format(</span>
+          &quot;%-20s | %3d-%3d %.3f | %2d-%2d | %4d &quot;,
+<span class="nc" id="L71">          StringUtils.abbreviate(site.getSingleTeam(id).getName(), 20),</span>
+<span class="nc" id="L72">          current.getWins(),</span>
+<span class="nc" id="L73">          current.getLosses(),</span>
+<span class="nc" id="L74">          current.getWinPercentage(),</span>
+<span class="nc" id="L75">          wins.count(id),</span>
+<span class="nc" id="L76">          losses.count(id),</span>
+<span class="nc" id="L77">          ratings.get(id)</span>
+          ));
+
+<span class="nc" id="L80">    });</span>
+<span class="nc" id="L81">  }</span>
+
+  private void updateRating(GameResult result) {
+<span class="nc" id="L84">    Id&lt;Team&gt; visitor = result.getVisitor();</span>
+<span class="nc" id="L85">    Id&lt;Team&gt; home = result.getHome();</span>
+
+<span class="nc bnc" id="L87" title="All 4 branches missed.">    if (site.getStandings().getRecord(visitor).getGames() == 0 &amp;&amp; site.getStandings().getRecord(home).getGames() == 0) {</span>
+<span class="nc" id="L88">      return;</span>
+    }
+
+<span class="nc bnc" id="L91" title="All 2 branches missed.">    if (result.getVisitorScore() &gt; result.getHomeScore()) {</span>
+<span class="nc" id="L92">      wins.add(visitor);</span>
+<span class="nc" id="L93">      losses.add(home);</span>
+    } else {
+<span class="nc" id="L95">      wins.add(home);</span>
+<span class="nc" id="L96">      losses.add(visitor);</span>
+    }
+
+<span class="nc" id="L99">    ratings.update(result);</span>
+<span class="nc" id="L100">  }</span>
+
+  private void populateInitialRatings() {
+<span class="nc" id="L103">    site.getTeamIds().forEach(team -&gt; {</span>
+<span class="nc" id="L104">      Double we = recordPredictor.getExpectedEndOfSeason(team).getWinPercentage();</span>
+
+<span class="nc" id="L106">      Long elo = 1500 + Math.round(</span>
+<span class="nc" id="L107">        (400 * Math.log(-we / (we-1)))</span>
+<span class="nc" id="L108">        / Math.log(10));</span>
+
+<span class="nc" id="L110">      ratings.setRating(team, elo);</span>
+<span class="nc" id="L111">    });</span>
+<span class="nc" id="L112">  }</span>
+
+  public static PowerRankingsReport create(Site site, RecordPredictor recordPredictor) {
+<span class="nc" id="L115">    return new PowerRankingsReport(site, recordPredictor);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

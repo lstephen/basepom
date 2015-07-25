@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Woba.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.stats</a> &gt; <span class="el_source">Woba.java</span></div><h1>Woba.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.stats;
+
+import com.google.common.collect.Maps;
+import java.util.EnumMap;
+import java.util.Map;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class Woba {
+
+<span class="fc" id="L13">    private static final Woba INSTANCE = new Woba();</span>
+
+<span class="pc" id="L15">    public static enum Event { SINGLE, DOUBLE, TRIPLE, HOME_RUN, WALK }</span>
+
+<span class="fc" id="L17">    private EnumMap&lt;Event, Double&gt; constants = Maps.newEnumMap(Event.class);</span>
+
+<span class="fc" id="L19">    private Woba() { }</span>
+
+
+    public Double calculate(BattingStats stats) {
+<span class="nc" id="L23">        return (constants.get(Event.WALK) * stats.getWalks()</span>
+<span class="nc" id="L24">            + constants.get(Event.SINGLE) * stats.getSingles()</span>
+<span class="nc" id="L25">            + constants.get(Event.DOUBLE) * stats.getDoubles()</span>
+<span class="nc" id="L26">            + constants.get(Event.TRIPLE) * stats.getTriples()</span>
+<span class="nc" id="L27">            + constants.get(Event.HOME_RUN) * stats.getHomeRuns())</span>
+<span class="nc" id="L28">            / stats.getPlateAppearances();</span>
+    }
+
+    public Double calculate(PitchingStats stats) {
+<span class="nc" id="L32">        return (constants.get(Event.WALK) * stats.getWalks()</span>
+<span class="nc" id="L33">            + constants.get(Event.SINGLE) * stats.getSingles()</span>
+<span class="nc" id="L34">            + constants.get(Event.DOUBLE) * stats.getDoubles()</span>
+<span class="nc" id="L35">            + constants.get(Event.TRIPLE) * stats.getTriples()</span>
+<span class="nc" id="L36">            + constants.get(Event.HOME_RUN) * stats.getHomeRuns())</span>
+<span class="nc" id="L37">            / stats.getPlateAppearances();</span>
+    }
+
+    public static Woba get() {
+<span class="fc" id="L41">        return INSTANCE;</span>
+    }
+
+    public static void setConstants(Map&lt;Event, Double&gt; constants) {
+<span class="fc" id="L45">        get().constants = Maps.newEnumMap(constants);</span>
+<span class="fc" id="L46">    }</span>
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

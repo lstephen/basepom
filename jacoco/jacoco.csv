@@ -1,271 +1,271 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-ootp-ai,com.ljs.ootp.ai.splits,Splits,18,15,0,0,6,5,3,2,3,2
-ootp-ai,com.ljs.ootp.ai.stats,EraBaseRuns,122,18,0,0,16,7,1,5,1,5
-ootp-ai,com.ljs.ootp.ai.stats,PitchingStats,372,36,8,0,56,8,39,8,35,8
-ootp-ai,com.ljs.ootp.ai.stats,FipBaseRuns,0,168,0,0,0,24,0,6,0,6
-ootp-ai,com.ljs.ootp.ai.stats,SplitPercentages,286,0,12,0,55,0,18,0,12,0
-ootp-ai,com.ljs.ootp.ai.stats,PitcherOverall.new Object() {...},19,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.stats,PitcherOverall.new Function() {...},69,0,3,0,13,0,4,0,2,0
-ootp-ai,com.ljs.ootp.ai.stats,PitcherOverall.new PitcherOverall() {...},22,6,0,0,4,1,4,1,4,1
-ootp-ai,com.ljs.ootp.ai.stats,PitcherOverall.new PitcherOverall() {...},18,10,0,0,3,2,3,2,3,2
-ootp-ai,com.ljs.ootp.ai.stats,BattingStats,313,180,12,4,44,33,34,21,26,21
-ootp-ai,com.ljs.ootp.ai.stats,Woba,120,19,0,0,12,6,2,4,2,4
-ootp-ai,com.ljs.ootp.ai.stats,Woba.Event,5,63,0,0,0,1,1,3,1,3
-ootp-ai,com.ljs.ootp.ai.stats,History,180,0,8,0,42,0,16,0,12,0
-ootp-ai,com.ljs.ootp.ai.stats,TeamStats,102,0,2,0,20,0,9,0,8,0
-ootp-ai,com.ljs.ootp.ai.stats,PitcherOverall,23,29,0,0,4,4,4,2,4,2
-ootp-ai,com.ljs.ootp.ai.stats,SplitPercentagesHolder,8,0,0,0,4,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.stats,SplitStats,23,0,0,0,6,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.stats,BaseRuns,0,22,0,0,0,7,0,1,0,1
-ootp-ai,com.ljs.ootp.ai.config,Config,79,0,10,0,15,0,10,0,5,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,Rotation.Role,68,0,0,0,1,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.Move,22,0,0,0,6,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,Rotation.new Object() {...},51,0,0,0,2,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,Rotation,1002,0,90,0,152,0,64,0,17,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.Substitute,16,0,0,0,5,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new Function() {...},40,0,2,0,6,0,3,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new Supplier() {...},188,0,16,0,38,0,10,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new Function() {...},15,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new Object() {...},33,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.new ActionGenerator() {...},176,0,16,0,30,0,13,0,5,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection,238,0,14,0,49,0,19,0,11,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.RotationDefinition,37,0,0,0,12,0,6,0,6,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,RotationSelection.Swap,16,0,0,0,5,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.rotation,Rotation.BullpenOption,48,0,0,0,1,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.site,Version,5,33,0,0,0,2,1,3,1,3
-ootp-ai,com.ljs.ootp.ai.site,SiteHolder,8,0,0,0,4,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.site,Record,51,0,2,0,9,0,7,0,6,0
-ootp-ai,com.ljs.ootp.ai.selection,Mode.new Mode() {...},29,0,0,0,9,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.selection,Mode.new Mode() {...},40,0,0,0,11,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.selection,Mode.new Mode() {...},79,0,0,0,3,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.selection,Mode.new Mode() {...},13,0,0,0,3,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.selection,PitcherSelectionFactory,79,0,0,0,24,0,10,0,10,0
-ootp-ai,com.ljs.ootp.ai.selection,BestStartersSelection,555,0,28,0,97,0,27,0,13,0
-ootp-ai,com.ljs.ootp.ai.selection,BestStartersSelection.new Function() {...},21,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection,SelectedPlayers,275,0,14,0,46,0,19,0,12,0
-ootp-ai,com.ljs.ootp.ai.selection,Mode,79,0,0,0,11,0,6,0,6,0
-ootp-ai,com.ljs.ootp.ai.selection,HitterSelectionFactory,65,0,0,0,19,0,8,0,8,0
-ootp-ai,com.ljs.ootp.ai.selection,SlotSelection.Builder,31,0,0,0,11,0,7,0,7,0
-ootp-ai,com.ljs.ootp.ai.selection,Selections,36,0,0,0,7,0,8,0,8,0
-ootp-ai,com.ljs.ootp.ai.selection,SlotSelection,178,0,26,0,39,0,17,0,4,0
-ootp-ai,com.ljs.ootp.ai.selection,SlotAssignments,167,0,20,0,43,0,22,0,12,0
-ootp-ai,com.ljs.ootp.ai.selection,PitcherSelectionFactory.new Function() {...},20,0,0,0,4,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,PlayerPage.BattingRatingsType,9,59,0,0,0,1,2,2,2,2
-ootp-ai,com.ljs.ootp.ai.ootp5.site,LeagueStructureImpl.new LeagueStructure.League() {...},18,0,0,0,3,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,LeagueStructureImpl.new LeagueStructure.Division() {...},23,0,0,0,3,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,PlayerPage,23,199,4,3,5,52,6,6,2,6
-ootp-ai,com.ljs.ootp.ai.ootp5.site,PlayerList,95,0,2,0,20,0,11,0,10,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,SingleTeamImpl,244,0,16,0,51,0,14,0,6,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,PlayerPage.new Object() {...},2,17,0,0,0,1,0,1,0,1
-ootp-ai,com.ljs.ootp.ai.ootp5.site,TopProspects,71,0,4,0,12,0,6,0,4,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,SinglePlayer.PitchingRatingsType,9,69,0,0,0,1,2,2,2,2
-ootp-ai,com.ljs.ootp.ai.ootp5.site,LeagueStructureImpl,161,0,10,0,37,0,11,0,6,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,MinorLeagues,138,0,6,0,29,0,8,0,5,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,StandingsImpl,76,0,0,0,11,0,5,0,5,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,SinglePlayer.BattingRatingsType,58,0,0,0,1,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,TeamBattingImpl,103,0,0,0,19,0,5,0,5,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,SingleTeamStats,150,0,10,0,35,0,11,0,6,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,SinglePlayer,466,899,78,47,85,175,66,27,5,19
-ootp-ai,com.ljs.ootp.ai.ootp5.site,TeamPitchingImpl,103,0,0,0,19,0,5,0,5,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,SinglePlayer.new Object() {...},2,17,0,0,0,1,0,1,0,1
-ootp-ai,com.ljs.ootp.ai.ootp5.site,Pages,9,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,LeaguePitching,261,0,8,0,52,0,13,0,9,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,LeagueBatting,243,0,8,0,49,0,12,0,8,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,BoxScores,119,0,10,0,28,0,10,0,5,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,SalaryImpl,404,0,36,0,73,0,26,0,8,0
-ootp-ai,com.ljs.ootp.ai.ootp5.site,TeamRatings,106,0,6,0,21,0,6,0,3,0
-ootp-ai,com.ljs.ootp.extract.html,Pages.new Callable() {...},10,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.extract.html,Documents,30,21,0,0,10,6,2,2,2,2
-ootp-ai,com.ljs.ootp.extract.html,UrlLoadingPage.new UrlLoadingPage.Loading() {...},14,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.extract.html,Pages,8,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.extract.html,UrlLoadingPage,23,0,0,0,7,0,4,0,4,0
-ootp-ai,com.ljs.ootp.extract.html,Documents.new Callable() {...},56,0,8,0,5,0,6,0,2,0
-ootp-ai,com.ljs.ootp.extract.html,PageFactory,34,0,0,0,9,0,5,0,5,0
-ootp-ai,com.ljs.ootp.ai.selection.bench,BenchScorer,195,0,19,0,40,0,17,0,6,0
-ootp-ai,com.ljs.ootp.ai.selection.bench,BenchScorer.new Function() {...},19,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.bench,Bench.Remove,11,0,0,0,4,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.bench,Bench,501,0,12,0,88,0,34,0,28,0
-ootp-ai,com.ljs.ootp.ai.selection.bench,Bench.new Function() {...},15,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.bench,Bench.Add,11,0,0,0,4,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.bench,BenchScorer.new Object() {...},54,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.selection.bench,Bench.new Supplier() {...},53,0,0,0,7,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,Roster,415,0,20,0,94,0,35,0,25,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,Team,188,0,22,0,45,0,23,0,12,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,FourtyManRoster,338,0,28,0,93,0,25,0,11,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,Roster.Status,98,0,0,0,1,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,Changes,183,0,24,0,51,0,19,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,RosterChanges,37,0,2,0,10,0,4,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,RosterSelection,1131,0,82,0,227,0,63,0,22,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,FourtyManRoster.new Predicate() {...},40,0,8,0,4,0,6,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,FourtyManRoster.new Predicate() {...},36,0,8,0,5,0,6,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,RosterChanges.RosterChange,67,0,4,0,17,0,7,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,Changes.ChangeType,126,0,4,0,9,0,7,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,Roster.new Function() {...},14,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.roster,Changes.new Object() {...},47,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.elo,GameResult.Builder,33,0,2,0,10,0,7,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.elo,GameResult,74,0,0,0,21,0,8,0,8,0
+ootp-ai,com.github.lstephen.ootp.ai.elo,EloRatings,153,0,6,0,21,0,10,0,7,0
+ootp-ai,com.github.lstephen.ootp.ai.io,Printables.new Printables.PrintDestination() {...},26,0,0,0,7,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.io,Printables,8,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.io,SalaryFormat,23,0,2,0,3,0,4,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.report,RosterReport.new Predicate() {...},25,0,2,0,2,0,3,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.report,RosterReport.new Predicate() {...},25,0,2,0,2,0,3,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.report,GenericValueReport.new Function() {...},12,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.report,GenericValueReport.new Function() {...},12,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.report,GenericValueReport.new Function() {...},12,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.report,GenericValueReport.new Function() {...},12,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.report,GenericValueReport.new Function() {...},22,0,2,0,2,0,3,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.report,GenericValueReport,607,0,38,0,114,0,36,0,17,0
+ootp-ai,com.github.lstephen.ootp.ai.report,TeamReport.TeamScore,165,0,0,0,28,0,14,0,14,0
+ootp-ai,com.github.lstephen.ootp.ai.report,FreeAgents,211,0,30,0,52,0,25,0,10,0
+ootp-ai,com.github.lstephen.ootp.ai.report,LeagueBattingReport,0,743,0,0,0,110,0,9,0,9
+ootp-ai,com.github.lstephen.ootp.ai.report,RosterReport,280,0,22,0,61,0,22,0,11,0
+ootp-ai,com.github.lstephen.ootp.ai.report,SalaryRegression,290,0,26,0,51,0,23,0,10,0
+ootp-ai,com.github.lstephen.ootp.ai.report,SalaryReport.new Function() {...},12,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.report,Trade.new Predicate() {...},11,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.report,SalaryReport,163,0,10,0,35,0,10,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.report,StolenBaseReport,7,0,0,0,3,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.report,Trade,208,0,16,0,40,0,16,0,8,0
+ootp-ai,com.github.lstephen.ootp.ai.report,TeamReport,688,130,35,1,146,17,42,4,24,4
+ootp-ai,com.github.lstephen.ootp.ai,Main,1775,0,128,0,424,0,75,0,10,0
+ootp-ai,com.github.lstephen.ootp.ai,Main.new Object() {...},37,0,0,0,2,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},19,0,2,0,2,0,3,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},11,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},16,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},18,0,2,0,2,0,3,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},14,0,2,0,2,0,3,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},27,0,6,0,4,0,5,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html,Documents,30,21,0,0,10,6,2,2,2,2
+ootp-ai,com.github.lstephen.ootp.extract.html,Pages,8,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html,Documents.new Callable() {...},56,0,8,0,5,0,6,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html,PageFactory,34,0,0,0,9,0,5,0,5,0
+ootp-ai,com.github.lstephen.ootp.extract.html,UrlLoadingPage.new UrlLoadingPage.Loading() {...},14,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html,Pages.new Callable() {...},10,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html,UrlLoadingPage,23,0,0,0,7,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings.json,BattingPotentialSerializer,10,0,0,0,5,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.draft,DraftClass,102,0,6,0,27,0,14,0,11,0
+ootp-ai,com.github.lstephen.ootp.ai.draft,DraftReport,321,0,10,0,76,0,16,0,11,0
+ootp-ai,com.github.lstephen.ootp.ai.draft,RoundValue,281,0,4,0,49,0,12,0,10,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,SelectedPlayers,275,0,14,0,46,0,19,0,12,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,SlotSelection.Builder,31,0,0,0,11,0,7,0,7,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,BestStartersSelection,555,0,28,0,97,0,27,0,13,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,Selections,36,0,0,0,7,0,8,0,8,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,SlotSelection,178,0,26,0,39,0,17,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,BestStartersSelection.new Function() {...},21,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,Mode.new Mode() {...},13,0,0,0,3,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,Mode.new Mode() {...},29,0,0,0,9,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,Mode.new Mode() {...},79,0,0,0,3,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,HitterSelectionFactory,65,0,0,0,19,0,8,0,8,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,Mode.new Mode() {...},40,0,0,0,11,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,PitcherSelectionFactory.new Function() {...},20,0,0,0,4,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,Mode,79,0,0,0,11,0,6,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,SlotAssignments,167,0,20,0,43,0,22,0,12,0
+ootp-ai,com.github.lstephen.ootp.ai.selection,PitcherSelectionFactory,79,0,0,0,24,0,10,0,10,0
 ootp-ai,com.ljs.scratch.util,Wrapped,33,12,6,0,6,5,6,2,3,2
 ootp-ai,com.ljs.scratch.util,ElementsUtil,17,0,0,0,3,0,3,0,3,0
 ootp-ai,com.ljs.scratch.util,Jackson,43,0,0,0,15,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.roster,Team,188,0,22,0,45,0,23,0,12,0
-ootp-ai,com.ljs.ootp.ai.roster,Changes.new Object() {...},47,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.roster,RosterChanges,37,0,2,0,10,0,4,0,3,0
-ootp-ai,com.ljs.ootp.ai.roster,FourtyManRoster,338,0,28,0,93,0,25,0,11,0
-ootp-ai,com.ljs.ootp.ai.roster,Roster.new Function() {...},14,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.roster,Roster,415,0,20,0,94,0,35,0,25,0
-ootp-ai,com.ljs.ootp.ai.roster,Roster.Status,98,0,0,0,1,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.roster,RosterChanges.RosterChange,67,0,4,0,17,0,7,0,5,0
-ootp-ai,com.ljs.ootp.ai.roster,RosterSelection,1131,0,82,0,227,0,63,0,22,0
-ootp-ai,com.ljs.ootp.ai.roster,Changes,183,0,24,0,51,0,19,0,6,0
-ootp-ai,com.ljs.ootp.ai.roster,FourtyManRoster.new Predicate() {...},36,0,8,0,5,0,6,0,2,0
-ootp-ai,com.ljs.ootp.ai.roster,Changes.ChangeType,126,0,4,0,9,0,7,0,5,0
-ootp-ai,com.ljs.ootp.ai.roster,FourtyManRoster.new Predicate() {...},40,0,8,0,4,0,6,0,2,0
-ootp-ai,com.ljs.ootp.extract.html.ootp6.rating,OneToTen,22,0,0,0,6,0,5,0,5,0
-ootp-ai,com.ljs.ootp.extract.html.ootp6.rating,OneToTwenty,16,0,0,0,5,0,4,0,4,0
-ootp-ai,com.ljs.ootp.extract.html.ootp6.rating,TwoToEight,23,0,0,0,5,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.regression,BattingRegression,658,0,36,0,128,0,38,0,20,0
-ootp-ai,com.ljs.ootp.ai.regression,BattingRegression.CorrelationReport,90,0,2,0,17,0,5,0,4,0
-ootp-ai,com.ljs.ootp.ai.regression,PitchingRegression.new Object() {...},58,0,0,0,2,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.regression,BattingRegression.Predicting,68,0,0,0,1,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.regression,Predictions,79,0,4,0,16,0,14,0,12,0
-ootp-ai,com.ljs.ootp.ai.regression,PitchingRegression.Predicting,68,0,0,0,1,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.regression,PitchingRegression.CorrelationReport,91,0,0,0,17,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.regression,PitchingRegression,648,0,47,0,141,0,43,0,17,0
-ootp-ai,com.ljs.ootp.ai.regression,Predictions.new Predictions.Using() {...},20,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.regression,Predictions.new Predictions.Using() {...},20,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.player.ratings,DefensiveRatings,318,169,41,0,45,31,32,6,10,6
-ootp-ai,com.ljs.ootp.ai.player.ratings,FieldingRatings.Builder,72,55,10,0,11,18,6,8,1,8
-ootp-ai,com.ljs.ootp.ai.player.ratings,PitchingRatings.Builder,137,0,2,0,33,0,23,0,22,0
-ootp-ai,com.ljs.ootp.ai.player.ratings,StarRating,64,58,8,1,12,13,8,5,3,5
-ootp-ai,com.ljs.ootp.ai.player.ratings,DefensiveRatings.new Function() {...},14,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.player.ratings,DefensiveRatings.new Object() {...},61,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.player.ratings,PitchingRatings,126,0,0,0,31,0,10,0,10,0
-ootp-ai,com.ljs.ootp.ai.player.ratings,BattingRatings,124,55,8,0,35,15,13,3,9,3
-ootp-ai,com.ljs.ootp.ai.player.ratings,StarRating.new Object() {...},19,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.player.ratings,BattingRatings.Builder,52,80,6,2,9,21,10,13,6,13
-ootp-ai,com.ljs.ootp.ai.player.ratings,FieldingRatings,100,32,0,0,14,10,2,4,2,4
-ootp-ai,com.ljs.ootp.ai.player.ratings,FieldingRatings.Weighting,45,52,0,0,8,17,2,7,2,7
-ootp-ai,com.ljs.ootp.ai.player.ratings,PlayerRatings,774,41,13,1,101,14,21,6,14,6
-ootp-ai,com.ljs.ootp.ai.player.ratings,StarRating.Type,9,29,0,0,0,1,2,2,2,2
-ootp-ai,com.ljs.ootp.ai.player.ratings,Position,5,129,0,0,0,15,1,4,1,4
-ootp-ai,com.ljs.ootp.extract.html.ootp5.rating,ZeroToTen,6,10,0,0,1,4,1,3,1,3
-ootp-ai,com.ljs.ootp.extract.html.ootp5.rating,PotentialRating.RatingScale,4,11,0,0,1,3,1,3,1,3
-ootp-ai,com.ljs.ootp.extract.html.ootp5.rating,PotentialRating,0,95,0,0,0,10,0,7,0,7
-ootp-ai,com.ljs.ootp.extract.html.loader,PageLoaderBuilder,37,0,0,0,10,0,6,0,6,0
-ootp-ai,com.ljs.ootp.extract.html.loader,JsoupLoader,6,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.extract.html.loader,DiskCachingLoader,29,0,0,0,7,0,4,0,4,0
-ootp-ai,com.ljs.ootp.extract.html.loader,DiskCachingLoader.DiskCache,105,0,4,0,36,0,9,0,7,0
-ootp-ai,com.ljs.ootp.extract.html.loader,InMemoryCachedLoader.new CacheLoader() {...},14,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.extract.html.loader,PageLoaders.new Callable() {...},15,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.extract.html.loader,InMemoryCachedLoader,38,0,0,0,12,0,4,0,4,0
-ootp-ai,com.ljs.ootp.extract.html.loader,PageLoaders,9,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.ootp5.report,PowerRankingsReport,241,0,6,0,52,0,10,0,7,0
-ootp-ai,com.ljs.ootp.ai.ootp5.report,SpringTraining.HitterSkills,58,0,0,0,1,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.ootp5.report,SpringTraining,389,0,48,0,76,0,33,0,9,0
-ootp-ai,com.ljs.ootp.ai.site.impl,SiteDefinitionFactory,17,0,0,0,3,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.site.impl,SiteDefinitionImpl,171,0,26,0,44,0,29,0,15,0
-ootp-ai,com.ljs.ootp.ai.site.impl,SiteDefinitionImpl.new Object() {...},19,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.data,Id,65,0,6,0,17,0,10,0,7,0
-ootp-ai,com.ljs.ootp.ai.player,Player.new Object() {...},37,0,0,0,2,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.player,Player.new Function() {...},39,0,0,0,8,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.player,Slot.new Object() {...},26,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.player,Slot.new Function() {...},21,0,4,0,7,0,5,0,2,0
-ootp-ai,com.ljs.ootp.ai.player,PlayerSources,29,0,2,0,7,0,4,0,3,0
-ootp-ai,com.ljs.ootp.ai.player,Slot,317,0,20,0,38,0,20,0,10,0
-ootp-ai,com.ljs.ootp.ai.player,BattingHand,20,72,1,3,2,8,3,5,2,4
-ootp-ai,com.ljs.ootp.ai.player,RosterStatus,62,31,0,0,24,10,16,2,16,2
-ootp-ai,com.ljs.ootp.ai.player,Consistency,25,69,3,3,3,9,5,3,2,3
-ootp-ai,com.ljs.ootp.ai.player,PlayerId,4,4,0,0,1,2,1,1,1,1
-ootp-ai,com.ljs.ootp.ai.player,Clutch,29,65,4,2,4,8,5,3,2,3
-ootp-ai,com.ljs.ootp.ai.player,Player,477,74,58,0,106,30,80,11,50,11
-ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup.Entry,55,0,4,0,12,0,8,0,6,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering,943,0,30,0,72,0,27,0,11,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.RandomGenerator,14,0,0,0,5,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.Order,47,0,4,0,12,0,8,0,6,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.Swap,16,0,0,0,5,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup.VsHand.new Lineup.VsHand() {...},19,0,0,0,4,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup.VsHand.new Lineup.VsHand() {...},32,0,0,0,6,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.new Validator() {...},39,0,6,0,7,0,5,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.new ActionGenerator() {...},75,0,6,0,12,0,5,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.new Function() {...},19,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,All,65,0,0,0,19,0,8,0,8,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.new Function() {...},48,0,2,0,8,0,3,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,AllLineups,189,0,10,0,36,0,16,0,11,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.new Function() {...},65,0,0,0,9,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.new Object() {...},37,0,0,0,2,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,All.Builder,30,0,0,0,11,0,7,0,7,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection,223,0,20,0,58,0,21,0,11,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,StarterSelection.Swap,22,0,0,0,7,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup.new Function() {...},12,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,Defense.new Object() {...},54,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,Defense.new Supplier() {...},69,0,4,0,8,0,4,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup,142,0,10,0,26,0,14,0,9,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,DefenseSelection,92,0,6,0,22,0,10,0,7,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,Defense,418,0,33,0,76,0,39,0,21,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,Lineup.VsHand,38,0,0,0,3,0,4,0,4,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupSelection,109,0,4,0,29,0,8,0,6,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,DefenseSelection.Swap,16,0,0,0,5,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.lineup,LineupOrdering.OrderActions,37,0,4,0,6,0,4,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChart.Backup.new Function() {...},25,0,0,0,5,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChartSelection,444,0,44,0,88,0,34,0,11,0
-ootp-ai,com.ljs.ootp.ai.selection.depthchart,AllDepthCharts,61,0,0,0,19,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChartSelection.new Function() {...},15,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChartSelection.new Function() {...},38,0,0,0,3,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChartSelection.new Object() {...},61,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChart,144,0,8,0,33,0,12,0,8,0
-ootp-ai,com.ljs.ootp.ai.selection.depthchart,DepthChart.Backup,24,0,0,0,7,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.selection.depthchart,BackupPlayingTime,158,0,6,0,21,0,9,0,6,0
-ootp-ai,com.ljs.ootp.ai,Main,1775,0,128,0,424,0,75,0,10,0
-ootp-ai,com.ljs.ootp.ai,Main.new Object() {...},37,0,0,0,2,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},19,0,2,0,2,0,3,0,2,0
-ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},16,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},18,0,2,0,2,0,3,0,2,0
-ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},14,0,2,0,2,0,3,0,2,0
-ootp-ai,com.ljs.ootp.ai,Main.new Predicate() {...},27,0,6,0,4,0,5,0,2,0
-ootp-ai,com.ljs.ootp.ai.player.ratings.json,BattingPotentialSerializer,10,0,0,0,5,0,3,0,3,0
-ootp-ai,com.ljs.ootp.extract.html.rating,OneToOneHundred,16,0,0,0,6,0,5,0,5,0
-ootp-ai,com.ljs.ootp.extract.html.rating,Rating,98,25,11,1,20,8,11,2,5,2
-ootp-ai,com.ljs.ootp.extract.html.rating,IntegerScale,5,9,0,0,1,2,1,2,1,2
-ootp-ai,com.ljs.ootp.ai.ootp5,SiteImpl.new Predicate() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.ootp5,SiteImpl.new Function() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.ootp5,SiteImpl,393,0,14,0,88,0,57,0,50,0
-ootp-ai,com.ljs.ootp.ai.ootp5,Ootp5,19,0,0,0,6,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.io,SalaryFormat,23,0,2,0,3,0,4,0,3,0
-ootp-ai,com.ljs.ootp.ai.io,Printables.new Printables.PrintDestination() {...},26,0,0,0,7,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.io,Printables,8,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.ootp6,Ootp6,19,0,0,0,6,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.draft,DraftReport,321,0,10,0,76,0,16,0,11,0
-ootp-ai,com.ljs.ootp.ai.draft,DraftClass,102,0,6,0,27,0,14,0,11,0
-ootp-ai,com.ljs.ootp.ai.draft,RoundValue,281,0,4,0,49,0,12,0,10,0
-ootp-ai,com.ljs.ootp.ai.report,TeamReport,688,130,35,1,146,17,42,4,24,4
-ootp-ai,com.ljs.ootp.ai.report,SalaryReport.new Function() {...},12,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.report,Trade,208,0,16,0,40,0,16,0,8,0
-ootp-ai,com.ljs.ootp.ai.report,RosterReport,280,0,22,0,61,0,22,0,11,0
-ootp-ai,com.ljs.ootp.ai.report,GenericValueReport.new Function() {...},12,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.report,GenericValueReport.new Function() {...},12,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.report,GenericValueReport.new Function() {...},22,0,2,0,2,0,3,0,2,0
-ootp-ai,com.ljs.ootp.ai.report,GenericValueReport.new Function() {...},12,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.report,GenericValueReport.new Function() {...},12,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.report,StolenBaseReport,7,0,0,0,3,0,3,0,3,0
-ootp-ai,com.ljs.ootp.ai.report,TeamReport.TeamScore,165,0,0,0,28,0,14,0,14,0
-ootp-ai,com.ljs.ootp.ai.report,RosterReport.new Predicate() {...},25,0,2,0,2,0,3,0,2,0
-ootp-ai,com.ljs.ootp.ai.report,RosterReport.new Predicate() {...},25,0,2,0,2,0,3,0,2,0
-ootp-ai,com.ljs.ootp.ai.report,Trade.new Predicate() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.report,FreeAgents,211,0,30,0,52,0,25,0,10,0
-ootp-ai,com.ljs.ootp.ai.report,LeagueBattingReport,0,743,0,0,0,110,0,9,0,9
-ootp-ai,com.ljs.ootp.ai.report,GenericValueReport,607,0,38,0,114,0,36,0,17,0
-ootp-ai,com.ljs.ootp.ai.report,SalaryReport,163,0,10,0,35,0,10,0,5,0
-ootp-ai,com.ljs.ootp.ai.report,SalaryRegression,290,0,26,0,51,0,23,0,10,0
-ootp-ai,com.ljs.ootp.ai.elo,GameResult.Builder,33,0,2,0,10,0,7,0,6,0
-ootp-ai,com.ljs.ootp.ai.elo,EloRatings,153,0,6,0,21,0,10,0,7,0
-ootp-ai,com.ljs.ootp.ai.elo,GameResult,74,0,0,0,21,0,8,0,8,0
-ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Object() {...},37,0,0,0,2,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.value,FreeAgentAcquisition.ChangeRelease,11,0,0,0,4,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,FreeAgentAcquisition,269,0,16,0,54,0,22,0,14,0
-ootp-ai,com.ljs.ootp.ai.value,TradeValue,235,0,4,0,44,0,18,0,16,0
-ootp-ai,com.ljs.ootp.ai.value,PlayerValue,248,0,18,0,45,0,22,0,12,0
-ootp-ai,com.ljs.ootp.ai.value,ReplacementValue.new Function() {...},60,0,8,0,6,0,6,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,ReplacementValue.new Object() {...},68,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.value,FreeAgentAcquisition.ChangeFreeAgent,11,0,0,0,4,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,PlayerValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,PlayerValue.new Object() {...},61,0,0,0,1,0,1,0,1,0
-ootp-ai,com.ljs.ootp.ai.value,PlayerValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,PlayerValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,PlayerValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},21,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},110,0,14,0,23,0,10,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,FreeAgentAcquisition.new Supplier() {...},34,0,0,0,6,0,2,0,2,0
-ootp-ai,com.ljs.ootp.ai.value,ReplacementValue,168,0,13,0,36,0,11,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,PlayerPage.new Object() {...},2,17,0,0,0,1,0,1,0,1
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,Pages,9,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,TopProspects,71,0,4,0,12,0,6,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,TeamPitchingImpl,103,0,0,0,19,0,5,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SinglePlayer.PitchingRatingsType,9,69,0,0,0,1,2,2,2,2
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,PlayerPage.BattingRatingsType,9,59,0,0,0,1,2,2,2,2
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,PlayerPage,23,199,4,3,5,52,6,6,2,6
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeagueStructureImpl.new LeagueStructure.Division() {...},23,0,0,0,3,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeagueStructureImpl.new LeagueStructure.League() {...},18,0,0,0,3,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,PlayerList,95,0,2,0,20,0,11,0,10,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,BoxScores,119,0,10,0,28,0,10,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SinglePlayer,466,899,78,47,85,175,66,27,5,19
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SalaryImpl,404,0,36,0,73,0,26,0,8,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeagueStructureImpl,161,0,10,0,37,0,11,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,StandingsImpl,76,0,0,0,11,0,5,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeaguePitching,261,0,8,0,52,0,13,0,9,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SingleTeamImpl,244,0,16,0,51,0,14,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeagueBatting,243,0,8,0,49,0,12,0,8,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,TeamBattingImpl,103,0,0,0,19,0,5,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SingleTeamStats,150,0,10,0,35,0,11,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,TeamRatings,106,0,6,0,21,0,6,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SinglePlayer.BattingRatingsType,58,0,0,0,1,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,MinorLeagues,138,0,6,0,29,0,8,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SinglePlayer.new Object() {...},2,17,0,0,0,1,0,1,0,1
+ootp-ai,com.github.lstephen.ootp.ai.player,Clutch,29,65,4,2,4,8,5,3,2,3
+ootp-ai,com.github.lstephen.ootp.ai.player,RosterStatus,62,31,0,0,24,10,16,2,16,2
+ootp-ai,com.github.lstephen.ootp.ai.player,Slot.new Function() {...},21,0,4,0,7,0,5,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.player,Slot.new Object() {...},26,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.player,BattingHand,20,72,1,3,2,8,3,5,2,4
+ootp-ai,com.github.lstephen.ootp.ai.player,PlayerId,4,4,0,0,1,2,1,1,1,1
+ootp-ai,com.github.lstephen.ootp.ai.player,Slot,317,0,20,0,38,0,20,0,10,0
+ootp-ai,com.github.lstephen.ootp.ai.player,Player,477,74,58,0,106,30,80,11,50,11
+ootp-ai,com.github.lstephen.ootp.ai.player,Consistency,25,69,3,3,3,9,5,3,2,3
+ootp-ai,com.github.lstephen.ootp.ai.player,Player.new Function() {...},39,0,0,0,8,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.player,Player.new Object() {...},37,0,0,0,2,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.player,PlayerSources,29,0,2,0,7,0,4,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.site,Version,5,33,0,0,0,2,1,3,1,3
+ootp-ai,com.github.lstephen.ootp.ai.site,SiteHolder,8,0,0,0,4,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.site,Record,51,0,2,0,9,0,7,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,Rotation.BullpenOption,48,0,0,0,1,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,RotationSelection.RotationDefinition,37,0,0,0,12,0,6,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,RotationSelection.new ActionGenerator() {...},176,0,16,0,30,0,13,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,RotationSelection.new Object() {...},33,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,RotationSelection.new Function() {...},40,0,2,0,6,0,3,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,RotationSelection.new Function() {...},15,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,RotationSelection.new Supplier() {...},188,0,16,0,38,0,10,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,Rotation.Role,68,0,0,0,1,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,RotationSelection,238,0,14,0,49,0,19,0,11,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,RotationSelection.Swap,16,0,0,0,5,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,RotationSelection.Substitute,16,0,0,0,5,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,Rotation.new Object() {...},51,0,0,0,2,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,RotationSelection.Move,22,0,0,0,6,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.rotation,Rotation,1002,0,90,0,152,0,64,0,17,0
+ootp-ai,com.github.lstephen.ootp.ai.regression,BattingRegression,658,0,36,0,128,0,38,0,20,0
+ootp-ai,com.github.lstephen.ootp.ai.regression,BattingRegression.CorrelationReport,90,0,2,0,17,0,5,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.regression,PitchingRegression,648,0,47,0,141,0,43,0,17,0
+ootp-ai,com.github.lstephen.ootp.ai.regression,PitchingRegression.Predicting,68,0,0,0,1,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.regression,PitchingRegression.new Object() {...},58,0,0,0,2,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.regression,Predictions,79,0,4,0,16,0,14,0,12,0
+ootp-ai,com.github.lstephen.ootp.ai.regression,PitchingRegression.CorrelationReport,91,0,0,0,17,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.regression,Predictions.new Predictions.Using() {...},20,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.regression,Predictions.new Predictions.Using() {...},20,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.regression,BattingRegression.Predicting,68,0,0,0,1,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.extract.html.ootp5.rating,PotentialRating.RatingScale,4,11,0,0,1,3,1,3,1,3
+ootp-ai,com.github.lstephen.ootp.extract.html.ootp5.rating,ZeroToTen,6,10,0,0,1,4,1,3,1,3
+ootp-ai,com.github.lstephen.ootp.extract.html.ootp5.rating,PotentialRating,0,95,0,0,0,10,0,7,0,7
+ootp-ai,com.github.lstephen.ootp.extract.html.ootp6.rating,OneToTwenty,16,0,0,0,5,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.extract.html.ootp6.rating,TwoToEight,23,0,0,0,5,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.extract.html.ootp6.rating,OneToTen,22,0,0,0,6,0,5,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,DepthChartSelection,444,0,44,0,88,0,34,0,11,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,DepthChart.Backup,24,0,0,0,7,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,DepthChart.Backup.new Function() {...},25,0,0,0,5,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,DepthChartSelection.new Object() {...},61,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,DepthChartSelection.new Function() {...},38,0,0,0,3,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,DepthChartSelection.new Function() {...},15,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,AllDepthCharts,61,0,0,0,19,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,BackupPlayingTime,158,0,6,0,21,0,9,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,DepthChart,144,0,8,0,33,0,12,0,8,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,StarterSelection.new ActionGenerator() {...},75,0,6,0,12,0,5,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,StarterSelection.new Function() {...},19,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,StarterSelection.new Function() {...},48,0,2,0,8,0,3,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,StarterSelection.new Validator() {...},39,0,6,0,7,0,5,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,StarterSelection.Swap,22,0,0,0,7,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,LineupOrdering.Swap,16,0,0,0,5,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,LineupOrdering.RandomGenerator,14,0,0,0,5,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,All.Builder,30,0,0,0,11,0,7,0,7,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,DefenseSelection,92,0,6,0,22,0,10,0,7,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,LineupOrdering.new Object() {...},37,0,0,0,2,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,LineupOrdering.new Function() {...},65,0,0,0,9,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,AllLineups,189,0,10,0,36,0,16,0,11,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,Lineup.Entry,55,0,4,0,12,0,8,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,Lineup.VsHand.new Lineup.VsHand() {...},32,0,0,0,6,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,Lineup.VsHand.new Lineup.VsHand() {...},19,0,0,0,4,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,StarterSelection,223,0,20,0,58,0,21,0,11,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,Lineup.VsHand,38,0,0,0,3,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,Defense.new Object() {...},54,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,Defense.new Supplier() {...},69,0,4,0,8,0,4,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,LineupOrdering.Order,47,0,4,0,12,0,8,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,Lineup,142,0,10,0,26,0,14,0,9,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,All,65,0,0,0,19,0,8,0,8,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,DefenseSelection.Swap,16,0,0,0,5,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,LineupOrdering.OrderActions,37,0,4,0,6,0,4,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,LineupSelection,109,0,4,0,29,0,8,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,Defense,418,0,33,0,76,0,39,0,21,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,Lineup.new Function() {...},12,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.lineup,LineupOrdering,943,0,30,0,72,0,27,0,11,0
+ootp-ai,com.github.lstephen.ootp.extract.html.rating,OneToOneHundred,16,0,0,0,6,0,5,0,5,0
+ootp-ai,com.github.lstephen.ootp.extract.html.rating,IntegerScale,5,9,0,0,1,2,1,2,1,2
+ootp-ai,com.github.lstephen.ootp.extract.html.rating,Rating,98,25,11,1,20,8,11,2,5,2
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,FieldingRatings.Builder,72,55,10,0,11,18,6,8,1,8
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,PitchingRatings,126,0,0,0,31,0,10,0,10,0
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,PitchingRatings.Builder,137,0,2,0,33,0,23,0,22,0
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,BattingRatings,124,55,8,0,35,15,13,3,9,3
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,FieldingRatings,100,32,0,0,14,10,2,4,2,4
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,DefensiveRatings.new Function() {...},14,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,DefensiveRatings.new Object() {...},61,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,StarRating,64,58,8,1,12,13,8,5,3,5
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,Position,5,129,0,0,0,15,1,4,1,4
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,FieldingRatings.Weighting,45,52,0,0,8,17,2,7,2,7
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,BattingRatings.Builder,52,80,6,2,9,21,10,13,6,13
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,DefensiveRatings,318,169,41,0,45,31,32,6,10,6
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,StarRating.new Object() {...},19,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,StarRating.Type,9,29,0,0,0,1,2,2,2,2
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings,PlayerRatings,774,41,13,1,101,14,21,6,14,6
+ootp-ai,com.github.lstephen.ootp.ai.data,Id,65,0,6,0,17,0,10,0,7,0
+ootp-ai,com.github.lstephen.ootp.ai.splits,Splits,18,15,0,0,6,5,3,2,3,2
+ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue.new Function() {...},12,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,FreeAgentAcquisition.ChangeRelease,11,0,0,0,4,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue.new Function() {...},110,0,14,0,23,0,10,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue.new Function() {...},21,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,FreeAgentAcquisition,269,0,16,0,54,0,22,0,14,0
+ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue.new Object() {...},37,0,0,0,2,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.value,PlayerValue.new Object() {...},61,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.value,PlayerValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,PlayerValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,PlayerValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,PlayerValue.new Function() {...},11,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,FreeAgentAcquisition.new Supplier() {...},34,0,0,0,6,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,ReplacementValue.new Function() {...},60,0,8,0,6,0,6,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,ReplacementValue.new Object() {...},68,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.value,PlayerValue,248,0,18,0,45,0,22,0,12,0
+ootp-ai,com.github.lstephen.ootp.ai.value,FreeAgentAcquisition.ChangeFreeAgent,11,0,0,0,4,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.value,ReplacementValue,168,0,13,0,36,0,11,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue,235,0,4,0,44,0,18,0,16,0
+ootp-ai,com.github.lstephen.ootp.ai.config,Config,79,0,10,0,15,0,10,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.site.impl,SiteDefinitionImpl.new Object() {...},19,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.site.impl,SiteDefinitionImpl,171,0,26,0,44,0,29,0,15,0
+ootp-ai,com.github.lstephen.ootp.ai.site.impl,SiteDefinitionFactory,17,0,0,0,3,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5,SiteImpl.new Function() {...},11,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5,SiteImpl.new Predicate() {...},11,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5,SiteImpl,393,0,14,0,88,0,57,0,50,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5,Ootp5,19,0,0,0,6,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.report,SpringTraining.HitterSkills,58,0,0,0,1,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.report,PowerRankingsReport,241,0,6,0,52,0,10,0,7,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.report,SpringTraining,389,0,48,0,76,0,33,0,9,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp6,Ootp6,19,0,0,0,6,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,JsoupLoader,6,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,DiskCachingLoader.DiskCache,105,0,4,0,36,0,9,0,7,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,DiskCachingLoader,29,0,0,0,7,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,PageLoaders,9,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,InMemoryCachedLoader,38,0,0,0,12,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,PageLoaderBuilder,37,0,0,0,10,0,6,0,6,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,InMemoryCachedLoader.new CacheLoader() {...},14,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,PageLoaders.new Callable() {...},15,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.stats,FipBaseRuns,0,168,0,0,0,24,0,6,0,6
+ootp-ai,com.github.lstephen.ootp.ai.stats,BaseRuns,0,22,0,0,0,7,0,1,0,1
+ootp-ai,com.github.lstephen.ootp.ai.stats,PitchingStats,372,36,8,0,56,8,39,8,35,8
+ootp-ai,com.github.lstephen.ootp.ai.stats,SplitStats,23,0,0,0,6,0,4,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.stats,TeamStats,102,0,2,0,20,0,9,0,8,0
+ootp-ai,com.github.lstephen.ootp.ai.stats,Woba,120,19,0,0,12,6,2,4,2,4
+ootp-ai,com.github.lstephen.ootp.ai.stats,BattingStats,313,180,12,4,44,33,34,21,26,21
+ootp-ai,com.github.lstephen.ootp.ai.stats,PitcherOverall,23,29,0,0,4,4,4,2,4,2
+ootp-ai,com.github.lstephen.ootp.ai.stats,SplitPercentages,286,0,12,0,55,0,18,0,12,0
+ootp-ai,com.github.lstephen.ootp.ai.stats,PitcherOverall.new PitcherOverall() {...},18,10,0,0,3,2,3,2,3,2
+ootp-ai,com.github.lstephen.ootp.ai.stats,PitcherOverall.new PitcherOverall() {...},22,6,0,0,4,1,4,1,4,1
+ootp-ai,com.github.lstephen.ootp.ai.stats,PitcherOverall.new Function() {...},69,0,3,0,13,0,4,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.stats,PitcherOverall.new Object() {...},19,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.stats,Woba.Event,5,63,0,0,0,1,1,3,1,3
+ootp-ai,com.github.lstephen.ootp.ai.stats,EraBaseRuns,122,18,0,0,16,7,1,5,1,5
+ootp-ai,com.github.lstephen.ootp.ai.stats,History,180,0,8,0,42,0,16,0,12,0
+ootp-ai,com.github.lstephen.ootp.ai.stats,SplitPercentagesHolder,8,0,0,0,4,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.bench,Bench.Remove,11,0,0,0,4,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.bench,Bench.new Function() {...},15,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.bench,Bench.new Supplier() {...},53,0,0,0,7,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.bench,BenchScorer.new Object() {...},54,0,0,0,1,0,1,0,1,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.bench,BenchScorer.new Function() {...},19,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.bench,Bench.Add,11,0,0,0,4,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.bench,BenchScorer,195,0,19,0,40,0,17,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.selection.bench,Bench,501,0,12,0,88,0,34,0,28,0

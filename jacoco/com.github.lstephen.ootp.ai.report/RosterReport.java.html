@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>RosterReport.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.report</a> &gt; <span class="el_source">RosterReport.java</span></div><h1>RosterReport.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.report;
+
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
+import com.github.lstephen.ootp.ai.io.Printable;
+import com.github.lstephen.ootp.ai.player.Player;
+import com.github.lstephen.ootp.ai.player.Slot;
+import com.github.lstephen.ootp.ai.roster.Roster;
+import com.github.lstephen.ootp.ai.selection.Mode;
+import com.github.lstephen.ootp.ai.site.Site;
+import java.io.PrintWriter;
+import java.util.Set;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class RosterReport implements Printable {
+
+    private final Iterable&lt;Player&gt; roster;
+
+<span class="nc" id="L23">    private Integer targetRatio = 40;</span>
+
+<span class="nc" id="L25">    private RosterReport(Iterable&lt;Player&gt; roster) {</span>
+<span class="nc" id="L26">        this.roster = roster;</span>
+<span class="nc" id="L27">    }</span>
+
+    public Integer getTargetRatio() {
+<span class="nc" id="L30">        return targetRatio;</span>
+    }
+
+    private void setTargetRatio(Integer ratio) {
+<span class="nc" id="L34">        this.targetRatio = ratio;</span>
+<span class="nc" id="L35">    }</span>
+
+    private int getPrimaryCount(Slot s) {
+<span class="nc" id="L38">        int count = 0;</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        for (Player p : roster) {</span>
+<span class="nc bnc" id="L40" title="All 2 branches missed.">            if (Slot.getPrimarySlot(p) == s) {</span>
+<span class="nc" id="L41">                count++;</span>
+            }
+<span class="nc" id="L43">        }</span>
+<span class="nc" id="L44">        return count;</span>
+    }
+
+    private int getAnyCount(Slot s) {
+<span class="nc" id="L48">        int count = 0;</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">        for (Player p : roster) {</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">            if (Slot.getPlayerSlots(p).contains(s)) {</span>
+<span class="nc" id="L51">                count++;</span>
+            }
+<span class="nc" id="L53">        }</span>
+<span class="nc" id="L54">        return count;</span>
+    }
+
+    public Integer getRatio(Slot s) {
+<span class="nc" id="L58">        return getPrimaryCount(s) * 10</span>
+<span class="nc" id="L59">            / Math.max(</span>
+<span class="nc" id="L60">                Mode.REGULAR_SEASON.getHittingSlots().count(s),</span>
+<span class="nc" id="L61">                Slot.MAJOR_LEAGUE_PITCHING_SLOTS.count(s));</span>
+    }
+
+    public Set&lt;Slot&gt; getSurplusSlots() {
+<span class="nc" id="L65">        Set&lt;Slot&gt; slots = Sets.newHashSet(Slot.values());</span>
+
+<span class="nc" id="L67">        slots.remove(Slot.P);</span>
+
+<span class="nc" id="L69">        return Sets.filter(slots, new Predicate&lt;Slot&gt;() {</span>
+            public boolean apply(Slot s) {
+<span class="nc bnc" id="L71" title="All 2 branches missed.">                return getRatio(s) &gt; (targetRatio * 1.15);</span>
+            }
+        });
+    }
+
+    public Set&lt;Slot&gt; getNeededSlots() {
+<span class="nc" id="L77">        Set&lt;Slot&gt; slots = Sets.newHashSet(Slot.values());</span>
+
+<span class="nc" id="L79">        slots.remove(Slot.P);</span>
+
+<span class="nc" id="L81">        return Sets.filter(slots, new Predicate&lt;Slot&gt;() {</span>
+            public boolean apply(Slot s) {
+<span class="nc bnc" id="L83" title="All 2 branches missed.">                return getRatio(s) &lt; (targetRatio * .85);</span>
+            }
+        });
+    }
+
+    @Override
+    public void print(PrintWriter w) {
+<span class="nc" id="L90">        w.println();</span>
+
+<span class="nc" id="L92">        w.println(&quot;Roster Report&quot;);</span>
+<span class="nc" id="L93">        w.print(&quot;Primary:&quot;);</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        for (Slot s : Slot.values()) {</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            if (s == Slot.P) {</span>
+<span class="nc" id="L96">                continue;</span>
+            }
+<span class="nc" id="L98">            w.print(String.format(&quot; %s:%3d &quot;, s, getPrimaryCount(s)));</span>
+        }
+<span class="nc" id="L100">        w.println();</span>
+
+<span class="nc" id="L102">        w.print(&quot;Any:    &quot;);</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        for (Slot s : Slot.values()) {</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">            if (s == Slot.P) {</span>
+<span class="nc" id="L105">                continue;</span>
+            }
+<span class="nc" id="L107">            w.print(String.format(&quot; %s:%3d &quot;, s, getAnyCount(s)));</span>
+        }
+<span class="nc" id="L109">        w.println();</span>
+
+<span class="nc" id="L111">        w.print(&quot;Ratio:  &quot;);</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        for (Slot s : Slot.values()) {</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">            if (s == Slot.P) {</span>
+<span class="nc" id="L114">                continue;</span>
+            }
+<span class="nc" id="L116">            w.print(String.format(&quot; %s:%3d &quot;, s, getRatio(s)));</span>
+        }
+<span class="nc" id="L118">        w.println();</span>
+
+<span class="nc" id="L120">        w.print(&quot;Needs:   &quot;);</span>
+<span class="nc" id="L121">        w.print(Joiner.on(',').join(getNeededSlots()));</span>
+<span class="nc" id="L122">        w.println();</span>
+
+<span class="nc" id="L124">        w.print(&quot;Surplus: &quot;);</span>
+<span class="nc" id="L125">        w.print(Joiner.on(',').join(getSurplusSlots()));</span>
+<span class="nc" id="L126">        w.println();</span>
+<span class="nc" id="L127">    }</span>
+
+    public static RosterReport create(Site site, Roster roster) {
+<span class="nc" id="L130">        return create(site, roster.getAllPlayers());</span>
+    }
+
+    public static RosterReport create(Site site, Iterable&lt;Player&gt; ps) {
+<span class="nc" id="L134">        RosterReport report = new RosterReport(ps);</span>
+
+<span class="nc bnc" id="L136" title="All 2 branches missed.">        if (site.getName().equals(&quot;PSD&quot;)) {</span>
+<span class="nc" id="L137">            report.setTargetRatio(60);</span>
+        }
+
+<span class="nc" id="L140">        return report;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

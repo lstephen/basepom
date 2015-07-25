@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>DraftClass.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.draft</a> &gt; <span class="el_source">DraftClass.java</span></div><h1>DraftClass.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.draft;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
+import com.github.lstephen.ootp.ai.player.Player;
+import com.github.lstephen.ootp.ai.site.Site;
+import com.github.lstephen.ootp.ai.site.SiteDefinition;
+import com.ljs.scratch.util.Jackson;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class DraftClass {
+
+<span class="nc" id="L26">  private final Set&lt;Player&gt; players = Sets.newHashSet();</span>
+
+<span class="nc" id="L28">  private DraftClass() { }</span>
+
+  @JsonCreator
+<span class="nc" id="L31">  private DraftClass(@JsonProperty(&quot;players&quot;) Set&lt;Player&gt; players) {</span>
+<span class="nc" id="L32">    Iterables.addAll(this.players, players);</span>
+<span class="nc" id="L33">  }</span>
+
+  public void addIfNotPresent(Player p) {
+<span class="nc bnc" id="L36" title="All 2 branches missed.">    if (!this.players.contains(p)) {</span>
+<span class="nc" id="L37">      this.players.add(p);</span>
+    }
+<span class="nc" id="L39">  }</span>
+
+  public void addIfNotPresent(Collection&lt;Player&gt; ps) {
+<span class="nc" id="L42">    ps.stream().forEach(this::addIfNotPresent);</span>
+<span class="nc" id="L43">  }</span>
+
+  public Collection&lt;Player&gt; getPlayers() {
+<span class="nc" id="L46">    return ImmutableSet.copyOf(playersStream().collect(Collectors.toList()));</span>
+  }
+
+  private Stream&lt;Player&gt; playersStream() {
+<span class="nc bnc" id="L50" title="All 2 branches missed.">    return players.stream().filter(p -&gt; p != null);</span>
+  }
+
+  public void save(Site site, File f) {
+    try {
+<span class="nc" id="L55">      Jackson.getMapper(site).writeValue(f, this);</span>
+<span class="nc" id="L56">    } catch (IOException e) {</span>
+<span class="nc" id="L57">      throw Throwables.propagate(e);</span>
+<span class="nc" id="L58">    }</span>
+<span class="nc" id="L59">  }</span>
+
+  public static DraftClass create(Collection&lt;Player&gt; ps) {
+<span class="nc" id="L62">    DraftClass dc = new DraftClass();</span>
+<span class="nc" id="L63">    dc.addIfNotPresent(ps);</span>
+<span class="nc" id="L64">    return dc;</span>
+  }
+
+  public static DraftClass load(File f, SiteDefinition site) {
+<span class="nc bnc" id="L68" title="All 2 branches missed.">    if (f.exists()) {</span>
+      try {
+<span class="nc" id="L70">        DraftClass dc = Jackson.getMapper(site.getSite()).readValue(f, DraftClass.class);</span>
+
+<span class="nc" id="L72">        dc.playersStream().forEach(p -&gt; p.setRatingsDefinition(site));</span>
+
+<span class="nc" id="L74">        return dc;</span>
+<span class="nc" id="L75">      } catch (IOException e) {</span>
+<span class="nc" id="L76">        throw Throwables.propagate(e);</span>
+      }
+    } else {
+<span class="nc" id="L79">      return create(ImmutableSet.&lt;Player&gt;of());</span>
+    }
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

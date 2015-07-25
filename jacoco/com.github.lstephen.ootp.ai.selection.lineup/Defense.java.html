@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>Defense.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.selection.lineup</a> &gt; <span class="el_source">Defense.java</span></div><h1>Defense.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.selection.lineup;
+
+import com.github.lstephen.ootp.ai.player.Player;
+import com.github.lstephen.ootp.ai.player.ratings.DefensiveRatings;
+import com.github.lstephen.ootp.ai.player.ratings.Position;
+
+import static com.github.lstephen.ootp.ai.player.ratings.Position.CATCHER;
+import static com.github.lstephen.ootp.ai.player.ratings.Position.CENTER_FIELD;
+import static com.github.lstephen.ootp.ai.player.ratings.Position.LEFT_FIELD;
+import static com.github.lstephen.ootp.ai.player.ratings.Position.RIGHT_FIELD;
+import static com.github.lstephen.ootp.ai.player.ratings.Position.SECOND_BASE;
+import static com.github.lstephen.ootp.ai.player.ratings.Position.SHORTSTOP;
+import static com.github.lstephen.ootp.ai.player.ratings.Position.THIRD_BASE;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class Defense {
+
+    private final ImmutableMap&lt;Player, Position&gt; defense;
+
+<span class="nc" id="L38">    private Defense(Map&lt;Player, Position&gt; defense) {</span>
+<span class="nc" id="L39">        this.defense = ImmutableMap.copyOf(defense);</span>
+<span class="nc" id="L40">    }</span>
+
+    public Boolean isValid() {
+<span class="nc bnc" id="L43" title="All 2 branches missed.">        return defense.values().size() == 8</span>
+<span class="nc bnc" id="L44" title="All 2 branches missed.">            &amp;&amp; defense.values().containsAll(</span>
+<span class="nc" id="L45">                ImmutableSet.of(</span>
+                    Position.CATCHER,
+                    Position.FIRST_BASE, Position.SECOND_BASE, Position.THIRD_BASE, Position.SHORTSTOP,
+                    Position.LEFT_FIELD, Position.CENTER_FIELD, Position.RIGHT_FIELD));
+    }
+
+    public Defense swap(Player lhs, Player rhs) {
+<span class="nc" id="L52">        Map&lt;Player, Position&gt; d = Maps.newHashMap(defense);</span>
+
+<span class="nc bnc" id="L54" title="All 4 branches missed.">        if (!contains(lhs) &amp;&amp; !contains(rhs)) {</span>
+<span class="nc" id="L55">            return this;</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">        } else if (!contains(lhs)) {</span>
+<span class="nc" id="L57">            d.put(lhs, getPosition(rhs));</span>
+<span class="nc" id="L58">            d.remove(rhs);</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">        } else if (!contains(rhs)) {</span>
+<span class="nc" id="L60">            d.put(rhs, getPosition(lhs));</span>
+<span class="nc" id="L61">            d.remove(lhs);</span>
+        } else {
+<span class="nc" id="L63">            d.put(lhs, getPosition(rhs));</span>
+<span class="nc" id="L64">            d.put(rhs, getPosition(lhs));</span>
+        }
+
+<span class="nc" id="L67">        return new Defense(d);</span>
+    }
+
+    public boolean contains(Player p) {
+<span class="nc" id="L71">        return defense.containsKey(p);</span>
+    }
+
+    public ImmutableSet&lt;Player&gt; players() {
+<span class="nc" id="L75">        return defense.keySet();</span>
+    }
+
+    public Position getPosition(Player p) {
+<span class="nc" id="L79">        Preconditions.checkState(contains(p), &quot;Does not contain player: %s\n%s&quot;, p, this);</span>
+<span class="nc" id="L80">        return defense.get(p);</span>
+    }
+
+    public Player getPlayer(Position pos) {
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        for (Map.Entry&lt;Player, Position&gt; entry : defense.entrySet()) {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (entry.getValue().equals(pos)) {</span>
+<span class="nc" id="L86">                return entry.getKey();</span>
+            }
+<span class="nc" id="L88">        }</span>
+
+<span class="nc" id="L90">        throw new IllegalStateException();</span>
+    }
+
+    public static Defense create(Map&lt;Player, Position&gt; defense) {
+<span class="nc" id="L94">        return new Defense(defense);</span>
+    }
+
+    public Double score() {
+<span class="nc" id="L98">        double total = 0.0;</span>
+
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        for (Map.Entry&lt;Player, Position&gt; entry : defense.entrySet()) {</span>
+<span class="nc" id="L101">            Player ply = entry.getKey();</span>
+<span class="nc" id="L102">            Position pos = entry.getValue();</span>
+
+
+<span class="nc" id="L105">            DefensiveRatings r = ply.getDefensiveRatings();</span>
+
+<span class="nc" id="L107">            total += getPositionFactor(pos) * r.getPositionScore(pos);</span>
+
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            if (!ply.canPlay(pos)) {</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">                total -= Math.pow(getPositionFactor(pos), r.getPositionRating(pos) &gt; 0.5 ? (1.5 - 0.1 * r.getPositionRating(pos)) : 2);</span>
+            }
+<span class="nc" id="L112">        }</span>
+
+<span class="nc" id="L114">        return total;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L119">        StringBuilder str = new StringBuilder();</span>
+
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        for (Position p : Ordering.natural().sortedCopy(defense.values())) {</span>
+<span class="nc" id="L122">            str</span>
+<span class="nc" id="L123">                .append(p.getAbbreviation())</span>
+<span class="nc" id="L124">                .append(&quot;-&quot;)</span>
+<span class="nc" id="L125">                .append(getPlayer(p).getShortName())</span>
+<span class="nc" id="L126">                .append(&quot;/&quot;);</span>
+<span class="nc" id="L127">        }</span>
+
+<span class="nc" id="L129">        return str.toString();</span>
+    }
+
+    public static Integer getPositionFactor(Position p) {
+<span class="nc bnc" id="L133" title="All 5 branches missed.">        switch (p) {</span>
+            case CATCHER:
+            case SHORTSTOP:
+<span class="nc" id="L136">                return 5;</span>
+
+            case SECOND_BASE:
+            case THIRD_BASE:
+<span class="nc" id="L140">                return 4;</span>
+
+            case CENTER_FIELD:
+<span class="nc" id="L143">                return 3;</span>
+
+            case LEFT_FIELD:
+            case RIGHT_FIELD:
+<span class="nc" id="L147">                return 2;</span>
+
+            default:
+<span class="nc" id="L150">                return 1;</span>
+        }
+    }
+
+    public static Ordering&lt;Defense&gt; byScore() {
+<span class="nc" id="L155">        return Ordering.natural().onResultOf(Defense::score);</span>
+    }
+
+    public static Ordering&lt;Defense&gt; byAge() {
+        return Ordering
+<span class="nc" id="L160">            .natural()</span>
+<span class="nc" id="L161">            .onResultOf((d) -&gt; d.defense</span>
+<span class="nc" id="L162">                .entrySet()</span>
+<span class="nc" id="L163">                .stream()</span>
+<span class="nc" id="L164">                .map((e) -&gt; e.getKey().getAge() * getPositionFactor(e.getValue()))</span>
+<span class="nc" id="L165">                .reduce(0, Integer::sum));</span>
+    }
+
+    public static Ordering&lt;Defense&gt; byRawRange() {
+        return Ordering
+<span class="nc" id="L170">          .natural()</span>
+<span class="nc" id="L171">          .onResultOf((d) -&gt; d.defense</span>
+<span class="nc" id="L172">              .entrySet()</span>
+<span class="nc" id="L173">              .stream()</span>
+<span class="nc" id="L174">              .map((e) -&gt; getPositionFactor(e.getValue()) * e.getKey().getDefensiveRatings().getPositionRating(e.getValue()))</span>
+<span class="nc" id="L175">              .reduce(0.0, Double::sum));</span>
+    }
+
+    public static Ordering&lt;Defense&gt; byBestPositionRating() {
+      return Ordering
+<span class="nc" id="L180">        .natural()</span>
+<span class="nc" id="L181">        .onResultOf(</span>
+          (Defense d) -&gt; {
+<span class="nc" id="L183">            Double score = 0.0;</span>
+
+<span class="nc bnc" id="L185" title="All 2 branches missed.">            for (Map.Entry&lt;Player, Position&gt; entry : d.defense.entrySet()) {</span>
+<span class="nc" id="L186">              Optional&lt;Position&gt; best = entry.getKey().getDefensiveRatings().getPrimaryPosition(Position.values());</span>
+
+<span class="nc bnc" id="L188" title="All 2 branches missed.">              if (best.isPresent()) {</span>
+<span class="nc" id="L189">                score += getPositionFactor(best.get()) * entry.getKey().getDefensiveRatings().getPositionRating(best.get());</span>
+              }
+<span class="nc" id="L191">            }</span>
+
+<span class="nc" id="L193">            return score;</span>
+          });
+    }
+              
+
+    public static Supplier&lt;Defense&gt; randomGenerator(final Iterable&lt;Player&gt; players) {
+<span class="nc" id="L199">        return new Supplier&lt;Defense&gt;() {</span>
+            @Override
+            public Defense get() {
+<span class="nc" id="L202">                List&lt;Player&gt; ps = Lists.newArrayList(players);</span>
+<span class="nc" id="L203">                Collections.shuffle(ps);</span>
+
+<span class="nc" id="L205">                Map&lt;Player, Position&gt; defense = Maps.newHashMap();</span>
+
+<span class="nc" id="L207">                List&lt;Position&gt; pos = Lists.newArrayList(</span>
+                    Position.CATCHER,
+                    Position.FIRST_BASE, Position.SECOND_BASE, Position.THIRD_BASE, Position.SHORTSTOP,
+                    Position.LEFT_FIELD, Position.CENTER_FIELD, Position.RIGHT_FIELD);
+
+<span class="nc bnc" id="L212" title="All 4 branches missed.">                while (!pos.isEmpty() &amp;&amp; !ps.isEmpty()) {</span>
+<span class="nc" id="L213">                    defense.put(ps.remove(0), pos.remove(0));</span>
+                }
+
+<span class="nc" id="L216">                return Defense.create(defense);</span>
+            }
+        };
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>LeagueBatting.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.ootp5.site</a> &gt; <span class="el_source">LeagueBatting.java</span></div><h1>LeagueBatting.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.ootp5.site;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.google.common.base.Throwables;
+import com.google.common.collect.Maps;
+import com.github.lstephen.ootp.ai.config.Config;
+import com.github.lstephen.ootp.ai.site.Site;
+import com.github.lstephen.ootp.ai.stats.BattingStats;
+import com.github.lstephen.ootp.extract.html.Page;
+import com.ljs.scratch.util.Jackson;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+/**
+ *
+ * @author lstephen
+ */
+public class LeagueBatting {
+
+    private static final int HOMERUN_IDX = 6;
+    private static final int RUNS_IDX = 7;
+    private static final int ATBAT_IDX = 8;
+    private static final int HITS_IDX = 9;
+    private static final int DOUBLES_IDX = 10;
+    private static final int TRIPLES_IDX = 11;
+    private static final int WALKS_IDX = 12;
+
+    @JsonIgnore
+    private Site site;
+
+    @JsonIgnore
+    private Page page;
+
+    @JsonIgnore
+    private String league;
+
+<span class="nc" id="L43">    private Map&lt;Integer, BattingStats&gt; historical = Maps.newHashMap();</span>
+
+<span class="nc" id="L45">    private LeagueBatting() { }</span>
+
+<span class="nc" id="L47">    public LeagueBatting(Site site, String league) {</span>
+<span class="nc" id="L48">        page = site.getPage(&quot;leagueb.html&quot;);</span>
+<span class="nc" id="L49">        this.league = league;</span>
+<span class="nc" id="L50">        this.site = site;</span>
+<span class="nc" id="L51">    }</span>
+
+    private File getHistoricalFile() {
+        try {
+<span class="nc" id="L55">            String historyDirectory = Config.createDefault().getValue(&quot;history.dir&quot;).or(&quot;c:/ootp/history/&quot;);</span>
+<span class="nc" id="L56">            return new File(historyDirectory + &quot;/&quot; + site.getName() + &quot;league.batting.json&quot;);</span>
+<span class="nc" id="L57">        } catch (IOException e) {</span>
+<span class="nc" id="L58">            throw Throwables.propagate(e);</span>
+        }
+    }
+
+    private void loadHistorical() {
+
+<span class="nc" id="L64">        File f = getHistoricalFile();</span>
+
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        if (f.exists()) {</span>
+            try {
+<span class="nc" id="L68">                historical =</span>
+<span class="nc" id="L69">                    Jackson.getMapper(site).readValue(f, LeagueBatting.class).historical;</span>
+<span class="nc" id="L70">            } catch (IOException e) {</span>
+<span class="nc" id="L71">                throw Throwables.propagate(e);</span>
+<span class="nc" id="L72">            }</span>
+        }
+<span class="nc" id="L74">    }</span>
+
+    public LocalDate extractDate() {
+<span class="nc" id="L77">        Document doc = page.load();</span>
+
+<span class="nc" id="L79">        return LocalDate.parse(</span>
+<span class="nc" id="L80">            StringUtils.substringAfterLast(doc.select(&quot;td.title&quot;).text(), &quot;,&quot;).trim(),</span>
+<span class="nc" id="L81">            DateTimeFormat.forPattern(&quot;MM/dd/YYYY&quot;));</span>
+    }
+
+    public BattingStats extractTotal() {
+<span class="nc" id="L85">        Elements total = extractTotalLine();</span>
+
+<span class="nc" id="L87">        BattingStats batting = new BattingStats();</span>
+
+<span class="nc" id="L89">        batting.setRuns(getInteger(total, RUNS_IDX));</span>
+<span class="nc" id="L90">        batting.setHomeRuns(getInteger(total, HOMERUN_IDX));</span>
+<span class="nc" id="L91">        batting.setAtBats(getInteger(total, ATBAT_IDX));</span>
+<span class="nc" id="L92">        batting.setHits(getInteger(total, HITS_IDX));</span>
+<span class="nc" id="L93">        batting.setDoubles(getInteger(total, DOUBLES_IDX));</span>
+<span class="nc" id="L94">        batting.setTriples(getInteger(total, TRIPLES_IDX));</span>
+<span class="nc" id="L95">        batting.setWalks(getInteger(total, WALKS_IDX));</span>
+
+<span class="nc" id="L97">        int currentSeason = extractDate().getYear();</span>
+
+<span class="nc" id="L99">        loadHistorical();</span>
+
+<span class="nc" id="L101">        historical.put(currentSeason, batting);</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        for (int i = 1; i &lt; 5; i++) {</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">            if (historical.containsKey(currentSeason - i)) {</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">                if (historical.get(currentSeason -i).getRuns() != null) {</span>
+<span class="nc" id="L106">                    batting = batting.add(historical.get(currentSeason - i));</span>
+                }
+            }
+        }
+
+        try {
+<span class="nc" id="L112">            Jackson.getMapper(site).writeValue(getHistoricalFile(), this);</span>
+<span class="nc" id="L113">        } catch (IOException e) {</span>
+<span class="nc" id="L114">            throw Throwables.propagate(e);</span>
+<span class="nc" id="L115">        }</span>
+
+<span class="nc" id="L117">        return batting;</span>
+    }
+
+    private Integer getInteger(Elements line, int idx) {
+<span class="nc" id="L121">        return Integer.valueOf(line.get(idx).text());</span>
+    }
+
+    private Elements extractTotalLine() {
+<span class="nc" id="L125">        Document doc = page.load();</span>
+
+<span class="nc" id="L127">        Elements leagueStats =</span>
+<span class="nc" id="L128">            doc.select(&quot;tr:has(td:contains(&quot; + league + &quot;)) ~ tr&quot;);</span>
+
+<span class="nc" id="L130">        return leagueStats.select(</span>
+            &quot;tr.g:has(td &gt; b:contains(Total)) td, &quot;
+                + &quot;tr.g2:has(td &gt; b:contains(Total)) td&quot;);
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
