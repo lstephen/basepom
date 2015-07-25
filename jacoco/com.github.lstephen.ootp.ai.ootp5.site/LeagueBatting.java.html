@@ -72,7 +72,7 @@ public class LeagueBatting {
 
 <span class="fc" id="L73">        File f = getHistoricalFile();</span>
 
-<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (f.exists()) {</span>
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">        if (f.exists()) {</span>
             try {
 <span class="fc" id="L77">                historical =</span>
 <span class="fc" id="L78">                    Jackson.getMapper(site).readValue(f, LeagueBatting.class).historical;</span>
