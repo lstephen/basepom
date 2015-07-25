@@ -45,14 +45,13 @@ ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},16,0,0,0,2,0,2,0,
 ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},18,0,2,0,2,0,3,0,2,0
 ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},14,0,2,0,2,0,3,0,2,0
 ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},27,0,6,0,4,0,5,0,2,0
-ootp-ai,com.github.lstephen.ootp.extract.html,Documents,30,21,0,0,10,6,2,2,2,2
+ootp-ai,com.github.lstephen.ootp.extract.html,Documents,77,14,8,0,13,4,7,2,3,2
 ootp-ai,com.github.lstephen.ootp.extract.html,Pages,8,0,0,0,2,0,2,0,2,0
-ootp-ai,com.github.lstephen.ootp.extract.html,Documents.new Callable() {...},56,0,8,0,5,0,6,0,2,0
 ootp-ai,com.github.lstephen.ootp.extract.html,PageFactory,34,0,0,0,9,0,5,0,5,0
 ootp-ai,com.github.lstephen.ootp.extract.html,UrlLoadingPage.new UrlLoadingPage.Loading() {...},14,0,0,0,2,0,2,0,2,0
 ootp-ai,com.github.lstephen.ootp.extract.html,Pages.new Callable() {...},10,0,0,0,2,0,2,0,2,0
 ootp-ai,com.github.lstephen.ootp.extract.html,UrlLoadingPage,23,0,0,0,7,0,4,0,4,0
-ootp-ai,com.github.lstephen.ootp.ai.player.ratings.json,BattingPotentialSerializer,10,0,0,0,5,0,3,0,3,0
+ootp-ai,com.github.lstephen.ootp.ai.player.ratings.json,BattingPotentialSerializer,7,3,0,0,3,2,2,1,2,1
 ootp-ai,com.github.lstephen.ootp.ai.draft,DraftClass,102,0,6,0,27,0,14,0,11,0
 ootp-ai,com.github.lstephen.ootp.ai.draft,DraftReport,321,0,10,0,76,0,16,0,11,0
 ootp-ai,com.github.lstephen.ootp.ai.draft,RoundValue,281,0,4,0,49,0,12,0,10,0
@@ -71,29 +70,26 @@ ootp-ai,com.github.lstephen.ootp.ai.selection,PitcherSelectionFactory.new Functi
 ootp-ai,com.github.lstephen.ootp.ai.selection,Mode,79,0,0,0,11,0,6,0,6,0
 ootp-ai,com.github.lstephen.ootp.ai.selection,SlotAssignments,167,0,20,0,43,0,22,0,12,0
 ootp-ai,com.github.lstephen.ootp.ai.selection,PitcherSelectionFactory,79,0,0,0,24,0,10,0,10,0
-ootp-ai,com.ljs.scratch.util,Wrapped,33,12,6,0,6,5,6,2,3,2
-ootp-ai,com.ljs.scratch.util,ElementsUtil,17,0,0,0,3,0,3,0,3,0
-ootp-ai,com.ljs.scratch.util,Jackson,43,0,0,0,15,0,2,0,2,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,PlayerPage.new Object() {...},2,17,0,0,0,1,0,1,0,1
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,Pages,9,0,0,0,2,0,2,0,2,0
-ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,TopProspects,71,0,4,0,12,0,6,0,4,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,TopProspects,70,0,4,0,12,0,6,0,4,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,TeamPitchingImpl,103,0,0,0,19,0,5,0,5,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SinglePlayer.PitchingRatingsType,9,69,0,0,0,1,2,2,2,2
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,PlayerPage.BattingRatingsType,9,59,0,0,0,1,2,2,2,2
-ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,PlayerPage,23,199,4,3,5,52,6,6,2,6
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,PlayerPage,22,194,4,3,5,52,6,6,2,6
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeagueStructureImpl.new LeagueStructure.Division() {...},23,0,0,0,3,0,3,0,3,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeagueStructureImpl.new LeagueStructure.League() {...},18,0,0,0,3,0,3,0,3,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,PlayerList,95,0,2,0,20,0,11,0,10,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,BoxScores,119,0,10,0,28,0,10,0,5,0
-ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SinglePlayer,466,899,78,47,85,175,66,27,5,19
-ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SalaryImpl,404,0,36,0,73,0,26,0,8,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SinglePlayer,458,899,78,47,85,175,66,27,5,19
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SalaryImpl,394,0,36,0,73,0,26,0,8,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeagueStructureImpl,161,0,10,0,37,0,11,0,6,0
-ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,StandingsImpl,76,0,0,0,11,0,5,0,5,0
-ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeaguePitching,261,0,8,0,52,0,13,0,9,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,StandingsImpl,74,0,0,0,11,0,5,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeaguePitching,259,0,8,0,52,0,13,0,9,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SingleTeamImpl,244,0,16,0,51,0,14,0,6,0
-ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeagueBatting,243,0,8,0,49,0,12,0,8,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,LeagueBatting,33,213,3,5,8,43,2,10,0,8
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,TeamBattingImpl,103,0,0,0,19,0,5,0,5,0
-ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SingleTeamStats,150,0,10,0,35,0,11,0,6,0
+ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SingleTeamStats,149,0,10,0,35,0,11,0,6,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,TeamRatings,106,0,6,0,21,0,6,0,3,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,SinglePlayer.BattingRatingsType,58,0,0,0,1,0,4,0,4,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.site,MinorLeagues,138,0,6,0,29,0,8,0,5,0
@@ -143,6 +139,9 @@ ootp-ai,com.github.lstephen.ootp.extract.html.ootp5.rating,PotentialRating,0,95,
 ootp-ai,com.github.lstephen.ootp.extract.html.ootp6.rating,OneToTwenty,16,0,0,0,5,0,4,0,4,0
 ootp-ai,com.github.lstephen.ootp.extract.html.ootp6.rating,TwoToEight,23,0,0,0,5,0,4,0,4,0
 ootp-ai,com.github.lstephen.ootp.extract.html.ootp6.rating,OneToTen,22,0,0,0,6,0,5,0,5,0
+ootp-ai,com.github.lstephen.scratch.util,Wrapped,33,12,6,0,6,5,6,2,3,2
+ootp-ai,com.github.lstephen.scratch.util,ElementsUtil,15,0,0,0,3,0,3,0,3,0
+ootp-ai,com.github.lstephen.scratch.util,Jackson,3,40,0,0,1,14,1,1,1,1
 ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,DepthChartSelection,444,0,44,0,88,0,34,0,11,0
 ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,DepthChart.Backup,24,0,0,0,7,0,3,0,3,0
 ootp-ai,com.github.lstephen.ootp.ai.selection.depthchart,DepthChart.Backup.new Function() {...},25,0,0,0,5,0,2,0,2,0
@@ -224,7 +223,7 @@ ootp-ai,com.github.lstephen.ootp.ai.value,PlayerValue,248,0,18,0,45,0,22,0,12,0
 ootp-ai,com.github.lstephen.ootp.ai.value,FreeAgentAcquisition.ChangeFreeAgent,11,0,0,0,4,0,2,0,2,0
 ootp-ai,com.github.lstephen.ootp.ai.value,ReplacementValue,168,0,13,0,36,0,11,0,4,0
 ootp-ai,com.github.lstephen.ootp.ai.value,TradeValue,235,0,4,0,44,0,18,0,16,0
-ootp-ai,com.github.lstephen.ootp.ai.config,Config,79,0,10,0,15,0,10,0,5,0
+ootp-ai,com.github.lstephen.ootp.ai.config,Config,30,49,7,3,0,15,5,5,0,5
 ootp-ai,com.github.lstephen.ootp.ai.site.impl,SiteDefinitionImpl.new Object() {...},19,0,0,0,1,0,1,0,1,0
 ootp-ai,com.github.lstephen.ootp.ai.site.impl,SiteDefinitionImpl,171,0,26,0,44,0,29,0,15,0
 ootp-ai,com.github.lstephen.ootp.ai.site.impl,SiteDefinitionFactory,17,0,0,0,3,0,3,0,3,0
@@ -250,7 +249,7 @@ ootp-ai,com.github.lstephen.ootp.ai.stats,PitchingStats,372,36,8,0,56,8,39,8,35,
 ootp-ai,com.github.lstephen.ootp.ai.stats,SplitStats,23,0,0,0,6,0,4,0,4,0
 ootp-ai,com.github.lstephen.ootp.ai.stats,TeamStats,102,0,2,0,20,0,9,0,8,0
 ootp-ai,com.github.lstephen.ootp.ai.stats,Woba,120,19,0,0,12,6,2,4,2,4
-ootp-ai,com.github.lstephen.ootp.ai.stats,BattingStats,313,180,12,4,44,33,34,21,26,21
+ootp-ai,com.github.lstephen.ootp.ai.stats,BattingStats,306,187,12,4,41,36,32,23,24,23
 ootp-ai,com.github.lstephen.ootp.ai.stats,PitcherOverall,23,29,0,0,4,4,4,2,4,2
 ootp-ai,com.github.lstephen.ootp.ai.stats,SplitPercentages,286,0,12,0,55,0,18,0,12,0
 ootp-ai,com.github.lstephen.ootp.ai.stats,PitcherOverall.new PitcherOverall() {...},18,10,0,0,3,2,3,2,3,2

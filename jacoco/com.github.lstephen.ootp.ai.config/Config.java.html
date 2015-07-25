@@ -17,33 +17,33 @@ public final class Config {
 
     private final Properties properties;
 
-<span class="nc" id="L20">    private Config(Properties properties) {</span>
-<span class="nc" id="L21">        this.properties = properties;</span>
-<span class="nc" id="L22">    }</span>
+<span class="fc" id="L20">    private Config(Properties properties) {</span>
+<span class="fc" id="L21">        this.properties = properties;</span>
+<span class="fc" id="L22">    }</span>
 
     public Optional&lt;String&gt; getValue(String key) {
-<span class="nc" id="L25">        return Optional</span>
-<span class="nc" id="L26">          .fromNullable(properties.getProperty(key))</span>
-<span class="nc" id="L27">          .transform((v) -&gt; StrSubstitutor.replace(v, System.getenv()));</span>
+<span class="fc" id="L25">        return Optional</span>
+<span class="fc" id="L26">          .fromNullable(properties.getProperty(key))</span>
+<span class="fc" id="L27">          .transform((v) -&gt; StrSubstitutor.replace(v, System.getenv()));</span>
     }
 
     public static Config createDefault() throws IOException {
-<span class="nc" id="L31">        try (</span>
-<span class="nc" id="L32">            InputStream in =</span>
-<span class="nc" id="L33">                Config.class.getResourceAsStream(&quot;/config.properties&quot;)) {</span>
+<span class="pc" id="L31">        try (</span>
+<span class="fc" id="L32">            InputStream in =</span>
+<span class="fc" id="L33">                Config.class.getResourceAsStream(&quot;/config.properties&quot;)) {</span>
 
-<span class="nc" id="L35">            return create(in);</span>
-<span class="nc bnc" id="L36" title="All 8 branches missed.">        }</span>
+<span class="fc" id="L35">            return create(in);</span>
+<span class="pc bpc" id="L36" title="6 of 8 branches missed.">        }</span>
     }
 
     public static Config create(InputStream in) throws IOException {
-<span class="nc" id="L40">        Properties properties = new Properties();</span>
+<span class="fc" id="L40">        Properties properties = new Properties();</span>
 
-<span class="nc bnc" id="L42" title="All 2 branches missed.">        if (in != null) {</span>
-<span class="nc" id="L43">          properties.load(in);</span>
+<span class="pc bpc" id="L42" title="1 of 2 branches missed.">        if (in != null) {</span>
+<span class="fc" id="L43">          properties.load(in);</span>
         }
 
-<span class="nc" id="L46">        return new Config(properties);</span>
+<span class="fc" id="L46">        return new Config(properties);</span>
     }
 
 }

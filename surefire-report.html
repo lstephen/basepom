@@ -140,12 +140,12 @@ function toggleDisplay(elementId) {
   </thead> 
   <tbody> 
    <tr class="b"> 
-    <td>5</td> 
+    <td>15</td> 
     <td>0</td> 
     <td>0</td> 
     <td>0</td> 
     <td>100%</td> 
-    <td>1.274</td> 
+    <td>4.131</td> 
    </tr> 
   </tbody> 
  </table> 
@@ -173,12 +173,12 @@ function toggleDisplay(elementId) {
   <tbody> 
    <tr class="b"> 
     <td><a href="#"></a></td> 
-    <td>5</td> 
+    <td>15</td> 
     <td>0</td> 
     <td>0</td> 
     <td>0</td> 
     <td>100%</td> 
-    <td>1.274</td> 
+    <td>4.131</td> 
    </tr> 
   </tbody> 
  </table> 
@@ -208,19 +208,9 @@ function toggleDisplay(elementId) {
      <td>0</td> 
      <td>0</td> 
      <td>100%</td> 
-     <td>0.147</td> 
+     <td>0.146</td> 
     </tr> 
     <tr class="a"> 
-     <td><a href="#single_player"><i class="icon-ok"></i></a></td> 
-     <td><a href="#single_player">single_player</a></td> 
-     <td>1</td> 
-     <td>0</td> 
-     <td>0</td> 
-     <td>0</td> 
-     <td>100%</td> 
-     <td>0.925</td> 
-    </tr> 
-    <tr class="b"> 
      <td><a href="#sanity"><i class="icon-ok"></i></a></td> 
      <td><a href="#sanity">sanity</a></td> 
      <td>1</td> 
@@ -228,7 +218,17 @@ function toggleDisplay(elementId) {
      <td>0</td> 
      <td>0</td> 
      <td>100%</td> 
-     <td>0.014</td> 
+     <td>0.027</td> 
+    </tr> 
+    <tr class="b"> 
+     <td><a href="#league_batting"><i class="icon-ok"></i></a></td> 
+     <td><a href="#league_batting">league_batting</a></td> 
+     <td>10</td> 
+     <td>0</td> 
+     <td>0</td> 
+     <td>0</td> 
+     <td>100%</td> 
+     <td>3.294</td> 
     </tr> 
     <tr class="a"> 
      <td><a href="#team_report"><i class="icon-ok"></i></a></td> 
@@ -238,7 +238,17 @@ function toggleDisplay(elementId) {
      <td>0</td> 
      <td>0</td> 
      <td>100%</td> 
-     <td>0.188</td> 
+     <td>0.235</td> 
+    </tr> 
+    <tr class="b"> 
+     <td><a href="#single_player"><i class="icon-ok"></i></a></td> 
+     <td><a href="#single_player">single_player</a></td> 
+     <td>1</td> 
+     <td>0</td> 
+     <td>0</td> 
+     <td>0</td> 
+     <td>100%</td> 
+     <td>0.429</td> 
     </tr> 
    </tbody> 
   </table> 
@@ -257,20 +267,7 @@ function toggleDisplay(elementId) {
     <tr class="a"> 
      <td><i class="icon-ok"></i></td> 
      <td>should eq false</td> 
-     <td>0.147</td> 
-    </tr> 
-   </tbody> 
-  </table> 
- </div> 
- <div class="section"> 
-  <h3 id="single_player">single_player</h3> 
-  <a name="single_player"></a> 
-  <table border="1" class="bodyTable table table-striped table-hover"> 
-   <tbody> 
-    <tr class="a"> 
-     <td><i class="icon-ok"></i></td> 
-     <td>should not equal nil</td> 
-     <td>0.925</td> 
+     <td>0.146</td> 
     </tr> 
    </tbody> 
   </table> 
@@ -283,7 +280,65 @@ function toggleDisplay(elementId) {
     <tr class="a"> 
      <td><i class="icon-ok"></i></td> 
      <td>should be truthy</td> 
-     <td>0.014</td> 
+     <td>0.027</td> 
+    </tr> 
+   </tbody> 
+  </table> 
+ </div> 
+ <div class="section"> 
+  <h3 id="league_batting">league_batting</h3> 
+  <a name="league_batting"></a> 
+  <table border="1" class="bodyTable table table-striped table-hover"> 
+   <tbody> 
+    <tr class="a"> 
+     <td><i class="icon-ok"></i></td> 
+     <td>should eq 8469</td> 
+     <td>1.976</td> 
+    </tr> 
+    <tr class="b"> 
+     <td><i class="icon-ok"></i></td> 
+     <td>should not be nil</td> 
+     <td>0.306</td> 
+    </tr> 
+    <tr class="a"> 
+     <td><i class="icon-ok"></i></td> 
+     <td>should eq 4815</td> 
+     <td>0.137</td> 
+    </tr> 
+    <tr class="b"> 
+     <td><i class="icon-ok"></i></td> 
+     <td>should eq 8469</td> 
+     <td>0.136</td> 
+    </tr> 
+    <tr class="a"> 
+     <td><i class="icon-ok"></i></td> 
+     <td>should eq 3287</td> 
+     <td>0.156</td> 
+    </tr> 
+    <tr class="b"> 
+     <td><i class="icon-ok"></i></td> 
+     <td>should eq 59351</td> 
+     <td>0.142</td> 
+    </tr> 
+    <tr class="a"> 
+     <td><i class="icon-ok"></i></td> 
+     <td>should eq 220</td> 
+     <td>0.122</td> 
+    </tr> 
+    <tr class="b"> 
+     <td><i class="icon-ok"></i></td> 
+     <td>should eq 16370</td> 
+     <td>0.117</td> 
+    </tr> 
+    <tr class="a"> 
+     <td><i class="icon-ok"></i></td> 
+     <td>should eq 1656</td> 
+     <td>0.121</td> 
+    </tr> 
+    <tr class="b"> 
+     <td><i class="icon-ok"></i></td> 
+     <td>should eq #&lt;Java::OrgJodaTime::LocalDate:0x63c4d16&gt;</td> 
+     <td>0.081</td> 
     </tr> 
    </tbody> 
   </table> 
@@ -295,13 +350,26 @@ function toggleDisplay(elementId) {
    <tbody> 
     <tr class="a"> 
      <td><i class="icon-ok"></i></td> 
-     <td>should include &quot;TEST_TITLE&quot;</td> 
-     <td>0.145</td> 
+     <td>should not be truthy</td> 
+     <td>0.201</td> 
     </tr> 
     <tr class="b"> 
      <td><i class="icon-ok"></i></td> 
-     <td>should not be truthy</td> 
-     <td>0.043</td> 
+     <td>should include &quot;TEST_TITLE&quot;</td> 
+     <td>0.034</td> 
+    </tr> 
+   </tbody> 
+  </table> 
+ </div> 
+ <div class="section"> 
+  <h3 id="single_player">single_player</h3> 
+  <a name="single_player"></a> 
+  <table border="1" class="bodyTable table table-striped table-hover"> 
+   <tbody> 
+    <tr class="a"> 
+     <td><i class="icon-ok"></i></td> 
+     <td>should not equal nil</td> 
+     <td>0.429</td> 
     </tr> 
    </tbody> 
   </table> 
