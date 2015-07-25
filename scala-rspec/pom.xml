@@ -1,0 +1,69 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://maven.apache.org/POM/4.0.0   http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.github.lstephen</groupId>
+    <artifactId>basepom-scala</artifactId>
+    <version>1.15-SNAPSHOT</version>
+    <relativePath>../scala</relativePath>
+  </parent>
+
+  <groupId>com.github.lstephen</groupId>
+  <artifactId>basepom-scala-rspec</artifactId>
+  <packaging>pom</packaging>
+
+  <name>basepom-scala-rspec</name>
+  <description>A base POM for Scala/Java projects using RSpec for testing from https://github.com/lstephen</description>
+  <url>${github.site}</url>
+
+  <repositories>
+    <repository>
+      <id>rubygems-releases</id>
+      <url>http://rubygems-proxy.torquebox.org/releases</url>
+    </repository>
+  </repositories>
+
+  <properties>
+    <jruby.version>1.7.21</jruby.version>
+
+    <gem.rspec.version>3.3.0</gem.rspec.version>
+
+    <plugin.rspec.version>1.0.10</plugin.rspec.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>rubygems</groupId>
+      <artifactId>rspec</artifactId>
+      <version>${gem.rspec.version}</version>
+      <type>gem</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>de.saumya.mojo</groupId>
+        <artifactId>rspec-maven-plugin</artifactId>
+        <version>${plugin.rspec.version}</version>
+        <configuration>
+          <specSourceDirectory>src/test/rspec</specSourceDirectory>
+          <jrubyJvmArgs>${argLine}</jrubyJvmArgs>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
+
