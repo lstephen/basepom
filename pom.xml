@@ -61,6 +61,8 @@
   <modules>
     <module>java</module>
     <module>java-rspec</module>
+    <module>scala</module>
+    <module>scala-rspec</module>
   </modules>
 
   <build>

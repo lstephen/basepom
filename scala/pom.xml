@@ -1,0 +1,102 @@
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://maven.apache.org/POM/4.0.0   http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.github.lstephen</groupId>
+    <artifactId>basepom-java</artifactId>
+    <version>1.15-SNAPSHOT</version>
+    <relativePath>../java</relativePath>
+  </parent>
+
+  <groupId>com.github.lstephen</groupId>
+  <artifactId>basepom-scala</artifactId>
+  <packaging>pom</packaging>
+
+  <name>basepom-scala</name>
+  <description>A base POM for Scala/Java projects from https://github.com/lstephen</description>
+  <url>${github.site}</url>
+
+  <properties>
+    <scala.target>jvm-1.${java.version}</scala.target>
+
+    <lib.scala-library.version>2.11.7</lib.scala-library.version>
+
+    <plugin.scala.version>3.2.2</plugin.scala.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${lib.scala-library.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>${plugin.scala.version}</version>
+        <executions>
+          <execution>
+            <id>scala-compile-first</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>add-source</goal>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>scala-test-compile</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>doc-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <args>
+            <arg>-target:${scala.target}</arg>
+          </args>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>scala-maven-plugin</artifactId>
+        <version>${plugin.scala.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports/>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+</project>
+
