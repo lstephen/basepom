@@ -19,7 +19,9 @@
   <url>${github.site}</url>
 
   <properties>
+    <scala.compat.version>${scala.version}</scala.compat.version>
     <scala.target>jvm-1.${java.version}</scala.target>
+    <scala.version>2.12</scala.version>
 
     <lib.scala-library.version>2.12.0-M2</lib.scala-library.version>
 
