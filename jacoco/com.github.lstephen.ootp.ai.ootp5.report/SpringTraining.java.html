@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SpringTraining.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.ootp5.report</a> &gt; <span class="el_source">SpringTraining.java</span></div><h1>SpringTraining.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.ootp5.report;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.github.lstephen.ootp.ai.io.Printable;
+import com.github.lstephen.ootp.ai.player.Player;
+import com.github.lstephen.ootp.ai.player.Slot;
+import com.github.lstephen.ootp.ai.player.ratings.BattingRatings;
+import com.github.lstephen.ootp.ai.selection.Selections;
+import com.github.lstephen.ootp.ai.site.Version;
+import com.github.lstephen.ootp.ai.splits.Splits;
+import java.io.PrintWriter;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import org.apache.commons.lang3.StringUtils;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class SpringTraining implements Printable {
+
+<span class="nc" id="L26">    private static enum HitterSkills { CONTACT, POWER, EYE, DEFENSE }</span>
+
+<span class="nc" id="L28">    private static final Integer HITTING_THRESHOLD = 20;</span>
+
+<span class="nc" id="L30">    private static final Integer PROSPECT_MAX_AGE = 25;</span>
+
+    private final Version version;
+
+    private final Iterable&lt;Player&gt; players;
+
+<span class="nc" id="L36">    private SpringTraining(Version version, Iterable&lt;Player&gt; players) {</span>
+<span class="nc" id="L37">        this.version = version;</span>
+<span class="nc" id="L38">        this.players = players;</span>
+<span class="nc" id="L39">    }</span>
+
+    @Override
+    public void print(PrintWriter w) {
+<span class="nc" id="L43">        w.println();</span>
+<span class="nc" id="L44">        w.println(&quot;Spring Training&quot;);</span>
+<span class="nc" id="L45">        w.format(&quot;%-15s C/P/Z/D%n&quot;, &quot;Hitters -------&quot;);</span>
+        Player
+<span class="nc" id="L47">          .byShortName()</span>
+<span class="nc" id="L48">          .sortedCopy(Selections.onlyHitters(players))</span>
+<span class="nc" id="L49">          .forEach(p -&gt; printHitterPlan(w, p));</span>
+
+<span class="nc" id="L51">        w.println();</span>
+<span class="nc" id="L52">        w.format(&quot;%-15s S/V/C/S%n&quot;, &quot;Pitchers ------&quot;);</span>
+        Player
+<span class="nc" id="L54">          .byShortName()</span>
+<span class="nc" id="L55">          .sortedCopy(Selections.onlyPitchers(players))</span>
+<span class="nc" id="L56">          .forEach(p -&gt; printPitcherPlan(w, p));</span>
+<span class="nc" id="L57">    }</span>
+
+    private void printHitterPlan(PrintWriter w, Player p) {
+<span class="nc" id="L60">        Set&lt;HitterSkills&gt; skills = Sets.newHashSet(HitterSkills.values());</span>
+
+<span class="nc" id="L62">        Splits&lt;BattingRatings&lt;?&gt;&gt; now = p.getBattingRatings();</span>
+<span class="nc" id="L63">        Splits&lt;BattingRatings&lt;Integer&gt;&gt; pot = p.getBattingPotentialRatings();</span>
+
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        if (now.getVsLeft().getContact() &lt; HITTING_THRESHOLD</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            &amp;&amp; now.getVsRight().getContact() &lt; HITTING_THRESHOLD</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">            &amp;&amp; pot.getVsLeft().getContact() &lt; HITTING_THRESHOLD</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">            &amp;&amp; pot.getVsRight().getContact() &lt; HITTING_THRESHOLD) {</span>
+<span class="nc" id="L69">            skills.remove(HitterSkills.CONTACT);</span>
+        }
+
+<span class="nc bnc" id="L72" title="All 2 branches missed.">        if (now.getVsLeft().getPower() &lt; HITTING_THRESHOLD</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">            &amp;&amp; now.getVsRight().getPower() &lt; HITTING_THRESHOLD</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            &amp;&amp; pot.getVsLeft().getPower() &lt; HITTING_THRESHOLD</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">            &amp;&amp; pot.getVsRight().getPower() &lt; HITTING_THRESHOLD) {</span>
+<span class="nc" id="L76">            skills.remove(HitterSkills.POWER);</span>
+        }
+
+<span class="nc bnc" id="L79" title="All 2 branches missed.">        if (now.getVsLeft().getEye() &lt; HITTING_THRESHOLD</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">            &amp;&amp; now.getVsRight().getEye() &lt; HITTING_THRESHOLD</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">            &amp;&amp; pot.getVsLeft().getEye() &lt; HITTING_THRESHOLD</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">            &amp;&amp; pot.getVsRight().getEye() &lt; HITTING_THRESHOLD) {</span>
+<span class="nc" id="L83">            skills.remove(HitterSkills.EYE);</span>
+        }
+
+<span class="nc bnc" id="L86" title="All 4 branches missed.">        if (p.getAge() &gt; 27 &amp;&amp; Slot.getPrimarySlot(p) == Slot.H) {</span>
+<span class="nc" id="L87">            skills.remove(HitterSkills.DEFENSE);</span>
+        }
+
+<span class="nc bnc" id="L90" title="All 2 branches missed.">        if (skills.size() == HitterSkills.values().length) {</span>
+<span class="nc" id="L91">            return;</span>
+        }
+
+<span class="nc" id="L94">        Map&lt;HitterSkills, Integer&gt; values = Maps.newHashMap();</span>
+
+<span class="nc" id="L96">        final AtomicReference&lt;Integer&gt; remaining =</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">          new AtomicReference(skills.contains(HitterSkills.DEFENSE) ? 15 : 20);</span>
+
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        if (skills.contains(HitterSkills.DEFENSE)) {</span>
+<span class="nc" id="L100">            values.put(HitterSkills.DEFENSE, 5);</span>
+<span class="nc" id="L101">            skills.remove(HitterSkills.DEFENSE);</span>
+        } else {
+<span class="nc" id="L103">            values.put(HitterSkills.DEFENSE, 0);</span>
+        }
+
+<span class="nc" id="L106">        ImmutableList.of(HitterSkills.CONTACT, HitterSkills.POWER, HitterSkills.EYE)</span>
+<span class="nc" id="L107">          .forEach(skill -&gt; {</span>
+<span class="nc bnc" id="L108" title="All 2 branches missed.">            if (skills.contains(skill)) {</span>
+<span class="nc" id="L109">                Integer points = remaining.get() / skills.size();</span>
+<span class="nc" id="L110">                remaining.set(remaining.get() - points);</span>
+<span class="nc" id="L111">                values.put(skill, points);</span>
+<span class="nc" id="L112">                skills.remove(skill);</span>
+<span class="nc" id="L113">            } else {</span>
+<span class="nc" id="L114">                values.put(skill, 0);</span>
+            }
+<span class="nc" id="L116">        });</span>
+
+<span class="nc" id="L118">        w.format(</span>
+            &quot;%-15s %s%n&quot;,
+<span class="nc" id="L120">            StringUtils.abbreviate(p.getShortName(), 15),</span>
+            Joiner
+<span class="nc" id="L122">                .on('/')</span>
+<span class="nc" id="L123">                .join(ImmutableList.of(</span>
+<span class="nc" id="L124">                    values.get(HitterSkills.CONTACT),</span>
+<span class="nc" id="L125">                    values.get(HitterSkills.POWER),</span>
+<span class="nc" id="L126">                    values.get(HitterSkills.EYE),</span>
+<span class="nc" id="L127">                    values.get(HitterSkills.DEFENSE))));</span>
+<span class="nc" id="L128">    }</span>
+
+    private void printPitcherPlan(PrintWriter w, Player p) {
+<span class="nc" id="L131">        Integer endurance = p.getPitchingRatings().getVsRight().getEndurance();</span>
+
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (endurance == 1</span>
+<span class="nc bnc" id="L134" title="All 2 branches missed.">            || endurance == 5</span>
+<span class="nc bnc" id="L135" title="All 4 branches missed.">            || endurance == 10</span>
+<span class="nc bnc" id="L136" title="All 2 branches missed.">            || version == Version.OOTP5 &amp;&amp; endurance == 6) {</span>
+
+
+<span class="nc bnc" id="L139" title="All 2 branches missed.">            if (p.getAge() &lt;= PROSPECT_MAX_AGE) {</span>
+<span class="nc" id="L140">                w.format(&quot;%-15s 6/7/7/0%n&quot;, StringUtils.abbreviate(p.getShortName(), 15));</span>
+            } else {
+<span class="nc" id="L142">                w.format(&quot;%-15s 7/6/7/0%n&quot;, StringUtils.abbreviate(p.getShortName(), 15));</span>
+            }
+        }
+<span class="nc" id="L145">    }</span>
+
+    public static SpringTraining create(Version version, Iterable&lt;Player&gt; players) {
+<span class="nc" id="L148">        return new SpringTraining(version, players);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

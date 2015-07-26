@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>BackupPlayingTime.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.selection.depthchart</a> &gt; <span class="el_source">BackupPlayingTime.java</span></div><h1>BackupPlayingTime.java</h1><pre class="source lang-java linenums">/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.github.lstephen.ootp.ai.selection.depthchart;
+
+/**
+ *
+ * @author lstephen
+ */
+<span class="nc" id="L11">public enum BackupPlayingTime {</span>
+<span class="nc" id="L12">    EVERY_2ND_DAY(&quot;2&quot;, 100/2),</span>
+<span class="nc" id="L13">    EVERY_3RD_DAY(&quot;3&quot;, 100/3),</span>
+<span class="nc" id="L14">    EVERY_5TH_DAY(&quot;5&quot;, 100/5),</span>
+<span class="nc" id="L15">    EVERY_10TH_DAY(&quot;10&quot;, 100/10),</span>
+<span class="nc" id="L16">    EVERY_20TH_DAY(&quot;20&quot;, 100/20),</span>
+<span class="nc" id="L17">    WHEN_STARTER_TIRED(&quot;T&quot;, 1);</span>
+
+    private final String days;
+    private final Integer pct;
+
+<span class="nc" id="L22">    private BackupPlayingTime(String days, Integer pct) {</span>
+<span class="nc" id="L23">        this.pct = pct;</span>
+<span class="nc" id="L24">        this.days = days;</span>
+<span class="nc" id="L25">    }</span>
+
+    public String format() {
+<span class="nc" id="L28">        return String.format(&quot;%2s/%2d%%&quot;, days, pct);</span>
+    }
+
+    public static BackupPlayingTime roundFrom(Integer pct) {
+<span class="nc" id="L32">        BackupPlayingTime previous = null;</span>
+
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        for (BackupPlayingTime current : BackupPlayingTime.values()) {</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">            if (previous == null) {</span>
+<span class="nc" id="L36">                previous = current;</span>
+<span class="nc" id="L37">                continue;</span>
+            }
+
+<span class="nc bnc" id="L40" title="All 2 branches missed.">            if (pct &gt; (previous.pct + current.pct) / 2) {</span>
+<span class="nc" id="L41">                return previous;</span>
+            }
+<span class="nc" id="L43">            previous = current;</span>
+        }
+
+<span class="nc" id="L46">        return WHEN_STARTER_TIRED;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

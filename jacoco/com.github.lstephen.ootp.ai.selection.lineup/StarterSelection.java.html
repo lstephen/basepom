@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>StarterSelection.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.selection.lineup</a> &gt; <span class="el_source">StarterSelection.java</span></div><h1>StarterSelection.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.selection.lineup;
+
+import com.github.lstephen.ootp.ai.player.Player;
+import com.github.lstephen.ootp.ai.player.Slot;
+import com.github.lstephen.ootp.ai.player.ratings.Position;
+import com.github.lstephen.ootp.ai.stats.BattingStats;
+import com.github.lstephen.ootp.ai.stats.TeamStats;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.logging.Logger;
+import java.util.stream.Stream;
+
+import com.github.lstephen.ai.search.HillClimbing;
+import com.github.lstephen.ai.search.RepeatedHillClimbing;
+import com.github.lstephen.ai.search.Validator;
+import com.github.lstephen.ai.search.action.Action;
+import com.github.lstephen.ai.search.action.ActionGenerator;
+import com.github.lstephen.ai.search.action.SequencedAction;
+
+import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Predicates;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
+import com.google.common.collect.Sets;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+// Referenced classes of package com.github.lstephen.ootp.ootp.selection.lineup:
+//            Lineup
+public class StarterSelection {
+
+<span class="nc" id="L39">    private static final Logger LOG =</span>
+<span class="nc" id="L40">        Logger.getLogger(StarterSelection.class.getName());</span>
+
+    private final TeamStats&lt;BattingStats&gt; predictions;
+
+<span class="nc" id="L44">    private boolean requireBackupCatcher = true;</span>
+
+<span class="nc" id="L46">    private static final Map&lt;Pair&lt;Pair&lt;Lineup.VsHand, Boolean&gt;, ImmutableSet&lt;Player&gt;&gt;, Defense&gt; CACHE = Maps.newHashMap();</span>
+
+<span class="nc" id="L48">    public StarterSelection(TeamStats&lt;BattingStats&gt; predictions) {</span>
+<span class="nc" id="L49">        this.predictions = predictions;</span>
+<span class="nc" id="L50">    }</span>
+
+    public StarterSelection dontRequireBackupCatcher() {
+<span class="nc" id="L53">        requireBackupCatcher = false;</span>
+<span class="nc" id="L54">        return this;</span>
+    }
+
+    public Iterable&lt;Player&gt; selectWithDh(
+        Lineup.VsHand vs, Iterable&lt;Player&gt; available) {
+
+<span class="nc" id="L60">        Set&lt;Player&gt; selected = Sets.newHashSet(select(vs, available));</span>
+<span class="nc" id="L61">        selected.add(</span>
+<span class="nc" id="L62">            selectDh(</span>
+                vs,
+<span class="nc" id="L64">                Sets.difference(ImmutableSet.copyOf(available), selected)));</span>
+<span class="nc" id="L65">        return selected;</span>
+    }
+
+    private Player selectDh(Lineup.VsHand vs, Iterable&lt;Player&gt; available) {
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (Iterables.size(available) == 1) {</span>
+<span class="nc" id="L70">            return available.iterator().next();</span>
+        }
+
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        for (Player p : byWoba(vs).sortedCopy(available)) {</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            if (!requireBackupCatcher) {</span>
+<span class="nc" id="L75">                return p;</span>
+            } else {
+<span class="nc bnc" id="L77" title="All 2 branches missed.">                if ((!p.getSlots().contains(Slot.C))</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">                    || containsCatcher(</span>
+<span class="nc" id="L79">                        Sets.difference(ImmutableSet.copyOf(available),</span>
+<span class="nc" id="L80">                        ImmutableSet.of(p)))) {</span>
+
+<span class="nc" id="L82">                    return p;</span>
+                }
+            }
+<span class="nc" id="L85">        }</span>
+
+<span class="nc" id="L87">        throw new IllegalStateException();</span>
+    }
+
+    public Iterable&lt;Player&gt; select(
+        Lineup.VsHand vs, Iterable&lt;Player&gt; available) {
+
+<span class="nc" id="L93">        Pair&lt;Pair&lt;Lineup.VsHand, Boolean&gt;, ImmutableSet&lt;Player&gt;&gt; cacheKey =</span>
+<span class="nc" id="L94">            Pair.of(Pair.of(vs, requireBackupCatcher), ImmutableSet.copyOf(available));</span>
+
+<span class="nc bnc" id="L96" title="All 2 branches missed.">        if (!CACHE.containsKey(cacheKey)) {</span>
+
+            HillClimbing&lt;Defense&gt; hc = HillClimbing
+<span class="nc" id="L99">                .&lt;Defense&gt;builder()</span>
+<span class="nc" id="L100">                .actionGenerator(actionsFunction(available))</span>
+<span class="nc" id="L101">                .heuristic(heuristic(vs))</span>
+<span class="nc" id="L102">                .validator(validator(available))</span>
+<span class="nc" id="L103">                .build();</span>
+
+<span class="nc" id="L105">            CACHE.put(</span>
+                cacheKey,
+                new RepeatedHillClimbing&lt;Defense&gt;(
+<span class="nc" id="L108">                    Defense.randomGenerator(available),</span>
+                    hc)
+<span class="nc" id="L110">                .search());</span>
+        }
+
+<span class="nc" id="L113">        return CACHE.get(cacheKey).players();</span>
+    }
+
+    private Validator&lt;Defense&gt; validator(final Iterable&lt;Player&gt; available) {
+<span class="nc" id="L117">        Integer cc = 0;</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        for (Player p : available) {</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">          if (p.canPlay(Position.CATCHER)) {</span>
+<span class="nc" id="L120">            cc++;</span>
+          }
+<span class="nc" id="L122">        }</span>
+
+<span class="nc" id="L124">        final Integer catcherCount = cc;</span>
+
+<span class="nc" id="L126">        return new Validator&lt;Defense&gt;() {</span>
+            @Override
+            public boolean test(Defense input) {
+<span class="nc bnc" id="L129" title="All 2 branches missed.">                if (requireBackupCatcher) {</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">                    return catcherCount &gt; 1</span>
+<span class="nc bnc" id="L131" title="All 2 branches missed.">                      &amp;&amp; containsCatcher(</span>
+                          FluentIterable
+<span class="nc" id="L133">                            .from(available)</span>
+<span class="nc" id="L134">                            .filter(Predicates.not(Predicates.in(input.players()))));</span>
+                } else {
+<span class="nc" id="L136">                    return true;</span>
+                }
+            }
+        };
+
+    }
+
+    private Ordering&lt;Defense&gt; heuristic(final Lineup.VsHand vs) {
+        return Ordering
+<span class="nc" id="L145">            .natural()</span>
+<span class="nc" id="L146">            .onResultOf(new Function&lt;Defense, Double&gt;() {</span>
+                public Double apply(Defense d) {
+<span class="nc" id="L148">                    Double score = 0.0;</span>
+
+<span class="nc bnc" id="L150" title="All 2 branches missed.">                    for (Player p : d.players()) {</span>
+<span class="nc" id="L151">                        score +=</span>
+<span class="nc" id="L152">                            vs.getStats(predictions, p).getWobaPlus();</span>
+<span class="nc" id="L153">                    }</span>
+
+<span class="nc" id="L155">                    score += (d.score());</span>
+
+<span class="nc" id="L157">                    return score;</span>
+                }
+            })
+<span class="nc" id="L160">            .compound(Defense.byAge().reverse());</span>
+    }
+
+    private boolean containsCatcher(Iterable bench) {
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        for (Iterator i$ = bench.iterator(); i$.hasNext();) {</span>
+<span class="nc" id="L165">            Player p = (Player) i$.next();</span>
+<span class="nc" id="L166">            if (p.getDefensiveRatings().getPositionScore(</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">                Position.CATCHER).doubleValue() &gt; 0.0D) {</span>
+<span class="nc" id="L168">                return true;</span>
+            }
+<span class="nc" id="L170">        }</span>
+
+<span class="nc" id="L172">        return false;</span>
+    }
+
+    private Ordering&lt;Player&gt; byWoba(final Lineup.VsHand vs) {
+<span class="nc" id="L176">        return Ordering.natural().reverse().onResultOf(</span>
+<span class="nc" id="L177">            new Function&lt;Player, Integer&gt;() {</span>
+            public Integer apply(Player p) {
+<span class="nc" id="L179">                return vs.getStats(predictions, p).getWobaPlus();</span>
+            }
+<span class="nc" id="L181">        }).compound(Player.byTieBreak());</span>
+    }
+
+    private ActionGenerator&lt;Defense&gt; actionsFunction(final Iterable&lt;Player&gt; available) {
+
+<span class="nc" id="L186">        return new ActionGenerator&lt;Defense&gt;() {</span>
+            @Override
+            public Stream&lt;Action&lt;Defense&gt;&gt; apply(Defense state) {
+<span class="nc" id="L189">                final Set&lt;Action&lt;Defense&gt;&gt; swaps = Sets.newHashSet();</span>
+<span class="nc" id="L190">                Set&lt;Action&lt;Defense&gt;&gt; internalSwaps = Sets.newHashSet();</span>
+
+
+<span class="nc bnc" id="L193" title="All 2 branches missed.">                for (Player lhs : state.players()) {</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">                    for (Player rhs : state.players()) {</span>
+<span class="nc" id="L195">                        internalSwaps.add(new Swap(lhs, rhs));</span>
+<span class="nc" id="L196">                    }</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">                    for (Player rhs : available) {</span>
+<span class="nc" id="L198">                        swaps.add(new Swap(lhs, rhs));</span>
+<span class="nc" id="L199">                    }</span>
+<span class="nc" id="L200">                }</span>
+
+<span class="nc" id="L202">                return Stream.concat(Stream.concat(swaps.stream(), internalSwaps.stream()), SequencedAction.merged(internalSwaps, swaps));</span>
+            }
+        };
+    }
+
+    private static class Swap implements Action&lt;Defense&gt; {
+
+        private final Player lhs;
+        private final Player rhs;
+
+<span class="nc" id="L212">        public Swap(Player lhs, Player rhs) {</span>
+<span class="nc" id="L213">            Preconditions.checkNotNull(lhs);</span>
+<span class="nc" id="L214">            Preconditions.checkNotNull(rhs);</span>
+
+<span class="nc" id="L216">            this.lhs = lhs;</span>
+<span class="nc" id="L217">            this.rhs = rhs;</span>
+<span class="nc" id="L218">        }</span>
+
+        public Defense apply(Defense d) {
+<span class="nc" id="L221">            return d.swap(lhs, rhs);</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

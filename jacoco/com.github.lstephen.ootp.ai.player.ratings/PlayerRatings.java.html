@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>PlayerRatings.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.player.ratings</a> &gt; <span class="el_source">PlayerRatings.java</span></div><h1>PlayerRatings.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.player.ratings;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.base.Objects;
+import com.github.lstephen.ootp.ai.player.ratings.json.BattingPotentialSerializer;
+import com.github.lstephen.ootp.ai.splits.Splits;
+import com.github.lstephen.ootp.ai.stats.SplitPercentages;
+import com.github.lstephen.ootp.extract.html.rating.OneToOneHundred;
+import com.github.lstephen.ootp.extract.html.rating.Rating;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class PlayerRatings {
+
+<span class="fc" id="L20">    private static final Integer PEAK_AGE = 27;</span>
+
+    private final Splits&lt;BattingRatings&lt;?&gt;&gt; batting;
+
+    private final DefensiveRatings defensive;
+
+    private final Splits&lt;PitchingRatings&lt;?&gt;&gt; pitching;
+
+    @JsonSerialize(using = BattingPotentialSerializer.class)
+    private BattingRatings battingPotential;
+
+    private PitchingRatings pitchingPotential;
+
+    @JsonIgnore
+    private RatingsDefinition definition;
+
+    @JsonIgnore
+    private static SplitPercentages splitPercentages;
+
+    @JsonCreator
+    private PlayerRatings(
+        @JsonProperty(&quot;batting&quot;) Splits&lt;BattingRatings&lt;?&gt;&gt; batting,
+        @JsonProperty(&quot;defensive&quot;) DefensiveRatings defensive,
+<span class="fc" id="L43">        @JsonProperty(&quot;pitching&quot;) Splits&lt;PitchingRatings&lt;?&gt;&gt; pitching) {</span>
+
+<span class="fc" id="L45">        this.batting = batting;</span>
+<span class="fc" id="L46">        this.defensive = defensive;</span>
+<span class="fc" id="L47">        this.pitching = pitching;</span>
+<span class="fc" id="L48">    }</span>
+
+    public static void setPercentages(SplitPercentages splitPercentages) {
+<span class="nc" id="L51">        PlayerRatings.splitPercentages = splitPercentages;</span>
+<span class="nc" id="L52">    }</span>
+
+    public void setDefinition(RatingsDefinition definition) {
+<span class="fc" id="L55">        this.definition = definition;</span>
+<span class="fc" id="L56">    }</span>
+
+<span class="nc" id="L58">    public DefensiveRatings getDefensive() { return defensive; }</span>
+
+<span class="nc" id="L60">    public Splits&lt;BattingRatings&lt;?&gt;&gt; getBatting() { return batting; }</span>
+
+<span class="nc" id="L62">    public Splits&lt;PitchingRatings&lt;?&gt;&gt; getPitching() { return pitching; }</span>
+
+<span class="pc bpc" id="L64" title="1 of 2 branches missed.">    public boolean hasPitching() { return pitching != null; }</span>
+
+    public Splits&lt;BattingRatings&lt;Integer&gt;&gt; getBattingPotential(int age) {
+
+<span class="nc" id="L68">        BattingRatings&lt;?&gt; ovr = getOverallBatting(getBatting());</span>
+
+        BattingRatings&lt;Integer&gt; capped = BattingRatings
+<span class="nc" id="L71">            .builder(OneToOneHundred.scale())</span>
+<span class="nc" id="L72">            .contact(capBattingPotential(age, ovr.getContact(), battingPotential.getContact()))</span>
+<span class="nc" id="L73">            .gap(capBattingPotential(age, ovr.getGap(), battingPotential.getGap()))</span>
+<span class="nc" id="L74">            .power(capBattingPotential(age, ovr.getPower(), battingPotential.getPower()))</span>
+<span class="nc" id="L75">            .eye(capBattingPotential(age, ovr.getEye(), battingPotential.getEye()))</span>
+<span class="nc" id="L76">            .build();</span>
+
+<span class="nc" id="L78">        BattingRatings&lt;?&gt; curVsLeft = getBatting().getVsLeft();</span>
+
+        BattingRatings&lt;Integer&gt; potVsLeft = BattingRatings
+<span class="nc" id="L81">            .builder(OneToOneHundred.scale())</span>
+<span class="nc" id="L82">            .contact(capBatting(age, curVsLeft.getContact(), capped.getContact(), ovr.getContact()))</span>
+<span class="nc" id="L83">            .gap(capBatting(age, curVsLeft.getGap(), capped.getGap(), ovr.getGap()))</span>
+<span class="nc" id="L84">            .power(capBatting(age, curVsLeft.getPower(), capped.getPower(), ovr.getPower()))</span>
+<span class="nc" id="L85">            .eye(capBatting(age, curVsLeft.getEye(), capped.getEye(), ovr.getEye()))</span>
+<span class="nc" id="L86">            .build();</span>
+
+<span class="nc" id="L88">        BattingRatings&lt;?&gt; curVsRight = getBatting().getVsRight();</span>
+
+        BattingRatings&lt;Integer&gt; potVsRight = BattingRatings
+<span class="nc" id="L91">            .builder(OneToOneHundred.scale())</span>
+<span class="nc" id="L92">            .contact(capBatting(age, curVsRight.getContact(), capped.getContact(), ovr.getContact()))</span>
+<span class="nc" id="L93">            .gap(capBatting(age, curVsRight.getGap(), capped.getGap(), ovr.getGap()))</span>
+<span class="nc" id="L94">            .power(capBatting(age, curVsRight.getPower(), capped.getPower(), ovr.getPower()))</span>
+<span class="nc" id="L95">            .eye(capBatting(age, curVsRight.getEye(), capped.getEye(), ovr.getEye()))</span>
+<span class="nc" id="L96">            .build();</span>
+
+<span class="nc" id="L98">        return Splits.create(potVsLeft, potVsRight);</span>
+    }
+
+    public Splits&lt;PitchingRatings&lt;Integer&gt;&gt; getPitchingPotential(int age) {
+<span class="nc" id="L102">        PitchingRatings&lt;?&gt; ovr = getOverallPitching(getPitching());</span>
+
+        PitchingRatings&lt;Integer&gt; capped = PitchingRatings
+<span class="nc" id="L105">            .builder(OneToOneHundred.scale())</span>
+<span class="nc" id="L106">            .stuff(capPitchingPotential(age, ovr.getStuff(), pitchingPotential.getStuff()))</span>
+<span class="nc" id="L107">            .control(capPitchingPotential(age, ovr.getControl(), pitchingPotential.getControl()))</span>
+<span class="nc" id="L108">            .movement(capPitchingPotential(age, ovr.getMovement(), pitchingPotential.getMovement()))</span>
+<span class="nc" id="L109">            .hits(capPitchingPotential(age, ovr.getHits(), pitchingPotential.getHits()))</span>
+<span class="nc" id="L110">            .gap(capPitchingPotential(age, ovr.getGap(), pitchingPotential.getGap()))</span>
+<span class="nc" id="L111">            .endurance(ovr.getEndurance())</span>
+<span class="nc" id="L112">            .build();</span>
+
+<span class="nc" id="L114">        PitchingRatings curVsLeft = getPitching().getVsLeft();</span>
+
+        PitchingRatings&lt;Integer&gt; potVsLeft = PitchingRatings
+<span class="nc" id="L117">            .builder(OneToOneHundred.scale())</span>
+<span class="nc" id="L118">            .stuff(capPitching(age, curVsLeft.getStuff(), capped.getStuff(), ovr.getStuff()))</span>
+<span class="nc" id="L119">            .control(capPitching(age, curVsLeft.getControl(), capped.getControl(), ovr.getControl()))</span>
+<span class="nc" id="L120">            .movement(capPitching(age, curVsLeft.getMovement(), capped.getMovement(), ovr.getMovement()))</span>
+<span class="nc" id="L121">            .hits(capPitching(age, curVsLeft.getHits(), capped.getHits(), ovr.getHits()))</span>
+<span class="nc" id="L122">            .gap(capPitching(age, curVsLeft.getGap(), capped.getGap(), ovr.getGap()))</span>
+<span class="nc" id="L123">            .endurance(ovr.getEndurance())</span>
+<span class="nc" id="L124">            .build();</span>
+
+<span class="nc" id="L126">        PitchingRatings curVsRight = getPitching().getVsRight();</span>
+
+        PitchingRatings&lt;Integer&gt; potVsRight = PitchingRatings
+<span class="nc" id="L129">            .builder(OneToOneHundred.scale())</span>
+<span class="nc" id="L130">            .stuff(capPitching(age, curVsRight.getStuff(), capped.getStuff(), ovr.getStuff()))</span>
+<span class="nc" id="L131">            .control(capPitching(age, curVsRight.getControl(), capped.getControl(), ovr.getControl()))</span>
+<span class="nc" id="L132">            .movement(capPitching(age, curVsRight.getMovement(), capped.getMovement(), ovr.getMovement()))</span>
+<span class="nc" id="L133">            .hits(capPitching(age, curVsRight.getHits(), capped.getHits(), ovr.getHits()))</span>
+<span class="nc" id="L134">            .gap(capPitching(age, curVsRight.getGap(), capped.getGap(), ovr.getGap()))</span>
+<span class="nc" id="L135">            .endurance(ovr.getEndurance())</span>
+<span class="nc" id="L136">            .build();</span>
+
+<span class="nc" id="L138">        return Splits.create(potVsLeft, potVsRight);</span>
+    }
+
+    private Rating&lt;Integer, OneToOneHundred&gt; capBatting(int age, int current, int capped, int overall) {
+<span class="nc" id="L142">        return capBattingPotential(age, current, capped + (current - overall));</span>
+    }
+
+    private Rating&lt;Integer, OneToOneHundred&gt; capBattingPotential(int age, int current, int potential) {
+
+<span class="nc bnc" id="L147" title="All 4 branches missed.">        if (definition.isFreezeOneRatings() &amp;&amp; current &lt; 10) {</span>
+<span class="nc" id="L148">            return OneToOneHundred.valueOf(current);</span>
+        }
+
+<span class="nc bnc" id="L151" title="All 2 branches missed.">        if (current == 0) {</span>
+<span class="nc" id="L152">            return OneToOneHundred.valueOf(current);</span>
+        }
+
+        //Double factor = definition.getYearlyRatingsIncrease();
+<span class="nc" id="L156">        Integer factor = 8;</span>
+
+<span class="nc" id="L158">        Integer value = Math.max(</span>
+            current,
+<span class="nc" id="L160">            Math.min(</span>
+                potential,
+<span class="nc" id="L162">                current + factor * Math.max(PEAK_AGE - age, 0)));</span>
+
+<span class="nc" id="L164">        return OneToOneHundred.valueOf(value);</span>
+    }
+
+    private Rating&lt;Integer, OneToOneHundred&gt; capPitching(int age, int current, int capped, int overall) {
+<span class="nc" id="L168">        return capPitchingPotential(age, current, capped + (current - overall));</span>
+    }
+
+    private Rating&lt;Integer, OneToOneHundred&gt; capPitchingPotential(int age, int current, int potential) {
+
+<span class="nc bnc" id="L173" title="All 4 branches missed.">        if (definition.isFreezeOneRatings() &amp;&amp; current &lt; 10) {</span>
+<span class="nc" id="L174">            return OneToOneHundred.valueOf(current);</span>
+        }
+
+<span class="nc bnc" id="L177" title="All 2 branches missed.">        if (current == 0) {</span>
+<span class="nc" id="L178">            OneToOneHundred.valueOf(current);</span>
+        }
+
+<span class="nc" id="L181">        Integer factor = 8;</span>
+
+<span class="nc" id="L183">        Integer value = Math.max(</span>
+            current,
+<span class="nc" id="L185">            Math.min(</span>
+                potential,
+<span class="nc" id="L187">                current + factor * Math.max(PEAK_AGE - age, 0)));</span>
+
+<span class="nc" id="L189">        return OneToOneHundred.valueOf(value);</span>
+    }
+
+    public void setBattingPotential(BattingRatings ratings) {
+<span class="fc" id="L193">        this.battingPotential = ratings;</span>
+<span class="fc" id="L194">    }</span>
+
+    public void setPitchingPotential(PitchingRatings ratings) {
+<span class="nc" id="L197">        this.pitchingPotential = ratings;</span>
+<span class="nc" id="L198">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L202">        return Objects.toStringHelper(this)</span>
+<span class="nc" id="L203">            .add(&quot;batting&quot;, batting)</span>
+<span class="nc" id="L204">            .add(&quot;pitching&quot;, pitching)</span>
+<span class="nc" id="L205">            .add(&quot;defensive&quot;, defensive)</span>
+<span class="nc" id="L206">            .toString();</span>
+    }
+
+    public static BattingRatings getOverallBatting(Splits&lt;BattingRatings&lt;?&gt;&gt; splits) {
+<span class="nc" id="L210">        Integer vR = (int) Math.round(splitPercentages.getVsRhpPercentage() * 1000);</span>
+<span class="nc" id="L211">        Integer vL = 1000 - vR;</span>
+
+        BattingRatings ovr = BattingRatings
+<span class="nc" id="L214">            .builder(OneToOneHundred.scale())</span>
+<span class="nc" id="L215">            .contact(OneToOneHundred.valueOf((vR * splits.getVsRight().getContact() + vL * splits.getVsLeft().getContact()) / 1000))</span>
+<span class="nc" id="L216">            .gap(OneToOneHundred.valueOf((vR * splits.getVsRight().getGap() + vL * splits.getVsLeft().getGap()) / 1000))</span>
+<span class="nc" id="L217">            .power(OneToOneHundred.valueOf((vR * splits.getVsRight().getPower() + vL * splits.getVsLeft().getPower()) / 1000))</span>
+<span class="nc" id="L218">            .eye(OneToOneHundred.valueOf((vR * splits.getVsRight().getEye() + vL * splits.getVsLeft().getEye()) / 1000))</span>
+<span class="nc" id="L219">            .build();</span>
+
+<span class="nc" id="L221">        return ovr;</span>
+    }
+
+    public static PitchingRatings getOverallPitching(Splits&lt;PitchingRatings&lt;?&gt;&gt; splits) {
+<span class="nc" id="L225">        Integer vR = (int) Math.round(splitPercentages.getVsRhbPercentage() * 1000);</span>
+<span class="nc" id="L226">        Integer vL = 1000 - vR;</span>
+
+        return PitchingRatings
+<span class="nc" id="L229">            .builder(OneToOneHundred.scale())</span>
+<span class="nc" id="L230">            .stuff((vR * splits.getVsRight().getStuff() + vL * splits.getVsLeft().getStuff()) / 1000)</span>
+<span class="nc" id="L231">            .control((vR * splits.getVsRight().getControl() + vL * splits.getVsLeft().getControl()) / 1000)</span>
+<span class="nc" id="L232">            .movement((vR * splits.getVsRight().getMovement() + vL * splits.getVsLeft().getMovement()) / 1000)</span>
+<span class="nc" id="L233">            .hits((vR * splits.getVsRight().getHits() + vL * splits.getVsLeft().getHits()) / 1000)</span>
+<span class="nc" id="L234">            .gap((vR * splits.getVsRight().getGap() + vL * splits.getVsLeft().getGap()) / 1000)</span>
+<span class="nc" id="L235">            .endurance(splits.getVsLeft().getEndurance())</span>
+<span class="nc" id="L236">            .build();</span>
+    }
+
+    public static PlayerRatings create(
+        Splits&lt;BattingRatings&lt;?&gt;&gt; batting,
+        DefensiveRatings defensive,
+        Splits&lt;PitchingRatings&lt;?&gt;&gt; pitching,
+        RatingsDefinition definition) {
+
+<span class="fc" id="L245">        PlayerRatings pr = new PlayerRatings(batting, defensive, pitching);</span>
+<span class="fc" id="L246">        pr.setDefinition(definition);</span>
+<span class="fc" id="L247">        return pr;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

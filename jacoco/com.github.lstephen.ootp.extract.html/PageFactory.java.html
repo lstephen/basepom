@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>PageFactory.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.extract.html</a> &gt; <span class="el_source">PageFactory.java</span></div><h1>PageFactory.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.extract.html;
+
+import com.github.lstephen.ootp.extract.html.loader.JsoupLoader;
+import com.github.lstephen.ootp.extract.html.loader.DiskCachingLoader;
+import com.github.lstephen.ootp.extract.html.loader.PageLoader;
+import com.github.lstephen.ootp.extract.html.loader.InMemoryCachedLoader;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class PageFactory {
+
+<span class="nc" id="L14">    private static final PageLoader DEFAULT_PAGE_LOADER =</span>
+<span class="nc" id="L15">        InMemoryCachedLoader.wrap(</span>
+<span class="nc" id="L16">            DiskCachingLoader.wrap(</span>
+                new JsoupLoader()));
+
+    private final PageLoader loader;
+
+<span class="nc" id="L21">    private PageFactory(PageLoader loader) {</span>
+<span class="nc" id="L22">        this.loader = loader;</span>
+<span class="nc" id="L23">    }</span>
+
+    public Page getPage(String root, String page) {
+<span class="nc" id="L26">        return UrlLoadingPage.using(loader).loading(root + page);</span>
+    }
+
+    public static PageFactory create() {
+<span class="nc" id="L30">        return create(DEFAULT_PAGE_LOADER);</span>
+    }
+
+    public static PageFactory create(PageLoader loader) {
+<span class="nc" id="L34">        return new PageFactory(loader);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
