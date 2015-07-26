@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>GenericValueReport.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.report</a> &gt; <span class="el_source">GenericValueReport.java</span></div><h1>GenericValueReport.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.report;
+
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Ordering;
+import com.github.lstephen.ootp.ai.io.Printable;
+import com.github.lstephen.ootp.ai.io.Printables;
+import com.github.lstephen.ootp.ai.io.SalaryFormat;
+import com.github.lstephen.ootp.ai.player.Player;
+import com.github.lstephen.ootp.ai.regression.BattingRegression;
+import com.github.lstephen.ootp.ai.regression.PitchingRegression;
+import com.github.lstephen.ootp.ai.regression.Predictions;
+import com.github.lstephen.ootp.ai.selection.Selections;
+import com.github.lstephen.ootp.ai.value.PlayerValue;
+import com.github.lstephen.ootp.ai.value.ReplacementValue;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import org.apache.commons.lang3.StringUtils;
+
+/**
+ *
+ * @author lstephen
+ */
+public class GenericValueReport implements Printable {
+
+    private String title;
+
+    private ImmutableSet&lt;Player&gt; players;
+
+    private Integer limit;
+
+    private final PlayerValue playerValue;
+
+    private final ReplacementValue replacementValue;
+
+    private final ReplacementValue futureReplacementValue;
+
+    private Function&lt;Player, Integer&gt; custom;
+
+    private boolean reverse;
+
+    private final BattingRegression batting;
+
+    private final PitchingRegression pitching;
+
+    private final SalaryRegression salary;
+
+    private final Predictions now;
+
+<span class="nc" id="L54">    private Optional&lt;Double&gt; multiplier = Optional.absent();</span>
+
+    public GenericValueReport(
+<span class="nc" id="L57">        Iterable&lt;Player&gt; ps, Predictions predictions, BattingRegression batting, PitchingRegression pitching, SalaryRegression salary) {</span>
+
+<span class="nc" id="L59">        this.batting = batting;</span>
+<span class="nc" id="L60">        this.pitching = pitching;</span>
+<span class="nc" id="L61">        this.salary = salary;</span>
+
+<span class="nc" id="L63">        now =</span>
+            Predictions
+<span class="nc" id="L65">                .predict(ps)</span>
+<span class="nc" id="L66">                .using(batting, pitching, predictions.getPitcherOverall());</span>
+
+<span class="nc" id="L68">        Predictions future =</span>
+            Predictions
+<span class="nc" id="L70">                .predictFuture(ps)</span>
+<span class="nc" id="L71">                .using(batting, pitching, predictions.getPitcherOverall());</span>
+
+<span class="nc" id="L73">        this.playerValue = new PlayerValue(predictions, batting, pitching);</span>
+<span class="nc" id="L74">        this.replacementValue = new ReplacementValue(</span>
+            now,
+<span class="nc" id="L76">            new Function&lt;Player, Integer&gt;() {</span>
+                public Integer apply(Player p) {
+<span class="nc" id="L78">                    return playerValue.getNowValue(p);</span>
+                }},
+<span class="nc" id="L80">            new Function&lt;Player, Integer&gt;() {</span>
+                public Integer apply(Player p) {
+<span class="nc" id="L82">                    return playerValue.getNowAbility(p);</span>
+                }}
+            );
+
+
+<span class="nc" id="L87">        this.futureReplacementValue =</span>
+            new ReplacementValue(
+                future,
+<span class="nc" id="L90">                new Function&lt;Player, Integer&gt;() {</span>
+                    public Integer apply(Player p) {
+<span class="nc" id="L92">                        return playerValue.getFutureValue(p);</span>
+                    }
+                },
+<span class="nc" id="L95">                new Function&lt;Player, Integer&gt;() {</span>
+                    public Integer apply(Player p) {
+<span class="nc" id="L97">                        return playerValue.getFutureAbility(p);</span>
+                    }
+                }
+            );
+<span class="nc" id="L101">    }</span>
+
+    public void setTitle(String title) {
+<span class="nc" id="L104">        this.title = title;</span>
+<span class="nc" id="L105">    }</span>
+
+    public void setPlayers(Iterable&lt;Player&gt; players) {
+<span class="nc" id="L108">        this.players = ImmutableSet.copyOf(players);</span>
+<span class="nc" id="L109">    }</span>
+
+    public void setLimit(int limit) {
+<span class="nc" id="L112">        this.limit = limit;</span>
+<span class="nc" id="L113">    }</span>
+
+    public void setReverse(boolean reverse) {
+<span class="nc" id="L116">        this.reverse = reverse;</span>
+<span class="nc" id="L117">    }</span>
+
+    public Integer getValue(Player p) {
+<span class="nc" id="L120">        return Math.max(</span>
+<span class="nc" id="L121">            replacementValue.getValueVsReplacement(p),</span>
+<span class="nc" id="L122">            futureReplacementValue.getValueVsReplacement(p));</span>
+    }
+
+    public Integer getOverallValue(Player p) {
+<span class="nc" id="L126">        return Math.max(</span>
+<span class="nc" id="L127">            playerValue.getNowValue(p),</span>
+<span class="nc" id="L128">            playerValue.getFutureValue(p));</span>
+    }
+
+    public void setCustomValueFunction(Function&lt;Player, Integer&gt; custom) {
+<span class="nc" id="L132">        this.custom = custom;</span>
+<span class="nc" id="L133">    }</span>
+
+    public void setMultiplier(Double multiplier) {
+<span class="nc" id="L136">        this.multiplier = Optional.of(multiplier);</span>
+<span class="nc" id="L137">    }</span>
+
+    public void clearMultiplier() {
+<span class="nc" id="L140">        this.multiplier = Optional.absent();</span>
+<span class="nc" id="L141">    }</span>
+
+    public void print(OutputStream out) {
+<span class="nc" id="L144">        Printables.print(this).to(out);</span>
+<span class="nc" id="L145">    }</span>
+
+    public void print(PrintWriter w) {
+<span class="nc" id="L148">        w.println();</span>
+<span class="nc" id="L149">        w.format(</span>
+            &quot;**%-16s** | %11s %7s %7s | %s | %8s | XC | %n&quot;,
+<span class="nc" id="L151">                StringUtils.abbreviate(title, 16),</span>
+<span class="nc" id="L152">                StringUtils.center(&quot;OVR&quot;, 10),</span>
+<span class="nc" id="L153">                StringUtils.center(&quot;vL/vR&quot;, 7),</span>
+<span class="nc" id="L154">                StringUtils.center(&quot;vRpl&quot;, 7),</span>
+<span class="nc bnc" id="L155" title="All 2 branches missed.">                multiplier.isPresent() ? &quot;         &quot; : &quot;   &quot;,</span>
+                &quot;&quot;);
+
+        Iterable&lt;Player&gt; ps = Ordering
+<span class="nc" id="L159">            .natural()</span>
+<span class="nc" id="L160">            .reverse()</span>
+<span class="nc" id="L161">            .onResultOf(new Function&lt;Player, Integer&gt;() {</span>
+                public Integer apply(Player p) {
+<span class="nc bnc" id="L163" title="All 2 branches missed.">                    return custom == null ? getValue(p) : custom.apply(p);</span>
+                }
+            })
+<span class="nc" id="L166">            .compound(Player.byTieBreak())</span>
+<span class="nc" id="L167">            .sortedCopy(players);</span>
+
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        if (reverse) {</span>
+<span class="nc" id="L170">            ps = ImmutableList.copyOf(ps).reverse();</span>
+        }
+
+<span class="nc bnc" id="L173" title="All 2 branches missed.">        if (limit != null) {</span>
+<span class="nc" id="L174">            ps = Iterables.limit(ps, limit);</span>
+        }
+
+<span class="nc bnc" id="L177" title="All 2 branches missed.">        for (Player p : ps) {</span>
+<span class="nc bnc" id="L178" title="All 2 branches missed.">            Integer value = custom == null ? getValue(p) : custom.apply(p);</span>
+
+<span class="nc" id="L180">            String mv = &quot;&quot;;</span>
+
+<span class="nc bnc" id="L182" title="All 2 branches missed.">            if (multiplier.isPresent()) {</span>
+<span class="nc" id="L183">                mv = String.format(&quot; (%3.0f)&quot;, multiplier.get() * value);</span>
+            }
+
+<span class="nc" id="L186">            Integer current = playerValue.getNowValue(p);</span>
+<span class="nc" id="L187">            Integer ceiling = playerValue.getCeilingValue(p);</span>
+<span class="nc" id="L188">            Integer future = playerValue.getFutureValue(p);</span>
+
+<span class="nc" id="L190">            w.println(</span>
+<span class="nc" id="L191">                String.format(</span>
+                    &quot;%2s %-15s %2d| %3d/%3d%4s %3d/%3d %3d/%3d | %3d%s | %8s | %2s | %-13s |%s %9s | %7s | %2s %5s | %-20s | %s&quot;,
+<span class="nc" id="L193">                    p.getPosition(),</span>
+<span class="nc" id="L194">                    StringUtils.abbreviate(p.getShortName(), 15),</span>
+<span class="nc" id="L195">                    p.getAge(),</span>
+                    current,
+                    ceiling,
+<span class="nc bnc" id="L198" title="All 2 branches missed.">                    ceiling.equals(future) ? &quot;&quot; : String.format(&quot;/%3d&quot;, future),</span>
+<span class="nc" id="L199">                    getNowVsLeft(p),</span>
+<span class="nc" id="L200">                    getNowVsRight(p),</span>
+<span class="nc" id="L201">                    replacementValue.getValueVsReplacement(p),</span>
+<span class="nc" id="L202">                    futureReplacementValue.getValueVsReplacement(p),</span>
+                    value,
+                    mv,
+<span class="nc bnc" id="L205" title="All 2 branches missed.">                    Selections.isHitter(p) ? p.getDefensiveRatings().getPositionScores() : &quot;&quot;,</span>
+<span class="nc" id="L206">                    p.getIntangibles(),</span>
+<span class="nc" id="L207">                    Joiner.on(',').join(p.getSlots()),</span>
+<span class="nc" id="L208">                    p.getRosterStatus(),</span>
+<span class="nc bnc" id="L209" title="All 2 branches missed.">                    StringUtils.abbreviate(p.getSalary(), 9),</span>
+<span class="nc" id="L210">                    salary == null ? &quot;&quot; : SalaryFormat.prettyPrint(salary.predictMaximum(p)),</span>
+<span class="nc bnc" id="L211" title="All 2 branches missed.">                    p.getListedPosition().or(&quot;&quot;).equals(p.getPosition()) ? &quot;&quot; : p.getListedPosition().or(&quot;&quot;),</span>
+<span class="nc" id="L212">                    p.getId().unwrap(),</span>
+<span class="nc bnc" id="L213" title="All 2 branches missed.">                    StringUtils.abbreviate(p.getTeam() == null ? &quot;&quot; : p.getTeam(), 20),</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">                    p.getStars().isPresent() ? p.getStars().get().getFormattedText() : &quot;&quot;));</span>
+<span class="nc" id="L215">        }</span>
+
+<span class="nc" id="L217">        w.flush();</span>
+<span class="nc" id="L218">    }</span>
+
+    private Integer getNowVsLeft(Player p) {
+<span class="nc bnc" id="L221" title="All 2 branches missed.">        if (now.containsPlayer(p)) {</span>
+<span class="nc bnc" id="L222" title="All 2 branches missed.">            if (Selections.isHitter(p)) {</span>
+<span class="nc" id="L223">                return now.getAllBatting().getSplits(p).getVsLeft().getWobaPlus();</span>
+            } else {
+<span class="nc" id="L225">                return now</span>
+<span class="nc" id="L226">                    .getPitcherOverall()</span>
+<span class="nc" id="L227">                    .getPlus(now.getAllPitching().getSplits(p).getVsLeft());</span>
+            }
+        } else {
+<span class="nc bnc" id="L230" title="All 2 branches missed.">            if (Selections.isHitter(p)) {</span>
+<span class="nc" id="L231">                return batting.predict(p).getVsLeft().getWobaPlus();</span>
+            } else  {
+<span class="nc" id="L233">                return now.getPitcherOverall().getPlus(pitching.predict(p).getVsLeft());</span>
+            }
+        }
+    }
+
+    private Integer getNowVsRight(Player p) {
+<span class="nc bnc" id="L239" title="All 2 branches missed.">        if (now.containsPlayer(p)) {</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">            if (Selections.isHitter(p)) {</span>
+<span class="nc" id="L241">                return now.getAllBatting().getSplits(p).getVsRight().getWobaPlus();</span>
+            } else {
+<span class="nc" id="L243">                return now</span>
+<span class="nc" id="L244">                    .getPitcherOverall()</span>
+<span class="nc" id="L245">                    .getPlus(now.getAllPitching().getSplits(p).getVsRight());</span>
+            }
+        } else {
+<span class="nc bnc" id="L248" title="All 2 branches missed.">            if (Selections.isHitter(p)) {</span>
+<span class="nc" id="L249">                return batting.predict(p).getVsRight().getWobaPlus();</span>
+            } else  {
+<span class="nc" id="L251">                return now.getPitcherOverall().getPlus(pitching.predict(p).getVsRight());</span>
+            }
+        }
+    }
+
+    private String roundRating(Integer rating) {
+<span class="nc" id="L257">        Long rounded = Math.round(rating / 10.0);</span>
+
+<span class="nc bnc" id="L259" title="All 2 branches missed.">        return rounded &gt;= 10 ? &quot;T&quot; : rounded.toString();</span>
+    }
+
+
+    public void printReplacementLevelReport(OutputStream out) {
+<span class="nc" id="L264">      Printables.print(this::printReplacementLevelReport).to(out);</span>
+<span class="nc" id="L265">    }</span>
+
+    public void printReplacementLevelReport(PrintWriter w) {
+<span class="nc" id="L268">        w.println();</span>
+<span class="nc" id="L269">        w.println(&quot;Replacement Level&quot;);</span>
+<span class="nc" id="L270">        w.print(&quot;Current:&quot;);</span>
+<span class="nc" id="L271">        replacementValue.print(w);</span>
+<span class="nc" id="L272">        w.print(&quot;Future: &quot;);</span>
+<span class="nc" id="L273">        futureReplacementValue.print(w);</span>
+<span class="nc" id="L274">        w.flush();</span>
+<span class="nc" id="L275">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

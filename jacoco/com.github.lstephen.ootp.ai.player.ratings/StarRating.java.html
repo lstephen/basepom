@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>StarRating.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.player.ratings</a> &gt; <span class="el_source">StarRating.java</span></div><h1>StarRating.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.player.ratings;
+
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.nodes.Document;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class StarRating {
+
+<span class="pc" id="L12">    private static enum Type { BLUE, GOLD };</span>
+
+    private final Type type;
+
+    private final Integer number;
+
+    private final Boolean half;
+
+<span class="fc" id="L20">    private StarRating(Type type, Integer number, Boolean half) {</span>
+<span class="fc" id="L21">        this.type = type;</span>
+<span class="fc" id="L22">        this.number = number;</span>
+<span class="fc" id="L23">        this.half = half;</span>
+<span class="fc" id="L24">    }</span>
+
+    public String getFormattedText() {
+<span class="nc bnc" id="L27" title="All 3 branches missed.">        switch (type) {</span>
+            case BLUE:
+<span class="nc" id="L29">                return getFormattedText('+', '-');</span>
+            case GOLD:
+<span class="nc" id="L31">                return getFormattedText('*', '^');</span>
+            default:
+<span class="nc" id="L33">                throw new IllegalArgumentException();</span>
+        }
+    }
+
+    private String getFormattedText(Character full, Character half) {
+<span class="nc" id="L38">        StringBuilder str = new StringBuilder();</span>
+
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        for (int i = 0; i &lt; number; i++) {</span>
+<span class="nc" id="L41">            str.append(full);</span>
+        }
+
+<span class="nc bnc" id="L44" title="All 2 branches missed.">        if (this.half) {</span>
+<span class="nc" id="L45">            str.append(half);</span>
+        }
+        
+<span class="nc" id="L48">        return str.toString();</span>
+    }
+
+    public static StarRating extractFrom(Document doc) {
+<span class="fc" id="L52">        String starsText = doc.select(&quot;td.s4:containsOwn(Stars)&quot;).html();</span>
+        //System.out.println(starsText);
+<span class="fc" id="L54">        String[] split = StringUtils.splitByWholeSeparator(starsText, &quot;&lt;br /&gt;&quot;);</span>
+        //System.out.println(Strings.join(split).with(&quot;,&quot;));
+<span class="fc" id="L56">        starsText = split[split.length - 2];</span>
+
+        //System.out.println(starsText);
+
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (doc.text().contains(&quot;Prospect rating :&quot;)) {</span>
+<span class="nc" id="L61">            return blueValueOf(starsText);</span>
+        } else {
+<span class="fc" id="L63">            return goldValueOf(starsText);</span>
+        }
+    }
+
+    private static StarRating blueValueOf(String stars) {
+<span class="nc" id="L68">        return new StarRating(Type.BLUE, number(stars), half(stars));</span>
+
+    }
+
+    private static StarRating goldValueOf(String stars) {
+<span class="fc" id="L73">        return new StarRating(Type.GOLD, number(stars), half(stars));</span>
+    }
+
+    private static Integer number(String stars) {
+<span class="fc" id="L77">        return Integer.parseInt(stars.trim().substring(0, 1));</span>
+    }
+
+    private static Boolean half(String stars) {
+<span class="fc" id="L81">        return stars.contains(&quot;.5&quot;);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>

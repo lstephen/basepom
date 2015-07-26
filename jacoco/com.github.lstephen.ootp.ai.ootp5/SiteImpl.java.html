@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>SiteImpl.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ootp-ai</a> &gt; <a href="index.source.html" class="el_package">com.github.lstephen.ootp.ai.ootp5</a> &gt; <span class="el_source">SiteImpl.java</span></div><h1>SiteImpl.java</h1><pre class="source lang-java linenums">package com.github.lstephen.ootp.ai.ootp5;
+
+import com.github.lstephen.ootp.ai.config.Config;
+import com.github.lstephen.ootp.ai.data.Id;
+import com.github.lstephen.ootp.ai.io.Printable;
+import com.github.lstephen.ootp.ai.ootp5.report.PowerRankingsReport;
+import com.github.lstephen.ootp.ai.ootp5.site.LeagueBatting;
+import com.github.lstephen.ootp.ai.ootp5.site.LeaguePitching;
+import com.github.lstephen.ootp.ai.ootp5.site.LeagueStructureImpl;
+import com.github.lstephen.ootp.ai.ootp5.site.PlayerList;
+import com.github.lstephen.ootp.ai.ootp5.site.SalaryImpl;
+import com.github.lstephen.ootp.ai.ootp5.site.SalarySource;
+import com.github.lstephen.ootp.ai.ootp5.site.SingleTeamImpl;
+import com.github.lstephen.ootp.ai.ootp5.site.StandingsImpl;
+import com.github.lstephen.ootp.ai.ootp5.site.TeamBattingImpl;
+import com.github.lstephen.ootp.ai.ootp5.site.TeamPitchingImpl;
+import com.github.lstephen.ootp.ai.ootp5.site.TeamRatings;
+import com.github.lstephen.ootp.ai.ootp5.site.TopProspects;
+import com.github.lstephen.ootp.ai.player.Player;
+import com.github.lstephen.ootp.ai.player.PlayerId;
+import com.github.lstephen.ootp.ai.player.PlayerSource;
+import com.github.lstephen.ootp.extract.html.rating.Scale;
+import com.github.lstephen.ootp.ai.roster.Roster;
+import com.github.lstephen.ootp.ai.roster.Team;
+import com.github.lstephen.ootp.ai.site.LeagueStructure;
+import com.github.lstephen.ootp.ai.site.RecordPredictor;
+import com.github.lstephen.ootp.ai.site.Site;
+import com.github.lstephen.ootp.ai.site.SiteDefinition;
+import com.github.lstephen.ootp.ai.site.Standings;
+import com.github.lstephen.ootp.ai.site.Version;
+import com.github.lstephen.ootp.ai.stats.BattingStats;
+import com.github.lstephen.ootp.ai.stats.PitcherOverall;
+import com.github.lstephen.ootp.ai.stats.PitchingStats;
+import com.github.lstephen.ootp.ai.stats.TeamStats;
+import com.github.lstephen.ootp.extract.html.Page;
+import com.github.lstephen.ootp.extract.html.PageFactory;
+import com.github.lstephen.ootp.extract.html.loader.DiskCachingLoader;
+import com.github.lstephen.ootp.extract.html.loader.PageLoader;
+import com.github.lstephen.ootp.extract.html.loader.PageLoaderBuilder;
+
+import java.io.File;
+import java.io.IOException;
+
+import java.util.Set;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
+
+import org.apache.commons.io.FileUtils;
+
+import org.joda.time.LocalDate;
+
+/**
+ *
+ * @author lstephen
+ */
+public final class SiteImpl implements Site, SalarySource {
+
+  private final SiteDefinition definition;
+
+  private final PlayerSource players;
+
+  private ImmutableSet&lt;PlayerId&gt; futureFas;
+
+  private ImmutableSet&lt;PlayerId&gt; injured;
+
+<span class="nc" id="L73">  private SiteImpl(SiteDefinition def, PlayerSource players) {</span>
+<span class="nc" id="L74">    this.definition = def;</span>
+<span class="nc" id="L75">    this.players = players;</span>
+<span class="nc" id="L76">  }</span>
+
+  @Override
+  public SiteDefinition getDefinition() {
+<span class="nc" id="L80">    return definition;</span>
+  }
+
+  @Override
+  public String getName() {
+<span class="nc" id="L85">    return definition.getName();</span>
+  }
+
+  @Override
+  public Version getType() {
+<span class="nc" id="L90">    return definition.getType();</span>
+  }
+
+  @Override
+  public LocalDate getDate() {
+<span class="nc" id="L95">    return getLeagueBattingPage().extractDate();</span>
+  }
+
+  @Override
+  public PitcherOverall getPitcherSelectionMethod() {
+<span class="nc" id="L100">    return definition.getPitcherSelectionMethod();</span>
+  }
+
+  @Override
+  public ImmutableList&lt;Id&lt;Team&gt;&gt; getTeamIds() {
+<span class="nc" id="L105">    ImmutableList.Builder&lt;Id&lt;Team&gt;&gt; builder = ImmutableList.builder();</span>
+
+<span class="nc bnc" id="L107" title="All 2 branches missed.">    for (int i = 1; i &lt;= definition.getNumberOfTeams(); i++) {</span>
+<span class="nc" id="L108">      builder.add(Id.&lt;Team&gt;valueOf(i));</span>
+    }
+
+<span class="nc" id="L111">    return builder.build();</span>
+  }
+
+  @Override
+  public LeagueStructure getLeagueStructure() {
+<span class="nc" id="L116">    return LeagueStructureImpl.create(this);</span>
+  }
+
+  @Override
+  public void clearCache() {
+<span class="nc" id="L121">    File directory = new File(getCacheDirectory());</span>
+
+<span class="nc bnc" id="L123" title="All 2 branches missed.">    if (directory.exists()) {</span>
+      try {
+<span class="nc" id="L125">        FileUtils.deleteDirectory(new File(getCacheDirectory()));</span>
+<span class="nc" id="L126">      } catch (IOException e) {</span>
+<span class="nc" id="L127">        throw Throwables.propagate(e);</span>
+<span class="nc" id="L128">      }</span>
+    }
+<span class="nc" id="L130">  }</span>
+
+  @Override
+  public Page getPage(String url, Object... args) {
+    PageLoader loader = PageLoaderBuilder
+<span class="nc" id="L135">      .create()</span>
+<span class="nc" id="L136">      .diskCache(getCacheDirectory())</span>
+<span class="nc" id="L137">      .inMemoryCache()</span>
+<span class="nc" id="L138">      .build();</span>
+
+<span class="nc" id="L140">    return PageFactory</span>
+<span class="nc" id="L141">      .create(loader)</span>
+<span class="nc" id="L142">      .getPage(definition.getSiteRoot(), String.format(url, args));</span>
+  }
+
+  private String getCacheDirectory() {
+    try {
+<span class="nc" id="L147">      return Config.createDefault().getValue(&quot;cache.dir&quot;).or(DiskCachingLoader.DEFAULT_CACHE_DIR) + &quot;/&quot; + getName();</span>
+<span class="nc" id="L148">    } catch (IOException e) {</span>
+<span class="nc" id="L149">      throw Throwables.propagate(e);</span>
+    }
+  }
+
+  @Override
+  public Iterable&lt;Player&gt; getDraft() {
+<span class="nc" id="L155">    return PlayerList.draft(this).extract();</span>
+  }
+
+  @Override
+  public Iterable&lt;Player&gt; getFreeAgents() {
+<span class="nc" id="L160">    return PlayerList.freeAgents(this).extract();</span>
+  }
+
+  @Override
+  public BattingStats getLeagueBatting() {
+<span class="nc" id="L165">    return getLeagueBattingPage().extractTotal();</span>
+  }
+
+  private LeagueBatting getLeagueBattingPage() {
+<span class="nc" id="L169">    return new LeagueBatting(this, definition.getLeague());</span>
+  }
+
+  @Override
+  public PitchingStats getLeaguePitching() {
+<span class="nc" id="L174">    return new LeaguePitching(this, definition.getLeague()).extractTotal();</span>
+  }
+
+  @Override
+  public Iterable&lt;Player&gt; getRuleFiveDraft() {
+<span class="nc" id="L179">    return PlayerList.ruleFiveDraft(this).extract();</span>
+  }
+
+  @Override
+  public Iterable&lt;Player&gt; getSalariedPlayers(Id&lt;Team&gt; id) {
+<span class="nc" id="L184">    return getSalary(id).getSalariedPlayers();</span>
+  }
+
+  @Override
+  public SalaryImpl getSalary() {
+<span class="nc" id="L189">    return getSalary(definition.getTeam());</span>
+  }
+
+  @Override
+  public SalaryImpl getSalary(Id&lt;Team&gt; id) {
+<span class="nc" id="L194">    return new SalaryImpl(this, id);</span>
+  }
+
+  @Override
+  public SalaryImpl getSalary(int teamId) {
+<span class="nc" id="L199">    return getSalary(Id.&lt;Team&gt;valueOf(Integer.toString(teamId)));</span>
+  }
+
+  public String getSalary(Player p) {
+<span class="nc" id="L203">    return getTeamIds()</span>
+<span class="nc" id="L204">      .stream()</span>
+<span class="nc" id="L205">      .map(team -&gt; getSalary(team).getSalary(p))</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">      .filter(s -&gt; s != null)</span>
+<span class="nc" id="L207">      .findFirst()</span>
+<span class="nc" id="L208">      .orElse(&quot;&quot;);</span>
+  }
+
+  @Override
+  public Integer getCurrentSalary(Player p) {
+<span class="nc" id="L213">    return getTeamIds()</span>
+<span class="nc" id="L214">      .stream()</span>
+<span class="nc" id="L215">      .map(team -&gt; getSalary(team).getCurrentSalary(p))</span>
+<span class="nc bnc" id="L216" title="All 2 branches missed.">      .filter(s -&gt; s != 0)</span>
+<span class="nc" id="L217">      .findFirst()</span>
+<span class="nc" id="L218">      .orElse(0);</span>
+  }
+
+  @Override
+  public Optional&lt;Integer&gt; getTeamTopProspectPosition(PlayerId id) {
+<span class="nc" id="L223">    java.util.Optional&lt;Integer&gt; jopt = getTeamIds()</span>
+<span class="nc" id="L224">      .stream()</span>
+<span class="nc" id="L225">      .map(team -&gt; getTopProspects(team).getPosition(id))</span>
+<span class="nc" id="L226">      .filter(Optional::isPresent)</span>
+<span class="nc" id="L227">      .map(Optional::get)</span>
+<span class="nc" id="L228">      .findFirst();</span>
+
+<span class="nc bnc" id="L230" title="All 2 branches missed.">    return jopt.isPresent() ? Optional.of(jopt.get()) : Optional.absent();</span>
+  }
+
+  @Override
+  public SingleTeamImpl getSingleTeam() {
+<span class="nc" id="L235">    return getSingleTeam(definition.getTeam());</span>
+  }
+
+  @Override
+  public SingleTeamImpl getSingleTeam(Id&lt;Team&gt; id) {
+<span class="nc" id="L240">    return new SingleTeamImpl(this, id);</span>
+  }
+
+  @Override
+  public SingleTeamImpl getSingleTeam(int teamId) {
+<span class="nc" id="L245">    return getSingleTeam(Id.&lt;Team&gt;valueOf(teamId));</span>
+  }
+
+  @Override
+  public Standings getStandings() {
+<span class="nc" id="L250">    return StandingsImpl.create(this);</span>
+  }
+
+  @Override
+  public TeamStats&lt;BattingStats&gt; getTeamBatting() {
+<span class="nc" id="L255">    return new TeamBattingImpl(this, definition.getTeam()).extract();</span>
+  }
+
+  @Override
+  public TeamStats&lt;PitchingStats&gt; getTeamPitching() {
+<span class="nc" id="L260">    return new TeamPitchingImpl(this, definition.getTeam()).extract();</span>
+  }
+
+  public TopProspects getTopProspects(Integer teamId) {
+<span class="nc" id="L264">    return getTopProspects(Id.&lt;Team&gt;valueOf(teamId));</span>
+  }
+
+  public TopProspects getTopProspects(Id&lt;Team&gt; id) {
+<span class="nc" id="L268">    return TopProspects.of(this, id);</span>
+  }
+
+  @Override
+  public Player getPlayer(PlayerId id) {
+<span class="nc" id="L273">    return players.get(id);</span>
+  }
+
+  @Override
+  public Iterable&lt;Player&gt; getWaiverWire() {
+<span class="nc" id="L278">    return PlayerList.waiverWire(this).extract();</span>
+  }
+
+  @Override
+  public Iterable&lt;Player&gt; getPlayers(Iterable&lt;PlayerId&gt; ids) {
+<span class="nc" id="L283">    return Iterables.transform(ids, new Function&lt;PlayerId, Player&gt;() {</span>
+      @Override
+      public Player apply(PlayerId id) {
+<span class="nc" id="L286">        return getPlayer(id);</span>
+      }
+    });
+  }
+
+  @Override
+  public boolean isFutureFreeAgent(Player p) {
+<span class="nc bnc" id="L293" title="All 2 branches missed.">    if (futureFas == null) {</span>
+<span class="nc" id="L294">      futureFas =</span>
+<span class="nc" id="L295">        ImmutableSet.copyOf(</span>
+<span class="nc" id="L296">            PlayerList.futureFreeAgents(this).extractIds());</span>
+    }
+
+<span class="nc" id="L299">    return futureFas.contains(p.getId());</span>
+  }
+
+  @Override
+  public Predicate&lt;Player&gt; isFutureFreeAgent() {
+<span class="nc" id="L304">    return new Predicate&lt;Player&gt;() {</span>
+      @Override
+      public boolean apply(Player p) {
+<span class="nc" id="L307">        return isFutureFreeAgent(p);</span>
+      }
+    };
+  }
+
+  @Override
+  public boolean isInjured(Player p) {
+<span class="nc bnc" id="L314" title="All 2 branches missed.">    if (injured == null) {</span>
+<span class="nc" id="L315">      Set&lt;PlayerId&gt; is = Sets.newHashSet();</span>
+
+<span class="nc" id="L317">      getTeamIds().forEach(id -&gt; Iterables.addAll(is, getSingleTeam(id).getInjuries()));</span>
+
+<span class="nc" id="L319">      injured = ImmutableSet.copyOf(is);</span>
+    }
+
+<span class="nc" id="L322">    return injured.contains(p.getId());</span>
+  }
+
+  @Override
+  public Team extractTeam() {
+<span class="nc" id="L327">    return new TeamRatings(this, definition.getTeam()).extractTeam();</span>
+  }
+
+  @Override
+  public Roster extractRoster() {
+<span class="nc" id="L332">    return getSingleTeam().getRoster();</span>
+  }
+
+  @Override
+  public Scale&lt;?&gt; getAbilityRatingScale() {
+<span class="nc" id="L337">    return definition.getAbilityRatingScale();</span>
+  }
+
+  @Override
+  public Scale&lt;?&gt; getPotentialRatingScale() {
+<span class="nc" id="L342">    return definition.getPotentialRatingsScale();</span>
+  }
+
+  @Override
+  public Printable getPowerRankingsReport(RecordPredictor recordPredictor) {
+<span class="nc" id="L347">    return PowerRankingsReport.create(this, recordPredictor);</span>
+  }
+
+  public static SiteImpl create(SiteDefinition definition, PlayerSource players) {
+<span class="nc" id="L351">    return new SiteImpl(definition, players);</span>
+  }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
