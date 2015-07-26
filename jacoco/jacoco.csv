@@ -45,16 +45,10 @@ ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},16,0,0,0,2,0,2,0,
 ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},18,0,2,0,2,0,3,0,2,0
 ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},14,0,2,0,2,0,3,0,2,0
 ootp-ai,com.github.lstephen.ootp.ai,Main.new Predicate() {...},27,0,6,0,4,0,5,0,2,0
-ootp-ai,com.github.lstephen.ootp.extract.html,Documents,7,4,0,0,0,0,2,1,2,1
 ootp-ai,com.github.lstephen.ootp.extract.html,Pages,8,0,0,0,2,0,2,0,2,0
-ootp-ai,com.github.lstephen.ootp.extract.html,Documents..anonfun.new Serializable() {...},7,0,0,0,1,0,2,0,2,0
-ootp-ai,com.github.lstephen.ootp.extract.html,Documents..anonfun.new Serializable() {...},13,0,0,0,1,0,2,0,2,0
 ootp-ai,com.github.lstephen.ootp.extract.html,PageFactory,34,0,0,0,9,0,5,0,5,0
-ootp-ai,com.github.lstephen.ootp.extract.html,Documents..anonfun.load.new Serializable() {...},7,0,0,0,1,0,2,0,2,0
 ootp-ai,com.github.lstephen.ootp.extract.html,UrlLoadingPage.new UrlLoadingPage.Loading() {...},14,0,0,0,2,0,2,0,2,0
-ootp-ai,com.github.lstephen.ootp.extract.html,Documents.,95,16,6,0,3,2,6,3,3,3
 ootp-ai,com.github.lstephen.ootp.extract.html,Pages.new Callable() {...},10,0,0,0,2,0,2,0,2,0
-ootp-ai,com.github.lstephen.ootp.extract.html,DocumentLoadException,3,0,0,0,1,0,1,0,1,0
 ootp-ai,com.github.lstephen.ootp.extract.html,UrlLoadingPage,23,0,0,0,7,0,4,0,4,0
 ootp-ai,com.github.lstephen.ootp.ai.player.ratings.json,BattingPotentialSerializer,7,3,0,0,3,2,2,1,2,1
 ootp-ai,com.github.lstephen.ootp.ai.draft,DraftClass,102,0,6,0,27,0,14,0,11,0
@@ -240,13 +234,18 @@ ootp-ai,com.github.lstephen.ootp.ai.ootp5.report,SpringTraining.HitterSkills,58,
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.report,PowerRankingsReport,241,0,6,0,52,0,10,0,7,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp5.report,SpringTraining,389,0,48,0,76,0,33,0,9,0
 ootp-ai,com.github.lstephen.ootp.ai.ootp6,Ootp6,19,0,0,0,6,0,2,0,2,0
-ootp-ai,com.github.lstephen.ootp.extract.html.loader,JsoupLoader,7,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,JsoupLoader,99,11,6,0,3,2,6,2,3,2
 ootp-ai,com.github.lstephen.ootp.extract.html.loader,DiskCachingLoader.DiskCache,105,0,4,0,36,0,9,0,7,0
 ootp-ai,com.github.lstephen.ootp.extract.html.loader,DiskCachingLoader,29,0,0,0,7,0,4,0,4,0
 ootp-ai,com.github.lstephen.ootp.extract.html.loader,PageLoaders,9,0,0,0,2,0,2,0,2,0
 ootp-ai,com.github.lstephen.ootp.extract.html.loader,InMemoryCachedLoader,38,0,0,0,12,0,4,0,4,0
 ootp-ai,com.github.lstephen.ootp.extract.html.loader,PageLoaderBuilder,37,0,0,0,10,0,6,0,6,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,PageLoaderException.,14,0,0,0,1,0,5,0,5,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,JsoupLoader..anonfun.new Serializable() {...},13,0,0,0,1,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,JsoupLoader..anonfun.new Serializable() {...},15,0,2,0,1,0,3,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,JsoupLoader..anonfun.load.new Serializable() {...},38,0,0,0,1,0,2,0,2,0
 ootp-ai,com.github.lstephen.ootp.extract.html.loader,InMemoryCachedLoader.new CacheLoader() {...},14,0,0,0,2,0,2,0,2,0
+ootp-ai,com.github.lstephen.ootp.extract.html.loader,PageLoaderException,11,0,0,0,1,0,3,0,3,0
 ootp-ai,com.github.lstephen.ootp.extract.html.loader,PageLoaders.new Callable() {...},15,0,0,0,2,0,2,0,2,0
 ootp-ai,com.github.lstephen.ootp.ai.stats,FipBaseRuns,0,168,0,0,0,24,0,6,0,6
 ootp-ai,com.github.lstephen.ootp.ai.stats,BaseRuns,0,22,0,0,0,7,0,1,0,1

@@ -39,13 +39,13 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">JsoupLoader</span><span class="result"> extends <a href="PageLoader.html" class="extype" name="com.github.lstephen.ootp.extract.html.loader.PageLoader">PageLoader</a></span>
+        <span class="name">JsoupLoader</span><span class="result"> extends <a href="PageLoader.html" class="extype" name="com.github.lstephen.ootp.extract.html.loader.PageLoader">PageLoader</a> with <span class="extype" name="com.typesafe.scalalogging.LazyLogging">LazyLogging</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="PageLoader.html" class="extype" name="com.github.lstephen.ootp.extract.html.loader.PageLoader">PageLoader</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="com.typesafe.scalalogging.LazyLogging">LazyLogging</span>, <a href="PageLoader.html" class="extype" name="com.github.lstephen.ootp.extract.html.loader.PageLoader">PageLoader</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -63,7 +63,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="com.github.lstephen.ootp.extract.html.loader.JsoupLoader"><span>JsoupLoader</span></li><li class="in" name="com.github.lstephen.ootp.extract.html.loader.PageLoader"><span>PageLoader</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="com.github.lstephen.ootp.extract.html.loader.JsoupLoader"><span>JsoupLoader</span></li><li class="in" name="com.typesafe.scalalogging.LazyLogging"><span>LazyLogging</span></li><li class="in" name="com.github.lstephen.ootp.extract.html.loader.PageLoader"><span>PageLoader</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -260,6 +260,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="com.github.lstephen.ootp.extract.html.loader.JsoupLoader#load" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="load(is:java.io.InputStream):org.jsoup.nodes.Document"></a>
+      <a id="load(InputStream):Document"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">load</span><span class="params">(<span name="is">is: <span class="extype" name="java.io.InputStream">InputStream</span></span>)</span><span class="result">: <span class="extype" name="org.jsoup.nodes.Document">Document</span></span>
+      </span>
+      </h4>
+      
     </li><li name="com.github.lstephen.ootp.extract.html.loader.JsoupLoader#load" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="load(url:String):org.jsoup.nodes.Document"></a>
       <a id="load(String):Document"></a>
@@ -273,6 +286,19 @@
       </span>
       </h4>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="com.github.lstephen.ootp.extract.html.loader.JsoupLoader">JsoupLoader</a> → <a href="PageLoader.html" class="extype" name="com.github.lstephen.ootp.extract.html.loader.PageLoader">PageLoader</a></dd></dl></div>
+    </li><li name="com.typesafe.scalalogging.LazyLogging#logger" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logger:com.typesafe.scalalogging.Logger"></a>
+      <a id="logger:Logger"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logger</span><span class="result">: <span class="extype" name="com.typesafe.scalalogging.Logger">Logger</span></span>
+      </span>
+      </h4>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>LazyLogging</dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -404,7 +430,9 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="com.github.lstephen.ootp.extract.html.loader.PageLoader">
+        <div class="parent" name="com.typesafe.scalalogging.LazyLogging">
+              <h3>Inherited from <span class="extype" name="com.typesafe.scalalogging.LazyLogging">LazyLogging</span></h3>
+            </div><div class="parent" name="com.github.lstephen.ootp.extract.html.loader.PageLoader">
               <h3>Inherited from <a href="PageLoader.html" class="extype" name="com.github.lstephen.ootp.extract.html.loader.PageLoader">PageLoader</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
