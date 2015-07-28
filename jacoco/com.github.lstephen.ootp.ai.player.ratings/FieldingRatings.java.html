@@ -31,14 +31,14 @@ public class FieldingRatings {
 <span class="fc" id="L31">    }</span>
 
     public Double score(Weighting w) {
-<span class="nc" id="L34">        Double total =</span>
-<span class="nc" id="L35">            w.range * range.or(0)</span>
-<span class="nc" id="L36">            + w.errors * errors.or(0)</span>
-<span class="nc" id="L37">            + w.arm * arm.or(0)</span>
-<span class="nc" id="L38">            + w.dp * dp.or(0)</span>
-<span class="nc" id="L39">            + w.ability * ability.or(0);</span>
+<span class="fc" id="L34">        Double total =</span>
+<span class="fc" id="L35">            w.range * range.or(0)</span>
+<span class="fc" id="L36">            + w.errors * errors.or(0)</span>
+<span class="fc" id="L37">            + w.arm * arm.or(0)</span>
+<span class="fc" id="L38">            + w.dp * dp.or(0)</span>
+<span class="fc" id="L39">            + w.ability * ability.or(0);</span>
 
-<span class="nc" id="L41">        return total / w.sum() / 10;</span>
+<span class="fc" id="L41">        return total / w.sum() / 10;</span>
     }
 
     @Override
@@ -114,18 +114,18 @@ public class FieldingRatings {
 
         @JsonCreator
         public static Builder fromJson(ObjectNode node) {
-<span class="nc" id="L117">            JsonNode range = node.get(&quot;range&quot;).get(&quot;reference&quot;);</span>
-<span class="nc" id="L118">            JsonNode errors = node.get(&quot;errors&quot;).get(&quot;reference&quot;);</span>
-<span class="nc" id="L119">            JsonNode arm = node.get(&quot;arm&quot;).get(&quot;reference&quot;);</span>
-<span class="nc" id="L120">            JsonNode dp = node.get(&quot;dp&quot;).get(&quot;reference&quot;);</span>
-<span class="nc" id="L121">            JsonNode ability = node.get(&quot;ability&quot;).get(&quot;reference&quot;);</span>
+<span class="fc" id="L117">            JsonNode range = node.get(&quot;range&quot;).get(&quot;reference&quot;);</span>
+<span class="fc" id="L118">            JsonNode errors = node.get(&quot;errors&quot;).get(&quot;reference&quot;);</span>
+<span class="fc" id="L119">            JsonNode arm = node.get(&quot;arm&quot;).get(&quot;reference&quot;);</span>
+<span class="fc" id="L120">            JsonNode dp = node.get(&quot;dp&quot;).get(&quot;reference&quot;);</span>
+<span class="fc" id="L121">            JsonNode ability = node.get(&quot;ability&quot;).get(&quot;reference&quot;);</span>
 
-<span class="nc bnc" id="L123" title="All 2 branches missed.">            return create()</span>
-<span class="nc bnc" id="L124" title="All 2 branches missed.">                .range(range == null ? 0 : range.asInt())</span>
-<span class="nc bnc" id="L125" title="All 2 branches missed.">                .errors(errors == null ? 0 : errors.asInt())</span>
-<span class="nc bnc" id="L126" title="All 2 branches missed.">                .arm(arm == null ? 0 : arm.asInt())</span>
-<span class="nc bnc" id="L127" title="All 2 branches missed.">                .dp(dp == null ? 0 : dp.asInt())</span>
-<span class="nc" id="L128">                .ability(ability == null ? 0 : ability.asInt());</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">            return create()</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">                .range(range == null ? 0 : range.asInt())</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">                .errors(errors == null ? 0 : errors.asInt())</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">                .arm(arm == null ? 0 : arm.asInt())</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">                .dp(dp == null ? 0 : dp.asInt())</span>
+<span class="fc" id="L128">                .ability(ability == null ? 0 : ability.asInt());</span>
         }
 
     }
@@ -170,7 +170,7 @@ public class FieldingRatings {
         }
 
         public Double sum() {
-<span class="nc" id="L173">            return range + errors + arm + dp + ability;</span>
+<span class="fc" id="L173">            return range + errors + arm + dp + ability;</span>
         }
 
         @Override

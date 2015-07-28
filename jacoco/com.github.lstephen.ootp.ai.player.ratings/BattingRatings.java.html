@@ -52,25 +52,25 @@ public final class BattingRatings&lt;T&gt; {
 <span class="fc" id="L52">    }</span>
 
     public Integer getContact() {
-<span class="nc" id="L55">        return contact.normalize().get();</span>
+<span class="fc" id="L55">        return contact.normalize().get();</span>
     }
 
     public Integer getGap() {
-<span class="nc" id="L59">        return gap.normalize().get();</span>
+<span class="fc" id="L59">        return gap.normalize().get();</span>
     }
 
     public Integer getPower() {
-<span class="nc" id="L63">        return power.normalize().get();</span>
+<span class="fc" id="L63">        return power.normalize().get();</span>
     }
 
     public Integer getEye() {
-<span class="nc" id="L67">        return eye.normalize().get();</span>
+<span class="fc" id="L67">        return eye.normalize().get();</span>
     }
 
     public Optional&lt;Integer&gt; getK() {
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        return k == null</span>
-<span class="nc" id="L72">            ? Optional.&lt;Integer&gt;absent()</span>
-<span class="nc" id="L73">            : Optional.of(k.normalize().get());</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        return k == null</span>
+<span class="pc" id="L72">            ? Optional.&lt;Integer&gt;absent()</span>
+<span class="fc" id="L73">            : Optional.of(k.normalize().get());</span>
     }
 
     public BattingRatings&lt;T&gt; build() {
@@ -91,8 +91,8 @@ public final class BattingRatings&lt;T&gt; {
 
     @Override
     public boolean equals(Object obj) {
-<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (obj == null) {</span>
-<span class="nc" id="L95">            return false;</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">        if (obj == null) {</span>
+<span class="fc" id="L95">            return false;</span>
         }
 
 <span class="nc bnc" id="L98" title="All 2 branches missed.">        if (obj == this) {</span>
@@ -152,12 +152,12 @@ public final class BattingRatings&lt;T&gt; {
 
         @JsonCreator
         private Builder(
-<span class="nc" id="L155">            @JsonProperty(&quot;scale&quot;) Scale&lt;T&gt; scale, @JacksonInject Site site) {</span>
+<span class="fc" id="L155">            @JsonProperty(&quot;scale&quot;) Scale&lt;T&gt; scale, @JacksonInject Site site) {</span>
 
-<span class="nc bnc" id="L157" title="All 2 branches missed.">            this.scale = scale == null</span>
-<span class="nc" id="L158">                ? (Scale&lt;T&gt;) site.getAbilityRatingScale()</span>
+<span class="pc bpc" id="L157" title="1 of 2 branches missed.">            this.scale = scale == null</span>
+<span class="pc" id="L158">                ? (Scale&lt;T&gt;) site.getAbilityRatingScale()</span>
                 : scale;
-<span class="nc" id="L160">        }</span>
+<span class="fc" id="L160">        }</span>
 
         public Builder&lt;T&gt; contact(Rating&lt;T, ? extends Scale&lt;T&gt;&gt; contact) {
 <span class="fc" id="L163">            this.contact = contact;</span>

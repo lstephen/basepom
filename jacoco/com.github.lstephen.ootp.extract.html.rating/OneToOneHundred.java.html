@@ -6,11 +6,11 @@
  */
 public final class OneToOneHundred extends IntegerScale {
 
-<span class="nc" id="L9">    private static final OneToOneHundred INSTANCE = new OneToOneHundred();</span>
+<span class="fc" id="L9">    private static final OneToOneHundred INSTANCE = new OneToOneHundred();</span>
 
     private OneToOneHundred() {
-<span class="nc" id="L12">        super();</span>
-<span class="nc" id="L13">    }</span>
+<span class="fc" id="L12">        super();</span>
+<span class="fc" id="L13">    }</span>
 
     @Override
     protected Integer scale(Integer value) {
@@ -18,7 +18,7 @@ public final class OneToOneHundred extends IntegerScale {
     }
 
     public static Rating&lt;Integer, OneToOneHundred&gt; valueOf(Integer value) {
-<span class="nc" id="L21">        return Rating.create(value, INSTANCE);</span>
+<span class="fc" id="L21">        return Rating.create(value, INSTANCE);</span>
     }
 
     public static OneToOneHundred scale() {

@@ -13,17 +13,20 @@ import org.jsoup.nodes.Document
 
 import resource._
 
-<span class="pc bnc" id="L16" title="All 4 branches missed.">class JsoupLoader extends PageLoader with LazyLogging  {</span>
-  override def load(url: String) : Document = {
-<span class="nc bnc" id="L18" title="All 2 branches missed.">    logger.info(s&quot;Loading page $url...&quot;)</span>
+<span class="pc bpc" id="L16" title="1 of 4 branches missed.">class JsoupLoader extends PageLoader with LazyLogging  {</span>
+<span class="nc" id="L17">  override def load(url: String) : Document = load(new URL(url))</span>
 
-<span class="nc bnc" id="L20" title="All 2 branches missed.">    val d = managed(new URL(url).openStream()) map { load _ }</span>
+  def load(url: URL) : Document = {
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">    logger.info(s&quot;Loading page $url...&quot;)</span>
 
-<span class="nc" id="L22">    d.opt getOrElse { throw new PageLoaderException(s&quot;Unable to load $url&quot;) }</span>
+<span class="fc" id="L22">    managed(url.openStream())</span>
+<span class="pc bpc" id="L23" title="1 of 2 branches missed.">      .map { load(_) }</span>
+<span class="fc" id="L24">      .opt</span>
+<span class="pc" id="L25">      .getOrElse { throw new PageLoaderException(s&quot;Unable to load $url&quot;) }</span>
   }
 
   def load(is: InputStream) : Document = {
-<span class="fc" id="L26">    Jsoup.parse(is, Charsets.ISO_8859_1.name(), &quot;&quot;);</span>
+<span class="fc" id="L29">    Jsoup.parse(is, Charsets.ISO_8859_1.name, &quot;&quot;);</span>
   }
 }
 

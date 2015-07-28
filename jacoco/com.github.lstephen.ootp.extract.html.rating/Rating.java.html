@@ -31,12 +31,12 @@ public final class Rating&lt;T, S extends Scale&lt;T&gt;&gt; {
 
     @JsonValue
     public T get() {
-<span class="nc" id="L34">        return value;</span>
+<span class="fc" id="L34">        return value;</span>
     }
 
     public Rating&lt;Integer, OneToOneHundred&gt; normalize() {
         try {
-<span class="nc" id="L39">            return scale.normalize(value);</span>
+<span class="fc" id="L39">            return scale.normalize(value);</span>
 <span class="nc" id="L40">        } catch (ClassCastException e) {</span>
 <span class="nc" id="L41">            System.out.println(scale + &quot;:&quot; + value);</span>
 <span class="nc" id="L42">            throw Throwables.propagate(e);</span>

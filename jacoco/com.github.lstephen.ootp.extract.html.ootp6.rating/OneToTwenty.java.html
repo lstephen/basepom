@@ -8,19 +8,19 @@ import com.github.lstephen.ootp.extract.html.rating.IntegerScale;
  */
 public final class OneToTwenty extends IntegerScale {
 
-<span class="nc" id="L11">    private static final OneToTwenty INSTANCE = new OneToTwenty();</span>
+<span class="fc" id="L11">    private static final OneToTwenty INSTANCE = new OneToTwenty();</span>
 
     private OneToTwenty() {
-<span class="nc" id="L14">        super();</span>
-<span class="nc" id="L15">    }</span>
+<span class="fc" id="L14">        super();</span>
+<span class="fc" id="L15">    }</span>
 
     @Override
     protected Integer scale(Integer value) {
-<span class="nc" id="L19">        return value * 5;</span>
+<span class="fc" id="L19">        return value * 5;</span>
     }
 
     public static OneToTwenty scale() {
-<span class="nc" id="L23">        return INSTANCE;</span>
+<span class="fc" id="L23">        return INSTANCE;</span>
     }
 
 }
