@@ -69,6 +69,7 @@
           <args>
             <arg>-target:${scala.target}</arg>
           </args>
+          <failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
         </configuration>
       </plugin>
 
