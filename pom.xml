@@ -27,8 +27,8 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git@github.com:lstpehen/basepom.git</connection>
-    <developerConnection>scm:git:git@github.com:lstephen/basepom.git</developerConnection>
+    <connection>${github.ssh.base}/basepom.git</connection>
+    <developerConnection>${github.ssh.base}/basepom.git</developerConnection>
     <url>${github.url}</url>
   </scm>
 
@@ -49,8 +49,12 @@
   </distributionManagement>
 
   <properties>
-    <github.url>https://github.com/lstephen/${project.artifactId}</github.url>
-    <github.site>https://lstephen.github.io/${project.artifactId}</github.site>
+    <github.site.base>https://lstephen.github.io</github.site.base>
+    <github.ssh.base>scm:git:git@github.com:lstephen</github.ssh.base>
+    <github.url.base>https://github.com/lstephen</github.url.base>
+
+    <github.url>${github.url.base}/${project.artifactId}</github.url>
+    <github.site>${github.site.base}/${project.artifactId}</github.site>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.scm.id>github</project.scm.id>
