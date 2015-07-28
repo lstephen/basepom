@@ -6,7 +6,7 @@
   <parent>
     <groupId>com.github.lstephen</groupId>
     <artifactId>basepom-java</artifactId>
-    <version>1.17-SNAPSHOT</version>
+    <version>1.18-SNAPSHOT</version>
     <relativePath>../java</relativePath>
   </parent>
 
