@@ -67,6 +67,8 @@
         </executions>
         <configuration>
           <args>
+            <arg>-feature</arg>
+            <arg>-deprecation</arg>
             <arg>-target:${scala.target}</arg>
           </args>
           <failOnMultipleScalaVersions>true</failOnMultipleScalaVersions>
